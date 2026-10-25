@@ -14,7 +14,7 @@ Deno.serve({ port: PORT }, async (req: Request) => {
   requestCount++;
   const url = new URL(req.url);
 
-  // A. LINE Webhook エンドポイント (/webhook)
+  // A. LINE Webhook
   if (req.method === "POST" && url.pathname === "/webhook") {
     try {
       const body = await req.json();
@@ -50,17 +50,18 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     }
   }
 
-  // B. Web API: ログイン処理 (/api/login)
+  // B. Web API: ログイン処理
   if (req.method === "POST" && url.pathname === "/api/login") {
+    console.log("[AUTH_TRY] ログインリクエストを受信しました...");
     return await handlePortalLogin(req);
   }
 
-  // C. Web API: ステータス取得 (/api/status)
+  // C. Web API: ステータス取得
   if (req.method === "GET" && url.pathname === "/api/status") {
     return getPortalStatus();
   }
 
-  // C2. Web API: サーバーリソースモニター (/api/metrics)
+  // C2. Web API: メトリクス
   if (req.method === "GET" && url.pathname === "/api/metrics") {
     const uptimeSec = Math.floor((Date.now() - serverStartTime) / 1000);
     const mem = Deno.memoryUsage();
