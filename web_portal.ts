@@ -1,4 +1,5 @@
-﻿import { Client } from "npm:linejs";
+﻿import { Client } from "npm:@evex/linejs";
+import { FileStorage } from "npm:@evex/linejs/storage";
 
 let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -30,7 +31,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
     }
 
     console.log(`\n==================================================`);
-    console.log(`[LINEJS_AUTH] LINE サーバーへ接続試行中...`);
+    console.log(`[LINEJS_AUTH] LINE サーバーへ接続試行中 (@evex/linejs)...`);
     console.log(` 📧 EMAIL : ${email}`);
     console.log(`==================================================`);
 
@@ -41,9 +42,11 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       token: "",
     };
 
-    const client = new Client();
+    const client = new Client({
+      storage: new FileStorage("./storage.json"),
+    });
 
-    // PINコード受信イベント
+    // PINコード受信イベント（LINEアプリへ実コードを送信）
     client.on("pincode", (pin: string) => {
       console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
       currentStatus = {
