@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "start": "deno run --allow-all --env-file=.env bot/server.ts"
+  }
+}

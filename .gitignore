@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+token.txt
+storage.json
+data/linejs-link-token.txt
+data/linejs-storage.json
+data/logs/
+node_modules/

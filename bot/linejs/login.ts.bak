@@ -1,0 +1,210 @@
+import { Client } from "@evex/linejs";
+import { BaseClient } from "@evex/linejs/base";
+import { FileStorage } from "@evex/linejs/storage";
+
+const PREFIX = "$<";
+const VERSION = "1.0.0";
+const TOKEN_PATH = "./token.txt";
+const STORAGE_PATH = "./storage.json";
+const TOKEN_KEY = "userAuthToken";
+
+const ownerPid = (Deno.env.get("OWNER_PID") ?? "").trim();
+
+const storage = new FileStorage(STORAGE_PATH);
+
+const base = new BaseClient({
+  device: "DESKTOPMAC",
+  storage,
+});
+
+let pendingSave: Promise<void> = Promise.resolve();
+
+base.on("update:authtoken", (token: string) => {
+  base.authToken = token;
+
+  pendingSave = pendingSave
+    .then(async () => {
+      await storage.set(TOKEN_KEY, token);
+      await Deno.writeTextFile(TOKEN_PATH, token);
+    })
+    .catch(() => {
+      console.error("[LINEJS] 認証情報の保存に失敗しました。");
+    });
+});
+
+base.on("pincall", (pin: string) => {
+  console.log("[LINEJS] PIN認証が必要です。自分のLINEアプリで認証してください。");
+  console.log("[LINEJS] PIN:", pin);
+});
+
+async function readSavedToken(): Promise<string> {
+  const stored = await storage.get(TOKEN_KEY).catch(() => undefined);
+
+  if (typeof stored === "string" && stored.trim()) {
+    return stored.trim();
+  }
+
+  try {
+    return (await Deno.readTextFile(TOKEN_PATH)).trim();
+  } catch {
+    return "";
+  }
+}
+
+function safeText(value: unknown): string {
+  return String(value ?? "").replace(/[\r\n]/g, " ").slice(0, 100);
+}
+
+function getHelp(): string {
+  return [
+    "【LINE-Tools OpenChat半Bot】",
+    `Version: ${VERSION}`,
+    "",
+    "$<help - コマンド一覧",
+    "$<ping - 応答確認",
+    "$<v - バージョン確認",
+    "$<time - 現在時刻",
+    "$<myid - 自分のMID確認",
+    "$<status - Bot状態",
+    "",
+    "操作コマンドはオーナー限定です。",
+  ].join("\n");
+}
+
+async function handleCommand(message: any): Promise<void> {
+  const text = String(message.text ?? "").trim();
+
+  if (!text.startsWith(PREFIX)) return;
+
+  const senderMid = String(
+    message.raw?.message?.from ??
+    message.senderMemberMid ??
+    "",
+  ).trim();
+
+  if (!senderMid) {
+    console.warn("[OWNER] 送信者MIDを取得できませんでした。");
+    return;
+  }
+
+  // OWNER_PIDを設定する前は、MIDをローカル端末にだけ表示する。
+  // この状態ではコマンドを一切実行しない。
+  if (!ownerPid) {
+    console.log("[OWNER SETUP] .envのOWNER_PIDに設定する候補MID:", senderMid);
+    console.log("[OWNER SETUP] 本人のMIDか確認し、.envへ設定して再起動してください。");
+    return;
+  }
+
+  // 全コマンドを実行前にオーナー照合
+  if (senderMid !== ownerPid) {
+    console.log("[AUTH] オーナー以外のコマンドを拒否しました。");
+    return;
+  }
+
+  const parts = text.slice(PREFIX.length).trim().split(/\s+/);
+  const command = (parts.shift() ?? "").toLowerCase();
+
+  try {
+    switch (command) {
+      case "help":
+        await message.reply(getHelp());
+        break;
+
+      case "ping":
+        await message.reply("Pong! 🏓 LINEJSは稼働中です。");
+        break;
+
+      case "v":
+        await message.reply(`LINE-Tools OpenChat半Bot v${VERSION}`);
+        break;
+
+      case "time":
+        await message.reply(
+          `現在時刻: ${new Date().toLocaleString("ja-JP", {
+            timeZone: "Asia/Tokyo",
+          })}`,
+        );
+        break;
+
+      case "myid":
+        await message.reply(`あなたのMID:\n${senderMid}`);
+        break;
+
+      case "status":
+        await message.reply(
+          `LINE-Tools OpenChat半Bot\nVersion: ${VERSION}\n状態: 稼働中\n権限: オーナー専用`,
+        );
+        break;
+
+      default:
+        await message.reply("未対応のコマンドです。$<help を確認してください。");
+        break;
+    }
+  } catch (error) {
+    console.error(
+      "[COMMAND] エラー:",
+      error instanceof Error ? error.message : "不明なエラー",
+    );
+  }
+}
+
+async function main(): Promise<void> {
+  const savedToken = await readSavedToken();
+  const email = Deno.env.get("EMAIL") ?? Deno.env.get("LINE_LOGIN_EMAIL") ?? "";
+  const password = Deno.env.get("PASSWORD") ?? Deno.env.get("LINE_LOGIN_PASSWORD") ?? "";
+
+  if (!ownerPid) {
+    console.warn("[OWNER] OWNER_PIDが未設定です。");
+    console.warn("[OWNER] コマンドを実行せず、送信者MIDをローカルログに表示します。");
+  }
+
+  if (savedToken) {
+    console.log("[LINEJS] 保存済みAuthTokenでログインします。");
+    await base.loginProcess.login({ authToken: savedToken });
+  } else {
+    if (!email || !password) {
+      throw new Error(
+        "保存済みAuthTokenがありません。初回ログインにはEMAILとPASSWORDが必要です。",
+      );
+    }
+
+    console.log("[LINEJS] 初回ログインを開始します。");
+    await base.loginProcess.login({ email, password });
+  }
+
+  await pendingSave;
+
+  const client = new Client(base);
+  const profile = await client.getMyProfile();
+
+  console.log("[LINEJS] ログイン成功");
+  console.log("[LINEJS] 表示名:", safeText(profile.displayName || "未取得"));
+  console.log("[LINEJS] AuthTokenの値は出力しません。");
+  console.log("[OWNER] コマンド送信者のMIDはオーナー照合にのみ使用します。");
+
+  client.on("square:message", async (message: any) => {
+    try {
+      await handleCommand(message);
+    } catch (error) {
+      console.error(
+        "[OC EVENT] エラー:",
+        error instanceof Error ? error.message : "不明なエラー",
+      );
+    }
+  });
+
+  console.log("[OC BOT] OpenChatイベントを受信中です。");
+  console.log("[OC BOT] OpenChatで $<help を送信してテストしてください。");
+
+  await client.listen();
+}
+
+try {
+  await main();
+} catch (error) {
+  console.error(
+    "[LINEJS] 起動失敗:",
+    error instanceof Error ? error.message : "不明なエラー",
+  );
+  Deno.exitCode = 1;
+}

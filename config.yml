@@ -1,0 +1,7 @@
+﻿ingress:
+  - hostname: "*.trycloudflare.com"
+    path: /webhook
+    service: http://127.0.0.1:8000
+  - hostname: "*.trycloudflare.com"
+    service: http://127.0.0.1:3000
+  - service: http_status:404
