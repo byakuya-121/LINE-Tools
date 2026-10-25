@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Byakuya Tools // Developer Control Center</title>
 
-  <!-- サイトファビコン（タブアイコン）: ByakuyaBot_AppIcon.ico -->
   <link rel="icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
 
@@ -44,7 +43,6 @@
       overflow-x: hidden;
     }
 
-    /* ズームアニメーション */
     .zoom-out-fade { animation: zoomOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .zoom-in-fade { animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
@@ -57,7 +55,7 @@
       100% { opacity: 1; transform: scale(1); filter: blur(0); }
     }
 
-    /* --- 1. WELCOME WINDOW --- */
+    /* WELCOME WINDOW */
     #welcome-window {
       width: 100vw; height: 100vh;
       max-width: 1180px; max-height: 680px;
@@ -93,16 +91,25 @@
     .fox-card::before { content: ''; position: absolute; top: -1px; left: 10px; width: 40px; height: 2px; background: var(--main-neon); }
     .fox-card::after { content: ''; position: absolute; bottom: -1px; right: 10px; width: 40px; height: 2px; background: var(--main-neon); }
 
-    /* メイン画像 Developer.jpg のスタイル */
-    .developer-card-img {
+    .img-box-wrapper {
       width: 160px;
       height: 160px;
       margin-bottom: 20px;
-      object-fit: cover;
       border-radius: 6px;
       border: 1.5px solid var(--main-neon);
       box-shadow: 0 0 20px rgba(0, 245, 138, 0.25);
       background: #101612;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .developer-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .card-brand { width: 100%; text-align: left; }
@@ -148,7 +155,7 @@
 
     .right-footer { display: flex; justify-content: flex-end; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); gap: 16px; }
 
-    /* --- 2. MAIN DASHBOARD PORTAL --- */
+    /* DASHBOARD */
     #dashboard-window {
       position: fixed; inset: 0; background: var(--bg-base);
       display: flex; flex-direction: column; z-index: 200;
@@ -186,7 +193,6 @@
     .btn-exit:hover { background: var(--danger-color); color: #000000; }
 
     .dash-content { flex: 1; padding: 32px; overflow-y: auto; max-width: 1280px; margin: 0 auto; width: 100%; }
-
     .dash-pane { transition: opacity 0.3s; }
     .hidden { display: none !important; }
 
@@ -195,20 +201,13 @@
       color: #FFFFFF; letter-spacing: 2px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
     }
 
-    /* MATRIX GRID */
-    .tool-matrix-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;
-    }
-
+    .tool-matrix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
     .matrix-card {
       background: var(--panel-bg); border: 1px solid var(--panel-border);
       border-radius: 6px; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between;
       transition: all 0.25s ease;
     }
-    .matrix-card:hover {
-      border-color: var(--main-neon); box-shadow: 0 0 25px rgba(0, 245, 138, 0.15); transform: translateY(-3px);
-    }
-
+    .matrix-card:hover { border-color: var(--main-neon); box-shadow: 0 0 25px rgba(0, 245, 138, 0.15); transform: translateY(-3px); }
     .matrix-card .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
     .matrix-card .card-name { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 800; color: #FFFFFF; }
     .matrix-card .card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
@@ -224,43 +223,20 @@
     }
     .btn-card-action:hover { background: var(--main-neon); color: #000000; }
 
-    /* SESSIONS */
     .session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
-    .session-card {
-      background: var(--panel-bg); border: 1px solid var(--panel-border);
-      border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 24px;
-    }
+    .session-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 24px; }
     .sess-row { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 10px; }
     .sess-row .label { color: var(--text-dim); }
     .sess-row .val { color: #FFFFFF; font-weight: 700; }
 
-    /* LOGS TERMINAL */
-    .terminal-container {
-      background: var(--panel-dark); border: 1px solid var(--panel-border);
-      border-radius: 6px; height: 500px; display: flex; flex-direction: column;
-    }
-    .term-bar {
-      background: #0B0E0C; border-bottom: 1px solid var(--panel-border);
-      padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
-    }
-    .term-out {
-      flex: 1; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
-      color: var(--main-neon); overflow-y: auto; line-height: 1.7; word-break: break-all;
-    }
+    .terminal-container { background: var(--panel-dark); border: 1px solid var(--panel-border); border-radius: 6px; height: 500px; display: flex; flex-direction: column; }
+    .term-bar { background: #0B0E0C; border-bottom: 1px solid var(--panel-border); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+    .term-out { flex: 1; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--main-neon); overflow-y: auto; line-height: 1.7; word-break: break-all; }
 
-    /* AUTH FORM */
-    .auth-form-box {
-      background: var(--panel-bg); border: 1px solid var(--panel-border);
-      border-radius: 8px; padding: 36px; max-width: 480px; margin: 20px auto;
-    }
+    .auth-form-box { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 36px; max-width: 480px; margin: 20px auto; }
     .field { text-align: left; margin-bottom: 20px; }
     label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--main-neon); margin-bottom: 8px; }
-    input {
-      width: 100%; padding: 12px; background: #050706;
-      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px;
-      font-size: 13px; color: #fff; outline: none; transition: border 0.2s;
-    }
+    input { width: 100%; padding: 12px; background: #050706; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; font-size: 13px; color: #fff; outline: none; transition: border 0.2s; }
     input:focus { border-color: var(--main-neon); }
 
     .pincode-box { display: none; margin-top: 20px; background: rgba(0, 245, 138, 0.05); border: 1px solid var(--main-neon); padding: 16px; text-align: center; }
@@ -280,8 +256,10 @@
       </div>
 
       <div class="fox-card">
-        <!-- Developer.jpg を直接指定（読み込み失敗時のフォールバックSVGも組み込み） -->
-        <img src="/assets/Developer.jpg" class="developer-card-img" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/banner.svg';">
+        <div class="img-box-wrapper">
+          <!-- Developer.jpgの読み込み（失敗時は自動でフォールバック用SVGへ切り替え） -->
+          <img src="/assets/Developer.jpg" class="developer-card-img" alt="" onerror="handleImgError(this)">
+        </div>
         <div class="card-brand">
           <div class="byakuya">BYAKUYA</div>
           <div class="tools">TOOLS</div>
@@ -326,7 +304,7 @@
   <div id="dashboard-window" class="hidden">
     <header class="dash-header">
       <div class="dash-brand">
-        <img src="/assets/Developer.jpg" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/banner.svg';">
+        <img src="/assets/Developer.jpg" alt="" onerror="handleImgError(this)">
         <span>BYAKUYATOOLS // CONTROL CENTER</span>
       </div>
       <nav class="dash-tabs">
@@ -472,6 +450,11 @@
   </div>
 
   <script>
+    function handleImgError(img) {
+      img.onerror = null;
+      img.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'><rect width='200' height='200' fill='%23101612'/><polygon points='100,20 170,60 170,140 100,180 30,140 30,60' fill='%230D110E' stroke='%2300F58A' stroke-width='2'/><g transform='translate(100, 95)'><polygon points='-40,-50 -25,-20 -8,-32' fill='%2300F58A'/><polygon points='40,-50 25,-20 8,-32' fill='%2300F58A'/><polygon points='0,-30 -40,-5 -25,32 0,55 25,32 40,-5' fill='%2300F58A'/></g></svg>";
+    }
+
     function launchDashboard() {
       const welcome = document.getElementById('welcome-window');
       const dash = document.getElementById('dashboard-window');

@@ -62,8 +62,31 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     try {
       const pathname = decodeURIComponent(url.pathname);
       const relativePath = pathname === "/" ? "/index.html" : pathname;
-      const fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
-      const file = await Deno.readFile(fileUrl);
+      
+      // アセットリクエスト（/assets/...）の場合、大文字小文字を問わず実ファイルを検索
+      let fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
+      let fileData: Uint8Array | null = null;
+
+      try {
+        fileData = await Deno.readFile(fileUrl);
+      } catch (_) {
+        // 大文字・小文字の不一致でファイルが見つからない場合の自動検索フォールバック
+        if (relativePath.startsWith("/assets/")) {
+          const fileName = relativePath.replace("/assets/", "").toLowerCase();
+          const assetsDir = new URL("./Token-Web/assets/", import.meta.url);
+          for await (const entry of Deno.readDir(assetsDir)) {
+            if (entry.isFile && entry.name.toLowerCase() === fileName) {
+              const matchedUrl = new URL(`./Token-Web/assets/${entry.name}`, import.meta.url);
+              fileData = await Deno.readFile(matchedUrl);
+              break;
+            }
+          }
+        }
+      }
+
+      if (!fileData) {
+        return new Response("Not Found", { status: 404 });
+      }
 
       const ext = relativePath.split(".").pop()?.toLowerCase();
       const mimeTypes: Record<string, string> = {
@@ -77,7 +100,7 @@ Deno.serve({ port: PORT }, async (req: Request) => {
         ico: "image/x-icon",
       };
 
-      return new Response(file, {
+      return new Response(fileData, {
         headers: {
           "Content-Type": mimeTypes[ext || ""] || "application/octet-stream",
           "Cache-Control": "public, max-age=3600",
