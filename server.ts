@@ -5,7 +5,7 @@ const PORT = Number(Deno.env.get("PORT")) || 8000;
 
 console.log("==================================================");
 console.log("🚀 LINE-Tools 統合サーバーを起動しました");
-console.log( 🌐 統合 URL (ポータル & Webhook) : http://127.0.0.1:\);
+console.log(` 🌐 統合 URL (ポータル & Webhook) : http://127.0.0.1:${PORT}`);
 console.log("==================================================");
 
 Deno.serve({ port: PORT }, async (req: Request) => {
@@ -29,7 +29,7 @@ Deno.serve({ port: PORT }, async (req: Request) => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: Bearer \,
+                  Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({
                   replyToken,
@@ -57,15 +57,30 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     return getPortalStatus();
   }
 
-  // D. Webポータル 画面表示 (トップページ /)
-  if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/index.html")) {
+  // D. Token-Web 静的ファイル配信 (index.html, banner.svg, etc.)
+  if (req.method === "GET") {
     try {
-      const html = await Deno.readTextFile("./Token-Web/index.html");
-      return new Response(html, {
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+      const relativePath = url.pathname === "/" ? "/index.html" : url.pathname;
+      const filePath = `./Token-Web${relativePath}`;
+      const file = await Deno.readFile(filePath);
+
+      const ext = relativePath.split(".").pop()?.toLowerCase();
+      const mimeTypes: Record<string, string> = {
+        html: "text/html; charset=utf-8",
+        css: "text/css",
+        js: "application/javascript",
+        svg: "image/svg+xml",
+        png: "image/png",
+        jpg: "image/jpeg",
+        jpeg: "image/jpeg",
+        ico: "image/x-icon",
+      };
+
+      return new Response(file, {
+        headers: { "Content-Type": mimeTypes[ext || ""] || "application/octet-stream" },
       });
     } catch (_) {
-      return new Response("Token-Web/index.html が見つかりません", { status: 404 });
+      return new Response("Not Found", { status: 404 });
     }
   }
 
