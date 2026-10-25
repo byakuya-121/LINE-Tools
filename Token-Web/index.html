@@ -14,6 +14,7 @@
       --panel-border: rgba(0, 245, 138, 0.2);
       --main-neon: #00F58A;
       --sub-neon: #78FFC0;
+      --accent-cyan: #00f0ff;
       --text-color: #E8F5EC;
       --text-dim: #607367;
       --danger-color: #ff4a4a;
@@ -157,8 +158,10 @@
     }
 
     .brand-header img {
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--main-neon);
     }
 
     .nav-links {
@@ -200,12 +203,12 @@
     .view-pane { transition: opacity 0.3s ease; }
     .hidden { display: none !important; }
 
-    /* --- WELCOME HERO SECTION --- */
+    /* --- WELCOME HERO SECTION (開発者アイコン) --- */
     .welcome-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 48px;
+      gap: 52px;
       max-width: 960px;
       width: 100%;
       margin: 20px auto;
@@ -227,11 +230,44 @@
       align-items: center;
     }
 
-    .welcome-fox-img {
-      width: 220px;
-      height: 220px;
+    /* 開発者ネオンアイコンスタイル */
+    .developer-avatar-wrap {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, var(--main-neon) 0%, var(--accent-cyan) 100%);
+      box-shadow: 0 0 30px rgba(0, 245, 138, 0.35);
       animation: floatAnim 4s ease-in-out infinite;
-      filter: drop-shadow(0 0 25px rgba(0, 245, 138, 0.25));
+    }
+
+    .developer-avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid var(--panel-bg);
+      background: #101612;
+      display: block;
+    }
+
+    .dev-badge {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel-bg);
+      border: 1px solid var(--main-neon);
+      color: var(--main-neon);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(0, 245, 138, 0.3);
     }
 
     @keyframes floatAnim {
@@ -468,7 +504,7 @@
     @media (prefers-reduced-motion: reduce) {
       #boot-screen { display: none !important; }
       #main-content { opacity: 1 !important; }
-      .welcome-fox-img { animation: none; }
+      .developer-avatar-wrap { animation: none; }
       .cursor, .typing-cursor { animation: none; }
     }
   </style>
@@ -477,7 +513,7 @@
 
   <!-- 1. BOOT TERMINAL -->
   <div id="boot-screen">
-    <img src="/assets/fox-logo.svg" id="boot-logo" class="boot-logo" alt="ByakuyaTools Logo">
+    <img src="/assets/developer.png" id="boot-logo" class="boot-logo" style="border-radius: 50%; border: 2px solid var(--main-neon);" onerror="this.src='/assets/fox-logo.svg'">
     <div class="boot-title" id="boot-title">BYAKUYATOOLS</div>
     <div class="boot-terminal" id="terminal-out"></div>
     <button class="skip-btn" onclick="finishBoot()">[ SKIP INITIALIZATION ]</button>
@@ -487,7 +523,7 @@
   <div id="main-content">
     <header>
       <div class="brand-header" onclick="switchView('terminal')">
-        <img src="/assets/fox-logo.svg" alt="ByakuyaTools Icon">
+        <img src="/assets/developer.png" alt="Byakuya Icon" onerror="this.src='/assets/fox-logo.svg'">
         <span>BYAKUYATOOLS</span>
       </div>
       <nav class="nav-links">
@@ -499,13 +535,16 @@
     </header>
 
     <main>
-      <!-- PANE 1: TERMINAL / WELCOME -->
+      <!-- PANE 1: TERMINAL / WELCOME (開発者アイコン) -->
       <div id="view-terminal" class="view-pane">
         <div class="welcome-container">
           
-          <!-- 左側：/assets/fox-logo.svg 画像 -->
+          <!-- 左側：開発者ネオンアバター -->
           <div class="welcome-image-box">
-            <img src="/assets/fox-logo.svg" class="welcome-fox-img" alt="ByakuyaTools Cyber Fox Emblem">
+            <div class="developer-avatar-wrap">
+              <img src="/assets/developer.png" class="developer-avatar" alt="Byakuya Developer Icon" onerror="this.src='/assets/fox-logo.svg'">
+              <div class="dev-badge">DEVELOPER</div>
+            </div>
           </div>
 
           <!-- 右側：アニメーションツール名 & コンテンツ -->
