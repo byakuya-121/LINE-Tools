@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Byakuya Tools // Developer Control Center</title>
+
+  <!-- サイトファビコン（タブアイコン）: ByakuyaBot_AppIcon.ico -->
   <link rel="icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
@@ -41,7 +44,7 @@
       overflow-x: hidden;
     }
 
-    /* ズーム遷移 */
+    /* ズームアニメーション */
     .zoom-out-fade { animation: zoomOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     .zoom-in-fade { animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
@@ -54,7 +57,7 @@
       100% { opacity: 1; transform: scale(1); filter: blur(0); }
     }
 
-    /* --- 1. WELCOME WINDOW (DESKTOP APP STYLE) --- */
+    /* --- 1. WELCOME WINDOW --- */
     #welcome-window {
       width: 100vw; height: 100vh;
       max-width: 1180px; max-height: 680px;
@@ -83,16 +86,23 @@
 
     .fox-card {
       background: #0B0F0C; border: 1px solid rgba(0, 245, 138, 0.25);
-      border-radius: 4px; padding: 28px 20px 20px 20px;
+      border-radius: 4px; padding: 24px 20px 20px 20px;
       position: relative; display: flex; flex-direction: column; align-items: center;
       margin: auto 0;
     }
     .fox-card::before { content: ''; position: absolute; top: -1px; left: 10px; width: 40px; height: 2px; background: var(--main-neon); }
     .fox-card::after { content: ''; position: absolute; bottom: -1px; right: 10px; width: 40px; height: 2px; background: var(--main-neon); }
 
-    .fox-svg-icon {
-      width: 170px; height: 170px; margin-bottom: 20px;
-      object-fit: contain; filter: drop-shadow(0 0 12px rgba(0, 245, 138, 0.3));
+    /* メイン画像 Developer.jpg のスタイル */
+    .developer-card-img {
+      width: 160px;
+      height: 160px;
+      margin-bottom: 20px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid var(--main-neon);
+      box-shadow: 0 0 20px rgba(0, 245, 138, 0.25);
+      background: #101612;
     }
 
     .card-brand { width: 100%; text-align: left; }
@@ -270,7 +280,8 @@
       </div>
 
       <div class="fox-card">
-        <img src="/assets/ByakuyaBot_AppIcon.ico" class="fox-svg-icon" alt="ByakuyaBot App Icon" onerror="this.onerror=null; this.src='/assets/Developer.jpg';">
+        <!-- Developer.jpg を直接指定（読み込み失敗時のフォールバックSVGも組み込み） -->
+        <img src="/assets/Developer.jpg" class="developer-card-img" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/banner.svg';">
         <div class="card-brand">
           <div class="byakuya">BYAKUYA</div>
           <div class="tools">TOOLS</div>
@@ -315,7 +326,7 @@
   <div id="dashboard-window" class="hidden">
     <header class="dash-header">
       <div class="dash-brand">
-        <img src="/assets/Developer.jpg" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/ByakuyaBot_AppIcon.ico';">
+        <img src="/assets/Developer.jpg" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/banner.svg';">
         <span>BYAKUYATOOLS // CONTROL CENTER</span>
       </div>
       <nav class="dash-tabs">

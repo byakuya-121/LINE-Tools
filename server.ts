@@ -60,7 +60,8 @@ Deno.serve({ port: PORT }, async (req: Request) => {
   // D. 静的コンテンツ配信 (Token-Web/)
   if (req.method === "GET") {
     try {
-      const relativePath = url.pathname === "/" ? "/index.html" : url.pathname;
+      const pathname = decodeURIComponent(url.pathname);
+      const relativePath = pathname === "/" ? "/index.html" : pathname;
       const fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
       const file = await Deno.readFile(fileUrl);
 
@@ -77,7 +78,10 @@ Deno.serve({ port: PORT }, async (req: Request) => {
       };
 
       return new Response(file, {
-        headers: { "Content-Type": mimeTypes[ext || ""] || "application/octet-stream" },
+        headers: {
+          "Content-Type": mimeTypes[ext || ""] || "application/octet-stream",
+          "Cache-Control": "public, max-age=3600",
+        },
       });
     } catch (_) {
       return new Response("Not Found", { status: 404 });
