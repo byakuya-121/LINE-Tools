@@ -1,4 +1,4 @@
-﻿import { Client } from "npm:line-js";
+﻿import { Client } from "https://esm.sh/linejs";
 
 let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -43,7 +43,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
 
     const client = new Client();
 
-    // PINコード受信イベント（LINEアプリ側への通知発行）
+    // PINコード受信イベント（LINEアプリ側へ通知）
     client.on("pincode", (pin: string) => {
       console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
       currentStatus = {
@@ -56,7 +56,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
 
     // ログイン成功イベント
     client.on("ready", () => {
-      const authToken = client.authToken || "";
+      const authToken = (client as any).authToken || "";
       console.log(`\n✅ [AUTH_SUCCESS] 認証成功! Token: ${authToken}`);
       currentStatus = {
         status: "SUCCESS",
@@ -66,7 +66,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
-    // 非同期ログイン実行
+    // ログイン実行
     client.login({
       email: email,
       password: password,
