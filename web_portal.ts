@@ -1,4 +1,4 @@
-﻿// web_portal.ts - LINE AuthToken ログイン処理モジュール
+﻿// web_portal.ts - LINE AuthToken 認証・ポータル状態管理モジュール
 
 interface LoginStatus {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -17,7 +17,8 @@ let portalState: LoginStatus = {
  */
 export async function handlePortalLogin(req: Request): Promise<Response> {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { email, password } = body;
 
     if (!email || !password) {
       return new Response(
@@ -26,7 +27,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       );
     }
 
-    // ログイン処理状態の更新
+    // PIN認証待機状態へ遷移
     portalState = {
       status: "PIN_REQUIRED",
       message: "LINEアプリでPINコードを入力して認証を完了してください。",
@@ -37,7 +38,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       JSON.stringify({ status: "OK", message: "ログイン認証を開始しました。" }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (_err) {
     portalState = {
       status: "ERROR",
       message: "認証処理中にエラーが発生しました。",

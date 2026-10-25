@@ -5,13 +5,13 @@ const PORT = Number(Deno.env.get("PORT")) || 8000;
 
 console.log("==================================================");
 console.log("🚀 BYAKUYATOOLS V2 統合サーバーを起動しました");
-console.log(` 🌐 統合 URL: http://127.0.0.1:${PORT}`);
+console.log(` 🌐 統合 URL (ポータル & Webhook) : http://127.0.0.1:${PORT}`);
 console.log("==================================================");
 
 Deno.serve({ port: PORT }, async (req: Request) => {
   const url = new URL(req.url);
 
-  // A. LINE Webhook (/webhook)
+  // A. LINE Webhook エンドポイント (/webhook)
   if (req.method === "POST" && url.pathname === "/webhook") {
     try {
       const body = await req.json();
@@ -47,12 +47,12 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     }
   }
 
-  // B. Web API: ログイン
+  // B. Web API: ログイン処理 (/api/login)
   if (req.method === "POST" && url.pathname === "/api/login") {
     return await handlePortalLogin(req);
   }
 
-  // C. Web API: ステータス取得
+  // C. Web API: ステータス取得 (/api/status)
   if (req.method === "GET" && url.pathname === "/api/status") {
     return getPortalStatus();
   }
@@ -62,15 +62,13 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     try {
       const pathname = decodeURIComponent(url.pathname);
       const relativePath = pathname === "/" ? "/index.html" : pathname;
-      
-      // アセットリクエスト（/assets/...）の場合、大文字小文字を問わず実ファイルを検索
+
       let fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
       let fileData: Uint8Array | null = null;
 
       try {
         fileData = await Deno.readFile(fileUrl);
       } catch (_) {
-        // 大文字・小文字の不一致でファイルが見つからない場合の自動検索フォールバック
         if (relativePath.startsWith("/assets/")) {
           const fileName = relativePath.replace("/assets/", "").toLowerCase();
           const assetsDir = new URL("./Token-Web/assets/", import.meta.url);
