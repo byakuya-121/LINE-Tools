@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@evex/linejs": "jsr:@evex/linejs@3.4.2"
+  }
+}
