@@ -117,10 +117,31 @@
       display: flex; flex-direction: column; justify-content: space-between; position: relative;
     }
 
-    .welcome-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--main-neon); font-weight: 700; margin-bottom: 6px; letter-spacing: 2px; }
-    .welcome-title { font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 0; }
-    .welcome-sub1 { font-size: 14px; color: var(--text-dim); margin-top: 4px; font-weight: 600; }
-    .welcome-sub2 { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A8C81; margin-top: 14px; }
+    /* タイピング・文字アニメーション表示 */
+    .welcome-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--main-neon); font-weight: 700; margin-bottom: 6px; letter-spacing: 2px;
+      opacity: 0; animation: fadeInScan 0.8s ease forwards;
+    }
+
+    .welcome-title {
+      font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 0;
+      min-height: 46px; display: inline-block;
+    }
+
+    .welcome-sub1 {
+      font-size: 14px; color: var(--text-dim); margin-top: 4px; font-weight: 600;
+      min-height: 20px;
+    }
+
+    .welcome-sub2 {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A8C81; margin-top: 14px;
+      min-height: 18px;
+    }
+
+    @keyframes fadeInScan {
+      0% { opacity: 0; transform: translateY(-5px); filter: blur(3px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
 
     .system-check-box {
       background: #0B0E0C; border: 1px solid rgba(255, 255, 255, 0.05);
@@ -253,7 +274,7 @@
     .qr-container { display: none; margin-top: 14px; text-align: center; background: #fff; padding: 12px; border-radius: 6px; }
     .qr-container img { width: 140px; height: 140px; }
 
-    /* MODAL (AUTO-REPLY TESTER) */
+    /* MODAL */
     .modal-overlay { position: fixed; inset: 0; background: rgba(5,7,6,0.85); backdrop-filter: blur(8px); z-index: 300; display: flex; justify-content: center; align-items: center; padding: 16px; }
     .modal-box { background: var(--panel-bg); border: 1px solid var(--main-neon); border-radius: 8px; width: 100%; max-width: 600px; padding: 24px; box-shadow: 0 0 40px rgba(0,245,138,0.2); }
     .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 12px; margin-bottom: 16px; }
@@ -264,7 +285,6 @@
     .msg-bot { color: var(--main-neon); }
     .chat-input-group { display: flex; gap: 8px; }
 
-    /* MOBILE RESPONSIVE ADJUSTMENTS */
     @media (max-width: 768px) {
       #welcome-window { flex-direction: column; height: auto; max-height: none; border-radius: 0; border: none; }
       .left-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--main-neon); padding: 20px; }
@@ -312,9 +332,9 @@
     <div class="right-panel">
       <div class="welcome-header">
         <div class="welcome-badge">WELCOME</div>
-        <h1 class="welcome-title">Welcome</h1>
-        <div class="welcome-sub1">Byakuya Tools Control Center</div>
-        <div class="welcome-sub2">LINE OpenChat / LINEJS management environment</div>
+        <h1 class="welcome-title" id="type-title"></h1>
+        <div class="welcome-sub1" id="type-sub1"></div>
+        <div class="welcome-sub2" id="type-sub2"></div>
       </div>
 
       <div class="system-check-box">
@@ -322,6 +342,8 @@
         <div class="check-row"><span class="label">LINEJS VERSION</span><span class="val-white">3.4.2</span></div>
         <div class="check-row"><span class="label">ENGINE</span><span class="val-neon">READY</span></div>
         <div class="check-row"><span class="label">STATUS</span><span class="val-neon">ONLINE</span></div>
+        <div style="height:1px; background:rgba(255,255,255,0.06); margin:16px 0 12px 0;"></div>
+        <div style="font-size:11px; color:var(--main-neon); font-weight:700; letter-spacing:1px;" id="checking-dots">CHECKING LINEJS...</div>
       </div>
 
       <div>
@@ -353,7 +375,7 @@
 
     <main class="dash-content">
       
-      <!-- DENO SERVER RESOURCE MONITOR -->
+      <!-- SERVER RESOURCE MONITOR -->
       <div class="resource-monitor-card">
         <div class="res-item">
           <span class="res-label">DENO UPTIME</span>
@@ -536,6 +558,52 @@
   </div>
 
   <script>
+    // TYPING ANIMATION FOR WELCOME SCREEN
+    function startTypingAnimations() {
+      const titleText = 'Welcome';
+      const sub1Text = 'Byakuya Tools Control Center';
+      const sub2Text = 'LINE OpenChat / LINEJS management environment';
+
+      typeText('type-title', titleText, 60, function() {
+        typeText('type-sub1', sub1Text, 30, function() {
+          typeText('type-sub2', sub2Text, 20, null);
+        });
+      });
+    }
+
+    function typeText(elementId, text, speed, callback) {
+      let i = 0;
+      const elem = document.getElementById(elementId);
+      if (!elem) return;
+      elem.innerText = '';
+      
+      function type() {
+        if (i < text.length) {
+          elem.innerText += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      type();
+    }
+
+    // DOTS ANIMATION FOR CHECKING LOG
+    let dotStep = 0;
+    setInterval(function() {
+      const elem = document.getElementById('checking-dots');
+      if (!elem) return;
+      dotStep = (dotStep + 1) % 4;
+      let dots = '';
+      for (let i = 0; i < dotStep; i++) dots += '.';
+      elem.innerText = 'CHECKING LINEJS' + dots;
+    }, 500);
+
+    window.addEventListener('DOMContentLoaded', function() {
+      startTypingAnimations();
+    });
+
     function launchDashboard() {
       const welcome = document.getElementById('welcome-window');
       const dash = document.getElementById('dashboard-window');
@@ -579,7 +647,7 @@
       if (targetBtn) targetBtn.classList.add('active');
     }
 
-    // SERVER RESOURCE METRICS
+    // METRICS
     let metricsTimer = null;
     function startMetricsMonitor() {
       if (metricsTimer) return;
@@ -596,20 +664,16 @@
 
         if (res.ok) {
           const data = await res.json();
-          
-          // Uptime format
           const sec = data.uptime % 60;
           const min = Math.floor(data.uptime / 60) % 60;
           const hrs = Math.floor(data.uptime / 3600);
           document.getElementById('res-uptime').innerText = 
             (hrs < 10 ? '0' : '') + hrs + ':' + (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
 
-          // Heap Memory
           document.getElementById('res-mem-text').innerText = data.heapUsedMb + ' / ' + data.heapTotalMb + ' MB';
           const pct = Math.min(100, Math.round((data.heapUsedMb / data.heapTotalMb) * 100));
           document.getElementById('res-mem-bar').style.width = pct + '%';
 
-          // Requests
           document.getElementById('res-requests').innerText = data.requests;
         }
       } catch (_) {}
@@ -636,7 +700,6 @@
       }
     }
 
-    // COPY TOKEN & QR CODE
     function copyToken() {
       const text = document.getElementById('token-text').innerText;
       if (!text) return;
@@ -659,7 +722,6 @@
       }
     }
 
-    // AUTO-REPLY TESTER MODAL
     function openTesterModal() {
       document.getElementById('tester-modal').classList.remove('hidden');
     }
