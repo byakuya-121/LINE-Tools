@@ -92,13 +92,15 @@ Deno.serve({ port: PORT }, async (req: Request) => {
         if (relativePath.startsWith("/assets/")) {
           const fileName = relativePath.replace("/assets/", "").toLowerCase();
           const assetsDir = new URL("./Token-Web/assets/", import.meta.url);
-          for await (const entry of Deno.readDir(assetsDir)) {
-            if (entry.isFile && entry.name.toLowerCase() === fileName) {
-              const matchedUrl = new URL(`./Token-Web/assets/${entry.name}`, import.meta.url);
-              fileData = await Deno.readFile(matchedUrl);
-              break;
+          try {
+            for await (const entry of Deno.readDir(assetsDir)) {
+              if (entry.isFile && entry.name.toLowerCase() === fileName) {
+                const matchedUrl = new URL(`./Token-Web/assets/${entry.name}`, import.meta.url);
+                fileData = await Deno.readFile(matchedUrl);
+                break;
+              }
             }
-          }
+          } catch (_) {}
         }
       }
 

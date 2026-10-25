@@ -1,60 +1,100 @@
-﻿// web_portal.ts - LINE AuthToken 認証・ポータル状態管理モジュール
+﻿import { Client } from "npm:@line/line-js@^3.4.2";
 
-interface LoginStatus {
+let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
   message: string;
-  pincode?: string;
-  token?: string;
-}
-
-let portalState: LoginStatus = {
+  pincode: string;
+  token: string;
+} = {
   status: "IDLE",
-  message: "メールアドレスとパスワードを入力してください。",
+  message: "メールアドレスとパスワードを入力して GENERATE TOKEN を押してください。",
+  pincode: "",
+  token: "",
 };
 
-/**
- * Web ポータルからのログインリクエスト処理
- */
+export function getPortalStatus(): Response {
+  return new Response(JSON.stringify(currentStatus), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 export async function handlePortalLogin(req: Request): Promise<Response> {
   try {
-    const body = await req.json().catch(() => ({}));
-    const { email, password } = body;
+    const { email, password } = await req.json();
 
     if (!email || !password) {
       return new Response(
-        JSON.stringify({ status: "ERROR", message: "メールアドレスとパスワードが必要です。" }),
+        JSON.stringify({ error: "メールアドレスとパスワードが必要です。" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    // PIN認証待機状態へ遷移
-    portalState = {
-      status: "PIN_REQUIRED",
-      message: "LINEアプリでPINコードを入力して認証を完了してください。",
-      pincode: Math.floor(1000 + Math.random() * 9000).toString(),
+    console.log(`\n==================================================`);
+    console.log(`[LINEJS_AUTH] LINE サーバーへ接続試行中...`);
+    console.log(` 📧 EMAIL : ${email}`);
+    console.log(`==================================================`);
+
+    currentStatus = {
+      status: "IDLE",
+      message: "LINE サーバーへ接続中...",
+      pincode: "",
+      token: "",
     };
 
+    const client = new Client();
+
+    // PINコード受信イベント（LINEアプリ側へ通知）
+    client.on("pincode", (pin: string) => {
+      console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
+      currentStatus = {
+        status: "PIN_REQUIRED",
+        message: "スマホのLINEアプリを開き、表示されているPINコードを入力してください。",
+        pincode: pin,
+        token: "",
+      };
+    });
+
+    // ログイン成功イベント
+    client.on("ready", () => {
+      const authToken = client.authToken || "";
+      console.log(`\n✅ [AUTH_SUCCESS] 認証成功! Token: ${authToken}`);
+      currentStatus = {
+        status: "SUCCESS",
+        message: "AuthToken の取得に成功しました！",
+        pincode: "",
+        token: authToken,
+      };
+    });
+
+    // 非同期でログイン実行
+    client.login({
+      email: email,
+      password: password,
+    }).catch((err: any) => {
+      console.error(`❌ [LINE_LOGIN_ERROR]`, err);
+      currentStatus = {
+        status: "ERROR",
+        message: err.message || "LINEログインに失敗しました（パスワード不一致またはIPブロック）。",
+        pincode: "",
+        token: "",
+      };
+    });
+
     return new Response(
-      JSON.stringify({ status: "OK", message: "ログイン認証を開始しました。" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ success: true, message: "LINE 認証リクエストを開始しました。" }),
+      { headers: { "Content-Type": "application/json" } }
     );
-  } catch (_err) {
-    portalState = {
+  } catch (err: any) {
+    console.error(`[AUTH_FATAL_ERROR]`, err);
+    currentStatus = {
       status: "ERROR",
-      message: "認証処理中にエラーが発生しました。",
+      message: err.message || "サーバー内部エラーが発生しました。",
+      pincode: "",
+      token: "",
     };
     return new Response(
-      JSON.stringify({ status: "ERROR", message: "リクエスト形式が不正確です。" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ error: err.message }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
-}
-
-/**
- * 認証ステータスの取得処理
- */
-export function getPortalStatus(): Response {
-  return new Response(JSON.stringify(portalState), {
-    headers: { "Content-Type": "application/json" },
-  });
 }
