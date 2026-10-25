@@ -55,6 +55,7 @@
       100% { opacity: 1; transform: scale(1); filter: blur(0); }
     }
 
+    /* WELCOME WINDOW */
     #welcome-window {
       width: 100vw; height: 100vh;
       max-width: 1180px; max-height: 680px;
@@ -91,25 +92,14 @@
     .fox-card::after { content: ''; position: absolute; bottom: -1px; right: 10px; width: 40px; height: 2px; background: var(--main-neon); }
 
     .img-box-wrapper {
-      width: 160px;
-      height: 160px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      border: 1.5px solid var(--main-neon);
+      width: 160px; height: 160px; margin-bottom: 20px;
+      border-radius: 6px; border: 1.5px solid var(--main-neon);
       box-shadow: 0 0 20px rgba(0, 245, 138, 0.25);
-      background: #101612;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: #101612; overflow: hidden;
+      display: flex; justify-content: center; align-items: center;
     }
 
-    .developer-card-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+    .developer-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     .card-brand { width: 100%; text-align: left; }
     .card-brand .byakuya { font-size: 26px; font-weight: 900; color: #FFFFFF; line-height: 1; }
@@ -154,30 +144,31 @@
 
     .right-footer { display: flex; justify-content: flex-end; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); gap: 16px; }
 
+    /* MAIN DASHBOARD */
     #dashboard-window {
       position: fixed; inset: 0; background: var(--bg-base);
       display: flex; flex-direction: column; z-index: 200;
     }
 
     header.dash-header {
-      height: 60px; background: rgba(13, 17, 14, 0.95);
+      min-height: 60px; background: rgba(13, 17, 14, 0.95);
       border-bottom: 1px solid var(--panel-border);
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; backdrop-filter: blur(10px);
+      padding: 12px 28px; backdrop-filter: blur(10px); flex-wrap: wrap; gap: 12px;
     }
 
     .dash-brand {
       display: flex; align-items: center; gap: 12px;
-      font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900;
+      font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 900;
       color: #FFFFFF; letter-spacing: 2px;
     }
     .dash-brand img { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; border: 1px solid var(--main-neon); }
 
-    .dash-tabs { display: flex; gap: 8px; }
+    .dash-tabs { display: flex; gap: 6px; overflow-x: auto; max-width: 100%; padding-bottom: 4px; }
     .dash-tabs button {
       background: transparent; border: 1px solid transparent;
       color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+      padding: 8px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s; whitespace: nowrap;
     }
     .dash-tabs button:hover, .dash-tabs button.active {
       color: var(--main-neon); border-color: var(--panel-border); background: rgba(0, 245, 138, 0.08);
@@ -190,19 +181,32 @@
     }
     .btn-exit:hover { background: var(--danger-color); color: #000000; }
 
-    .dash-content { flex: 1; padding: 32px; overflow-y: auto; max-width: 1280px; margin: 0 auto; width: 100%; }
+    .dash-content { flex: 1; padding: 24px; overflow-y: auto; max-width: 1280px; margin: 0 auto; width: 100%; }
     .dash-pane { transition: opacity 0.3s; }
     .hidden { display: none !important; }
 
+    /* SERVER RESOURCE MONITOR BAR */
+    .resource-monitor-card {
+      background: var(--panel-bg); border: 1px solid var(--panel-border);
+      border-radius: 6px; padding: 16px 20px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .res-item { display: flex; flex-direction: column; gap: 4px; }
+    .res-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+    .res-val { font-size: 16px; font-weight: 800; color: var(--main-neon); }
+    .res-bar-wrapper { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+    .res-bar-fill { height: 100%; background: var(--main-neon); width: 0%; transition: width 0.5s ease; }
+
     .pane-title {
       font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
-      color: #FFFFFF; letter-spacing: 2px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+      color: #FFFFFF; letter-spacing: 2px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
     }
 
-    .tool-matrix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .tool-matrix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
     .matrix-card {
       background: var(--panel-bg); border: 1px solid var(--panel-border);
-      border-radius: 6px; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between;
+      border-radius: 6px; padding: 20px; position: relative; display: flex; flex-direction: column; justify-content: space-between;
       transition: all 0.25s ease;
     }
     .matrix-card:hover { border-color: var(--main-neon); box-shadow: 0 0 25px rgba(0, 245, 138, 0.15); transform: translateY(-3px); }
@@ -221,26 +225,60 @@
     }
     .btn-card-action:hover { background: var(--main-neon); color: #000000; }
 
-    .session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
-    .session-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 24px; }
+    .session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .session-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 20px; }
     .sess-row { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 10px; }
     .sess-row .label { color: var(--text-dim); }
     .sess-row .val { color: #FFFFFF; font-weight: 700; }
 
-    .terminal-container { background: var(--panel-dark); border: 1px solid var(--panel-border); border-radius: 6px; height: 500px; display: flex; flex-direction: column; }
+    .terminal-container { background: var(--panel-dark); border: 1px solid var(--panel-border); border-radius: 6px; height: 450px; display: flex; flex-direction: column; }
     .term-bar { background: #0B0E0C; border-bottom: 1px solid var(--panel-border); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
     .term-out { flex: 1; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--main-neon); overflow-y: auto; line-height: 1.7; word-break: break-all; }
 
-    .auth-form-box { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 36px; max-width: 480px; margin: 20px auto; }
-    .field { text-align: left; margin-bottom: 20px; }
-    label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--main-neon); margin-bottom: 8px; }
+    .auth-form-box { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 8px; padding: 28px; max-width: 480px; margin: 10px auto; }
+    .field { text-align: left; margin-bottom: 16px; }
+    label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--main-neon); margin-bottom: 6px; }
     input { width: 100%; padding: 12px; background: #050706; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; font-size: 13px; color: #fff; outline: none; transition: border 0.2s; }
     input:focus { border-color: var(--main-neon); }
 
-    .pincode-box { display: none; margin-top: 20px; background: rgba(0, 245, 138, 0.05); border: 1px solid var(--main-neon); padding: 16px; text-align: center; }
-    .pincode-val { font-family: 'Orbitron', sans-serif; font-size: 36px; font-weight: 900; color: #fff; letter-spacing: 10px; }
-    .token-box { display: none; margin-top: 20px; text-align: left; }
-    .token-val { background: #040605; color: var(--sub-neon); padding: 12px; font-family: monospace; font-size: 11px; word-break: break-all; max-height: 100px; overflow-y: auto; }
+    .pincode-box { display: none; margin-top: 16px; background: rgba(0, 245, 138, 0.05); border: 1px solid var(--main-neon); padding: 14px; text-align: center; }
+    .pincode-val { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #fff; letter-spacing: 8px; }
+    .token-box { display: none; margin-top: 16px; text-align: left; }
+    .token-val { background: #040605; color: var(--sub-neon); padding: 10px; font-family: monospace; font-size: 11px; word-break: break-all; max-height: 90px; overflow-y: auto; border: 1px solid rgba(0, 245, 138, 0.2); }
+
+    .token-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-small-action { flex: 1; background: rgba(0, 245, 138, 0.15); border: 1px solid var(--main-neon); color: var(--main-neon); font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 8px; border-radius: 3px; cursor: pointer; }
+    .btn-small-action:hover { background: var(--main-neon); color: #000; }
+
+    .qr-container { display: none; margin-top: 14px; text-align: center; background: #fff; padding: 12px; border-radius: 6px; }
+    .qr-container img { width: 140px; height: 140px; }
+
+    /* MODAL (AUTO-REPLY TESTER) */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(5,7,6,0.85); backdrop-filter: blur(8px); z-index: 300; display: flex; justify-content: center; align-items: center; padding: 16px; }
+    .modal-box { background: var(--panel-bg); border: 1px solid var(--main-neon); border-radius: 8px; width: 100%; max-width: 600px; padding: 24px; box-shadow: 0 0 40px rgba(0,245,138,0.2); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--panel-border); padding-bottom: 12px; margin-bottom: 16px; }
+    .modal-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #fff; }
+    .chat-window { background: #040605; border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; height: 220px; overflow-y: auto; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 12px; }
+    .msg-line { margin-bottom: 8px; line-height: 1.4; }
+    .msg-user { color: var(--accent-cyan); }
+    .msg-bot { color: var(--main-neon); }
+    .chat-input-group { display: flex; gap: 8px; }
+
+    /* MOBILE RESPONSIVE ADJUSTMENTS */
+    @media (max-width: 768px) {
+      #welcome-window { flex-direction: column; height: auto; max-height: none; border-radius: 0; border: none; }
+      .left-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--main-neon); padding: 20px; }
+      .right-panel { padding: 24px 16px; }
+      .welcome-title { font-size: 28px; }
+      .fox-card { padding: 16px; }
+      .img-box-wrapper { width: 120px; height: 120px; }
+      
+      header.dash-header { padding: 12px 16px; flex-direction: column; align-items: flex-start; }
+      .dash-tabs { width: 100%; justify-content: flex-start; }
+      .dash-content { padding: 16px; }
+      .resource-monitor-card { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .tool-matrix-grid, .session-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -315,6 +353,27 @@
 
     <main class="dash-content">
       
+      <!-- DENO SERVER RESOURCE MONITOR -->
+      <div class="resource-monitor-card">
+        <div class="res-item">
+          <span class="res-label">DENO UPTIME</span>
+          <span class="res-val" id="res-uptime">00:00:00</span>
+        </div>
+        <div class="res-item">
+          <span class="res-label">HEAP MEMORY</span>
+          <span class="res-val" id="res-mem-text">0.0 MB</span>
+          <div class="res-bar-wrapper"><div class="res-bar-fill" id="res-mem-bar"></div></div>
+        </div>
+        <div class="res-item">
+          <span class="res-label">TOTAL REQUESTS</span>
+          <span class="res-val" id="res-requests">0</span>
+        </div>
+        <div class="res-item">
+          <span class="res-label">NODE LATENCY</span>
+          <span class="res-val" style="color:var(--accent-cyan);" id="res-ping">-- ms</span>
+        </div>
+      </div>
+
       <!-- TAB 1: TOOLS MATRIX -->
       <div id="pane-matrix" class="dash-pane">
         <div class="pane-title">> DEVELOPER TOOLS MATRIX</div>
@@ -337,9 +396,9 @@
                 <div class="card-name">LINEJS Auto-Reply Tester</div>
                 <span class="badge-tag badge-active">ACTIVE</span>
               </div>
-              <div class="card-desc">ボットのテキスト応答ルール検証・自動返信シミュレータ</div>
+              <div class="card-desc">ボットのテキスト応答ルール検証・自動返信インタラクティブ・シミュレータ</div>
             </div>
-            <button class="btn-card-action" onclick="alert('Auto-Reply Tester: Webhook連携テストモード有効')">RUN TESTER ➔</button>
+            <button class="btn-card-action" onclick="openTesterModal()">RUN TESTER ➔</button>
           </div>
 
           <div class="matrix-card">
@@ -439,11 +498,41 @@
           <div class="token-box" id="token-area">
             <label>SUCCESS AUTHTOKEN</label>
             <div class="token-val" id="token-text"></div>
+            
+            <div class="token-actions">
+              <button class="btn-small-action" onclick="copyToken()">📋 COPY TOKEN</button>
+              <button class="btn-small-action" onclick="toggleQRCode()">📱 SHOW QR CODE</button>
+            </div>
+
+            <div class="qr-container" id="qr-box">
+              <img id="qr-img" src="" alt="Token QR Code">
+              <div style="font-size:9px; color:#333; margin-top:4px;">SCAN VIA LINE APP</div>
+            </div>
           </div>
         </div>
       </div>
 
     </main>
+  </div>
+
+  <!-- MODAL: AUTO-REPLY TESTER -->
+  <div id="tester-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title">LINEJS AUTO-REPLY TESTER</div>
+        <button class="btn-exit" onclick="closeTesterModal()">✕ CLOSE</button>
+      </div>
+      
+      <div class="chat-window" id="chat-logs">
+        <div class="msg-line msg-bot">[BOT] ByakuyaBot Auto-Reply Engine v3.4.2 Ready.</div>
+        <div class="msg-line msg-bot">[BOT] Try commands like: !ping, !status, !help</div>
+      </div>
+
+      <div class="chat-input-group">
+        <input type="text" id="chat-input" placeholder="Enter test command (e.g. !ping)..." onkeypress="handleChatKeyPress(event)">
+        <button class="btn-card-action" style="width: auto; padding: 0 20px;" onclick="sendChatMessage()">SEND</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -459,6 +548,7 @@
         dash.classList.remove('hidden');
         dash.classList.add('zoom-in-fade');
         startLogStream();
+        startMetricsMonitor();
       }, 500);
     }
 
@@ -489,6 +579,42 @@
       if (targetBtn) targetBtn.classList.add('active');
     }
 
+    // SERVER RESOURCE METRICS
+    let metricsTimer = null;
+    function startMetricsMonitor() {
+      if (metricsTimer) return;
+      updateMetrics();
+      metricsTimer = setInterval(updateMetrics, 3000);
+    }
+
+    async function updateMetrics() {
+      const start = performance.now();
+      try {
+        const res = await fetch('/api/metrics');
+        const duration = Math.round(performance.now() - start);
+        document.getElementById('res-ping').innerText = duration + ' ms';
+
+        if (res.ok) {
+          const data = await res.json();
+          
+          // Uptime format
+          const sec = data.uptime % 60;
+          const min = Math.floor(data.uptime / 60) % 60;
+          const hrs = Math.floor(data.uptime / 3600);
+          document.getElementById('res-uptime').innerText = 
+            (hrs < 10 ? '0' : '') + hrs + ':' + (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
+
+          // Heap Memory
+          document.getElementById('res-mem-text').innerText = data.heapUsedMb + ' / ' + data.heapTotalMb + ' MB';
+          const pct = Math.min(100, Math.round((data.heapUsedMb / data.heapTotalMb) * 100));
+          document.getElementById('res-mem-bar').style.width = pct + '%';
+
+          // Requests
+          document.getElementById('res-requests').innerText = data.requests;
+        }
+      } catch (_) {}
+    }
+
     async function measurePing() {
       const start = performance.now();
       try {
@@ -508,6 +634,61 @@
       } else {
         alert('【トークン診断結果】\n・無効なトークンフォーマットです。');
       }
+    }
+
+    // COPY TOKEN & QR CODE
+    function copyToken() {
+      const text = document.getElementById('token-text').innerText;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(function() {
+        alert('AuthToken をクリップボードにコピーしました！');
+      });
+    }
+
+    function toggleQRCode() {
+      const box = document.getElementById('qr-box');
+      const text = document.getElementById('token-text').innerText;
+      if (!text) return;
+
+      if (box.style.display === 'block') {
+        box.style.display = 'none';
+      } else {
+        const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(text);
+        document.getElementById('qr-img').src = qrUrl;
+        box.style.display = 'block';
+      }
+    }
+
+    // AUTO-REPLY TESTER MODAL
+    function openTesterModal() {
+      document.getElementById('tester-modal').classList.remove('hidden');
+    }
+    function closeTesterModal() {
+      document.getElementById('tester-modal').classList.add('hidden');
+    }
+    function handleChatKeyPress(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const logs = document.getElementById('chat-logs');
+      logs.innerHTML += '<div class="msg-line msg-user">[USER] ' + val + '</div>';
+      input.value = '';
+
+      setTimeout(function() {
+        let reply = '[BOT] Command not recognized. Try !ping, !status, or !help.';
+        const cmd = val.toLowerCase();
+        if (cmd === '!ping') reply = '[BOT] pong! (Latency: 12ms)';
+        else if (cmd === '!status') reply = '[BOT] Engine: ONLINE | LINEJS v3.4.2 | Active Sessions: 1';
+        else if (cmd === '!help') reply = '[BOT] Available Commands: !ping, !status, !version, !token';
+        else if (cmd === '!version') reply = '[BOT] ByakuyaTools V2 / Control Portal 3.4.2';
+
+        logs.innerHTML += '<div class="msg-line msg-bot">' + reply + '</div>';
+        logs.scrollTop = logs.scrollHeight;
+      }, 400);
     }
 
     let logTimer = null;
