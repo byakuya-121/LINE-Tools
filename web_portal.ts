@@ -42,7 +42,7 @@ async function startLoginProcess(email: string, pass: string) {
         email: email.trim(),
         password: pass.trim(),
         onPincodeRequest: (pin: string) => {
-          console.log(📍 PINコード発行: );
+          console.log(📍 PINコード発行: \);
           state.status = "PIN_REQUIRED";
           state.pincode = pin;
           state.message = "スマホの LINE アプリを開き、下記 4 桁の PIN コードを入力してください。";
@@ -65,7 +65,7 @@ async function startLoginProcess(email: string, pass: string) {
     console.error("[-] 認証エラー:", err);
     state.status = "ERROR";
     const reason = err?.data?.reason || err?.message || String(err);
-    state.message = ❌ 認証エラー: ;
+    state.message = ❌ 認証エラー: \;
   }
 }
 
