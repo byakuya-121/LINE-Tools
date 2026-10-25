@@ -1,4 +1,4 @@
-﻿import { Client } from "npm:@line/line-js@^3.4.2";
+﻿import { Client } from "npm:line-js";
 
 let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -43,7 +43,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
 
     const client = new Client();
 
-    // PINコード受信イベント（LINEアプリ側へ通知）
+    // PINコード受信イベント（LINEアプリ側への通知発行）
     client.on("pincode", (pin: string) => {
       console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
       currentStatus = {
@@ -66,7 +66,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
-    // 非同期でログイン実行
+    // 非同期ログイン実行
     client.login({
       email: email,
       password: password,
