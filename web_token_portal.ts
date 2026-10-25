@@ -11,12 +11,13 @@ let state = {
 async function saveToken(token: string) {
   try {
     await Deno.writeTextFile("./token.txt", token);
+    
     let envContent = await Deno.readTextFile("./.env").catch(() => "");
-    const newLine = LINE_AUTH_TOKEN="";
+    const newLine = `LINE_AUTH_TOKEN="${token}"`;
     if (/^LINE_AUTH_TOKEN=.*$/m.test(envContent)) {
       envContent = envContent.replace(/^LINE_AUTH_TOKEN=.*$/m, newLine);
     } else {
-      envContent = envContent.trim() ? ${envContent.trim()}\n\n : ${newLine}\n;
+      envContent = envContent.trim() ? `${envContent.trim()}\n${newLine}\n` : `${newLine}\n`;
     }
     await Deno.writeTextFile("./.env", envContent);
     console.log("[+] AuthToken を ./token.txt および ./.env に保存しました。");
@@ -42,7 +43,7 @@ async function startLoginProcess(email: string, pass: string) {
         email: email.trim(),
         password: pass.trim(),
         onPincodeRequest: (pin: string) => {
-          console.log(📍 PINコード発行: );
+          console.log(`📍 PINコード発行: ${pin}`);
           state.status = "PIN_REQUIRED";
           state.pincode = pin;
           state.message = "スマホの LINE アプリを開き、下記 4 桁の PIN コードを入力してください。";
@@ -65,7 +66,7 @@ async function startLoginProcess(email: string, pass: string) {
     console.error("[-] 認証エラー:", err);
     state.status = "ERROR";
     const reason = err?.data?.reason || err?.message || String(err);
-    state.message = ❌ 認証エラー: ;
+    state.message = `❌ 認証エラー: ${reason}`;
   }
 }
 
