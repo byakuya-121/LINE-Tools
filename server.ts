@@ -57,12 +57,12 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     return getPortalStatus();
   }
 
-  // D. 静的コンテンツ配信 (Token-Web)
+  // D. 静的コンテンツ配信 (Token-Web/)
   if (req.method === "GET") {
     try {
       const relativePath = url.pathname === "/" ? "/index.html" : url.pathname;
-      const filePath = `./Token-Web${relativePath}`;
-      const file = await Deno.readFile(filePath);
+      const fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
+      const file = await Deno.readFile(fileUrl);
 
       const ext = relativePath.split(".").pop()?.toLowerCase();
       const mimeTypes: Record<string, string> = {

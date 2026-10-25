@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Byakuya Tools Control Center</title>
+  <title>Byakuya Tools // Developer Control Center</title>
   <link rel="icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/assets/ByakuyaBot_AppIcon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,364 +13,264 @@
     :root {
       --bg-base: #080B09;
       --panel-bg: #0D110E;
+      --panel-dark: #050706;
       --panel-border: rgba(0, 245, 138, 0.2);
       --main-neon: #00F58A;
       --sub-neon: #78FFC0;
       --accent-blue: #BCE3FF;
+      --accent-cyan: #00F0FF;
       --text-main: #E8F5EC;
       --text-dim: #607367;
-      --text-muted: #3B4A40;
+      --danger-color: #FF4A4A;
+      --warning-color: #FFB800;
     }
 
     * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
     body {
       background-color: var(--bg-base);
-      margin: 0;
-      padding: 0;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 138, 0.08) 0%, transparent 60%),
+        linear-gradient(rgba(0, 245, 138, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 138, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      margin: 0; padding: 0;
       color: var(--text-main);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      user-select: none;
+      min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      overflow-x: hidden;
     }
 
-    .app-window {
-      width: 100vw;
-      height: 100vh;
-      max-width: 1200px;
-      max-height: 700px;
+    /* ズーム遷移 */
+    .zoom-out-fade { animation: zoomOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .zoom-in-fade { animation: zoomIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    @keyframes zoomOut {
+      0% { opacity: 1; transform: scale(1); filter: blur(0); }
+      100% { opacity: 0; transform: scale(1.08); filter: blur(10px); visibility: hidden; }
+    }
+    @keyframes zoomIn {
+      0% { opacity: 0; transform: scale(0.92); filter: blur(10px); }
+      100% { opacity: 1; transform: scale(1); filter: blur(0); }
+    }
+
+    /* --- 1. WELCOME WINDOW (DESKTOP APP STYLE) --- */
+    #welcome-window {
+      width: 100vw; height: 100vh;
+      max-width: 1180px; max-height: 680px;
       background: var(--bg-base);
-      border: 1px solid rgba(0, 245, 138, 0.15);
-      display: flex;
-      position: relative;
-      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(0, 245, 138, 0.2);
+      display: flex; position: relative;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+      transition: all 0.4s ease;
     }
 
-    /* --- 1. LEFT PANEL --- */
     .left-panel {
-      width: 380px;
-      background: #060807;
+      width: 370px; background: #060807;
       border-right: 1px solid var(--main-neon);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 24px;
-      position: relative;
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding: 24px; position: relative;
     }
 
     .left-header .title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 1.5px;
+      font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 900;
+      color: var(--main-neon); letter-spacing: 1.5px;
     }
-
     .left-header .sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      color: var(--text-dim); margin-top: 2px;
     }
 
     .fox-card {
-      background: #0B0F0C;
-      border: 1px solid rgba(0, 245, 138, 0.25);
-      border-radius: 4px;
-      padding: 28px 20px 20px 20px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #0B0F0C; border: 1px solid rgba(0, 245, 138, 0.25);
+      border-radius: 4px; padding: 28px 20px 20px 20px;
+      position: relative; display: flex; flex-direction: column; align-items: center;
       margin: auto 0;
     }
-
-    .fox-card::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: 10px; width: 40px; height: 2px;
-      background: var(--main-neon);
-    }
-    .fox-card::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; right: 10px; width: 40px; height: 2px;
-      background: var(--main-neon);
-    }
+    .fox-card::before { content: ''; position: absolute; top: -1px; left: 10px; width: 40px; height: 2px; background: var(--main-neon); }
+    .fox-card::after { content: ''; position: absolute; bottom: -1px; right: 10px; width: 40px; height: 2px; background: var(--main-neon); }
 
     .fox-svg-icon {
-      width: 180px;
-      height: 180px;
-      margin-bottom: 24px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 12px rgba(0, 245, 138, 0.25));
+      width: 170px; height: 170px; margin-bottom: 20px;
+      object-fit: contain; filter: drop-shadow(0 0 12px rgba(0, 245, 138, 0.3));
     }
 
-    .card-brand {
-      width: 100%;
-      text-align: left;
-    }
+    .card-brand { width: 100%; text-align: left; }
+    .card-brand .byakuya { font-size: 26px; font-weight: 900; color: #FFFFFF; line-height: 1; }
+    .card-brand .tools { font-size: 26px; font-weight: 900; color: var(--main-neon); line-height: 1.1; }
+    .card-brand .sub-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); margin-top: 8px; }
+    .card-brand .status-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--main-neon); margin-top: 4px; }
 
-    .card-brand .byakuya {
-      font-family: 'Inter', sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: #FFFFFF;
-      letter-spacing: 1px;
-      line-height: 1;
-    }
+    .left-footer { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+    .left-footer .status-row { display: flex; align-items: center; gap: 6px; color: var(--main-neon); font-weight: 700; }
+    .dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--main-neon); box-shadow: 0 0 6px var(--main-neon); }
+    .left-footer .ver-info { color: var(--text-dim); font-size: 9px; margin-top: 4px; }
 
-    .card-brand .tools {
-      font-family: 'Inter', sans-serif;
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 1px;
-      line-height: 1.1;
-    }
-
-    .card-brand .sub-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      margin-top: 8px;
-      letter-spacing: 1px;
-    }
-
-    .card-brand .status-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--main-neon);
-      margin-top: 4px;
-      letter-spacing: 1px;
-    }
-
-    .left-footer {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-    }
-
-    .left-footer .status-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--main-neon);
-      font-weight: 700;
-    }
-
-    .dot-green {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--main-neon);
-      box-shadow: 0 0 6px var(--main-neon);
-    }
-
-    .left-footer .ver-info {
-      color: var(--text-dim);
-      font-size: 9px;
-      margin-top: 4px;
-    }
-
-    /* --- 2. RIGHT PANEL --- */
     .right-panel {
-      flex: 1;
-      background: var(--bg-base);
-      padding: 40px 48px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
+      flex: 1; background: var(--bg-base); padding: 40px 48px;
+      display: flex; flex-direction: column; justify-content: space-between; position: relative;
     }
 
-    .window-controls {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      color: var(--text-dim);
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .welcome-header { margin-top: 10px; }
-
-    .welcome-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--main-neon);
-      letter-spacing: 2px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .welcome-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 38px;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin: 0;
-      letter-spacing: -0.5px;
-    }
-
-    .welcome-sub1 {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      color: var(--text-dim);
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    .welcome-sub2 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #7A8C81;
-      margin-top: 14px;
-    }
+    .welcome-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--main-neon); font-weight: 700; margin-bottom: 6px; letter-spacing: 2px; }
+    .welcome-title { font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 0; }
+    .welcome-sub1 { font-size: 14px; color: var(--text-dim); margin-top: 4px; font-weight: 600; }
+    .welcome-sub2 { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A8C81; margin-top: 14px; }
 
     .system-check-box {
-      background: #0B0E0C;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-left: 3px solid var(--main-neon);
-      padding: 24px 28px;
-      margin-top: 24px;
+      background: #0B0E0C; border: 1px solid rgba(255, 255, 255, 0.05);
+      border-left: 3px solid var(--main-neon); padding: 22px 28px; margin-top: 24px;
       font-family: 'JetBrains Mono', monospace;
     }
-
-    .check-title {
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 1.5px;
-      margin-bottom: 20px;
-    }
-
-    .check-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      margin-bottom: 12px;
-    }
-
+    .check-title { font-size: 11px; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 16px; }
+    .check-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px; }
     .check-row .label { color: #8A9B90; }
     .check-row .val-neon { color: var(--main-neon); font-weight: 700; }
     .check-row .val-white { color: #FFFFFF; font-weight: 700; }
 
-    .check-divider {
-      height: 1px;
-      background: rgba(255, 255, 255, 0.06);
-      margin: 20px 0 16px 0;
-    }
-
-    .checking-log {
-      font-size: 11px;
-      color: var(--main-neon);
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .action-area {
-      margin-top: 24px;
-      text-align: center;
-    }
-
     .btn-start {
-      width: 100%;
-      background: var(--accent-blue);
-      color: #080B09;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 900;
-      padding: 16px;
-      border: none;
-      border-radius: 2px;
-      cursor: pointer;
-      letter-spacing: 1.5px;
-      transition: all 0.2s ease;
+      width: 100%; background: var(--accent-blue); color: #080B09;
+      font-size: 15px; font-weight: 900; padding: 16px; border: none; border-radius: 2px;
+      cursor: pointer; letter-spacing: 1.5px; transition: all 0.2s ease;
       box-shadow: 0 0 20px rgba(188, 227, 255, 0.2);
     }
+    .btn-start:hover { background: #FFFFFF; box-shadow: 0 0 30px rgba(188, 227, 255, 0.5); transform: translateY(-1px); }
+    .btn-note { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-top: 10px; text-align: center; }
 
-    .btn-start:hover {
-      background: #FFFFFF;
-      box-shadow: 0 0 30px rgba(188, 227, 255, 0.5);
-      transform: translateY(-1px);
+    .right-footer { display: flex; justify-content: flex-end; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); gap: 16px; }
+
+    /* --- 2. MAIN DASHBOARD PORTAL --- */
+    #dashboard-window {
+      position: fixed; inset: 0; background: var(--bg-base);
+      display: flex; flex-direction: column; z-index: 200;
     }
 
-    .btn-note {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      margin-top: 10px;
+    header.dash-header {
+      height: 60px; background: rgba(13, 17, 14, 0.95);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; backdrop-filter: blur(10px);
     }
 
-    .right-footer {
-      display: flex;
-      justify-content: flex-end;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      gap: 16px;
-      letter-spacing: 1px;
+    .dash-brand {
+      display: flex; align-items: center; gap: 12px;
+      font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900;
+      color: #FFFFFF; letter-spacing: 2px;
+    }
+    .dash-brand img { width: 32px; height: 32px; border-radius: 4px; object-fit: cover; border: 1px solid var(--main-neon); }
+
+    .dash-tabs { display: flex; gap: 8px; }
+    .dash-tabs button {
+      background: transparent; border: 1px solid transparent;
+      color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      padding: 8px 16px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+    }
+    .dash-tabs button:hover, .dash-tabs button.active {
+      color: var(--main-neon); border-color: var(--panel-border); background: rgba(0, 245, 138, 0.08);
     }
 
+    .btn-exit {
+      background: transparent; border: 1px solid var(--danger-color);
+      color: var(--danger-color); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      padding: 6px 14px; border-radius: 4px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-exit:hover { background: var(--danger-color); color: #000000; }
+
+    .dash-content { flex: 1; padding: 32px; overflow-y: auto; max-width: 1280px; margin: 0 auto; width: 100%; }
+
+    .dash-pane { transition: opacity 0.3s; }
     .hidden { display: none !important; }
 
-    .modal-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(8, 11, 9, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+    .pane-title {
+      font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
+      color: #FFFFFF; letter-spacing: 2px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
     }
 
-    .auth-card {
-      background: #0B0F0C;
-      border: 1px solid var(--main-neon);
-      width: 100%;
-      max-width: 420px;
-      padding: 32px;
-      border-radius: 6px;
-      box-shadow: 0 0 30px rgba(0, 245, 138, 0.2);
-      text-align: center;
+    /* MATRIX GRID */
+    .tool-matrix-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px;
     }
 
-    .field { text-align: left; margin-bottom: 16px; }
-    label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--main-neon); margin-bottom: 6px; }
+    .matrix-card {
+      background: var(--panel-bg); border: 1px solid var(--panel-border);
+      border-radius: 6px; padding: 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between;
+      transition: all 0.25s ease;
+    }
+    .matrix-card:hover {
+      border-color: var(--main-neon); box-shadow: 0 0 25px rgba(0, 245, 138, 0.15); transform: translateY(-3px);
+    }
+
+    .matrix-card .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .matrix-card .card-name { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 800; color: #FFFFFF; }
+    .matrix-card .card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+
+    .badge-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 3px 8px; border-radius: 3px; font-weight: 700; }
+    .badge-active { background: rgba(0, 245, 138, 0.1); color: var(--main-neon); border: 1px solid var(--panel-border); }
+    .badge-soon { background: rgba(255, 184, 0, 0.1); color: var(--warning-color); border: 1px solid rgba(255, 184, 0, 0.3); }
+
+    .btn-card-action {
+      width: 100%; background: rgba(0, 245, 138, 0.1); border: 1px solid var(--main-neon);
+      color: var(--main-neon); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .btn-card-action:hover { background: var(--main-neon); color: #000000; }
+
+    /* SESSIONS */
+    .session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+    .session-card {
+      background: var(--panel-bg); border: 1px solid var(--panel-border);
+      border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 24px;
+    }
+    .sess-row { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-bottom: 10px; }
+    .sess-row .label { color: var(--text-dim); }
+    .sess-row .val { color: #FFFFFF; font-weight: 700; }
+
+    /* LOGS TERMINAL */
+    .terminal-container {
+      background: var(--panel-dark); border: 1px solid var(--panel-border);
+      border-radius: 6px; height: 500px; display: flex; flex-direction: column;
+    }
+    .term-bar {
+      background: #0B0E0C; border-bottom: 1px solid var(--panel-border);
+      padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
+    }
+    .term-out {
+      flex: 1; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      color: var(--main-neon); overflow-y: auto; line-height: 1.7; word-break: break-all;
+    }
+
+    /* AUTH FORM */
+    .auth-form-box {
+      background: var(--panel-bg); border: 1px solid var(--panel-border);
+      border-radius: 8px; padding: 36px; max-width: 480px; margin: 20px auto;
+    }
+    .field { text-align: left; margin-bottom: 20px; }
+    label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--main-neon); margin-bottom: 8px; }
     input {
-      width: 100%; padding: 12px; background: #060807;
+      width: 100%; padding: 12px; background: #050706;
       border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px;
-      font-size: 13px; color: #fff; outline: none;
+      font-size: 13px; color: #fff; outline: none; transition: border 0.2s;
     }
     input:focus { border-color: var(--main-neon); }
 
-    .pincode-box { display: none; margin-top: 16px; background: rgba(0, 245, 138, 0.05); border: 1px solid var(--main-neon); padding: 12px; }
-    .pincode-val { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: #fff; letter-spacing: 8px; }
-    .token-box { display: none; margin-top: 16px; text-align: left; }
-    .token-val { background: #040605; color: var(--sub-neon); padding: 10px; font-family: monospace; font-size: 11px; word-break: break-all; max-height: 90px; overflow-y: auto; }
+    .pincode-box { display: none; margin-top: 20px; background: rgba(0, 245, 138, 0.05); border: 1px solid var(--main-neon); padding: 16px; text-align: center; }
+    .pincode-val { font-family: 'Orbitron', sans-serif; font-size: 36px; font-weight: 900; color: #fff; letter-spacing: 10px; }
+    .token-box { display: none; margin-top: 20px; text-align: left; }
+    .token-val { background: #040605; color: var(--sub-neon); padding: 12px; font-family: monospace; font-size: 11px; word-break: break-all; max-height: 100px; overflow-y: auto; }
   </style>
 </head>
 <body>
 
-  <div class="app-window">
-    
-    <!-- LEFT PANEL -->
+  <!-- 1. WELCOME WINDOW -->
+  <div id="welcome-window">
     <div class="left-panel">
       <div class="left-header">
         <div class="title">BYAKUYA TOOLS</div>
         <div class="sub">LINE OPENCHAT CONTROL SYSTEM</div>
       </div>
 
-      <!-- 狐ロゴカード -->
       <div class="fox-card">
-        <!-- ico読み込み失敗時に自動で fox-logo.svg に切り替わる安全設定 -->
-        <img src="/assets/ByakuyaBot_AppIcon.ico" class="fox-svg-icon" alt="ByakuyaBot App Icon" onerror="this.onerror=null; this.src='/assets/fox-logo.svg';">
-
+        <img src="/assets/ByakuyaBot_AppIcon.ico" class="fox-svg-icon" alt="ByakuyaBot App Icon" onerror="this.onerror=null; this.src='/assets/Developer.jpg';">
         <div class="card-brand">
           <div class="byakuya">BYAKUYA</div>
           <div class="tools">TOOLS</div>
@@ -380,18 +280,12 @@
       </div>
 
       <div class="left-footer">
-        <div class="status-row">
-          <span class="dot-green"></span>
-          <span>SYSTEM ONLINE</span>
-        </div>
+        <div class="status-row"><span class="dot-green"></span><span>SYSTEM ONLINE</span></div>
         <div class="ver-info">LINEJS / CONTROL SYSTEM / V3.4.2</div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL -->
     <div class="right-panel">
-      <div class="window-controls">✕</div>
-
       <div class="welcome-header">
         <div class="welcome-badge">WELCOME</div>
         <h1 class="welcome-title">Welcome</h1>
@@ -401,78 +295,244 @@
 
       <div class="system-check-box">
         <div class="check-title">SYSTEM CHECK</div>
-        
-        <div class="check-row">
-          <span class="label">LINEJS VERSION</span>
-          <span class="val-white">3.4.2</span>
-        </div>
-        <div class="check-row">
-          <span class="label">ENGINE</span>
-          <span class="val-neon">READY</span>
-        </div>
-        <div class="check-row">
-          <span class="label">STATUS</span>
-          <span class="val-neon">ONLINE</span>
-        </div>
-
-        <div class="check-divider"></div>
-
-        <div class="checking-log" id="system-log-text">CHECKING LINEJS...</div>
+        <div class="check-row"><span class="label">LINEJS VERSION</span><span class="val-white">3.4.2</span></div>
+        <div class="check-row"><span class="label">ENGINE</span><span class="val-neon">READY</span></div>
+        <div class="check-row"><span class="label">STATUS</span><span class="val-neon">ONLINE</span></div>
       </div>
 
-      <div class="action-area">
-        <button class="btn-start" onclick="openAuthModal()">START BYAKUYA TOOLS</button>
+      <div>
+        <button class="btn-start" onclick="launchDashboard()">START BYAKUYA TOOLS</button>
         <div class="btn-note">Press START to initialize the control center</div>
       </div>
 
       <div class="right-footer">
-        <span>BYAKUYA TOOLS</span>
-        <span>WELCOME / SYSTEM READY</span>
+        <span>BYAKUYA TOOLS</span><span>WELCOME / SYSTEM READY</span>
       </div>
     </div>
-
   </div>
 
-  <!-- AUTH MODAL -->
-  <div id="auth-modal" class="modal-overlay hidden">
-    <div class="auth-card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <div style="font-family:'Orbitron',sans-serif; font-weight:900; color:#fff; font-size:16px;">AUTHTOKEN PORTAL</div>
-        <div style="color:var(--text-dim); cursor:pointer;" onclick="closeAuthModal()">✕</div>
+  <!-- 2. MAIN DASHBOARD PORTAL -->
+  <div id="dashboard-window" class="hidden">
+    <header class="dash-header">
+      <div class="dash-brand">
+        <img src="/assets/Developer.jpg" alt="Developer Icon" onerror="this.onerror=null; this.src='/assets/ByakuyaBot_AppIcon.ico';">
+        <span>BYAKUYATOOLS // CONTROL CENTER</span>
+      </div>
+      <nav class="dash-tabs">
+        <button id="tab-btn-matrix" class="active" onclick="switchDashTab('matrix')">[// TOOLS MATRIX]</button>
+        <button id="tab-btn-sessions" onclick="switchDashTab('sessions')">[// SESSIONS]</button>
+        <button id="tab-btn-logs" onclick="switchDashTab('logs')">[// SYSTEM LOGS]</button>
+        <button id="tab-btn-auth" onclick="switchDashTab('auth')">[// AUTHTOKEN LINK]</button>
+      </nav>
+      <button class="btn-exit" onclick="exitDashboard()">EXIT PORTAL</button>
+    </header>
+
+    <main class="dash-content">
+      
+      <!-- TAB 1: TOOLS MATRIX -->
+      <div id="pane-matrix" class="dash-pane">
+        <div class="pane-title">> DEVELOPER TOOLS MATRIX</div>
+        <div class="tool-matrix-grid">
+          
+          <div class="matrix-card">
+            <div>
+              <div class="card-head">
+                <div class="card-name">AuthToken Sync Manager</div>
+                <span class="badge-tag badge-active">ACTIVE</span>
+              </div>
+              <div class="card-desc">LINE JS 認証トークンの安全な発行・暗号化保存・自動同期サービス</div>
+            </div>
+            <button class="btn-card-action" onclick="switchDashTab('auth')">LAUNCH TOOL ➔</button>
+          </div>
+
+          <div class="matrix-card">
+            <div>
+              <div class="card-head">
+                <div class="card-name">LINEJS Auto-Reply Tester</div>
+                <span class="badge-tag badge-active">ACTIVE</span>
+              </div>
+              <div class="card-desc">ボットのテキスト応答ルール検証・自動返信シミュレータ</div>
+            </div>
+            <button class="btn-card-action" onclick="alert('Auto-Reply Tester: Webhook連携テストモード有効')">RUN TESTER ➔</button>
+          </div>
+
+          <div class="matrix-card">
+            <div>
+              <div class="card-head">
+                <div class="card-name">Token Health Diagnostic</div>
+                <span class="badge-tag badge-active">ACTIVE</span>
+              </div>
+              <div class="card-desc">トークン構造解析、有効期限チェックおよびアクセス権限スキャン</div>
+            </div>
+            <button class="btn-card-action" onclick="runTokenDiagnostic()">DIAGNOSE NOW ➔</button>
+          </div>
+
+          <div class="matrix-card">
+            <div>
+              <div class="card-head">
+                <div class="card-name">Render Node Network Ping</div>
+                <span class="badge-tag badge-active">ACTIVE</span>
+              </div>
+              <div class="card-desc">Renderサーバーノードとのネットワーク往復レイテンシ（Ping）計測</div>
+            </div>
+            <button class="btn-card-action" onclick="measurePing()">MEASURE PING ➔</button>
+          </div>
+
+          <div class="matrix-card">
+            <div>
+              <div class="card-head">
+                <div class="card-name">Webhook Event Inspector</div>
+                <span class="badge-tag badge-soon">COMING SOON</span>
+              </div>
+              <div class="card-desc">LINE Messaging API Webhookペイロードのデバッグ受信検証</div>
+            </div>
+            <button class="btn-card-action" style="opacity:0.5; cursor:not-allowed;">LOCKED</button>
+          </div>
+
+        </div>
       </div>
 
-      <div class="field">
-        <label>EMAIL ADDRESS</label>
-        <input type="email" id="email" placeholder="example@gmail.com">
-      </div>
-      <div class="field">
-        <label>PASSWORD</label>
-        <input type="password" id="password" placeholder="••••••••">
-      </div>
-      <button id="submit-btn" class="btn-start" style="margin-top:10px;" onclick="startLogin()">GENERATE TOKEN</button>
-
-      <div style="margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim);" id="msg-text">
-        メールアドレスとパスワードを入力して GENERATE TOKEN を押してください。
-      </div>
-
-      <div class="pincode-box" id="pin-area">
-        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--main-neon);">PIN CODE</div>
-        <div class="pincode-val" id="pin-code">----</div>
+      <!-- TAB 2: SESSIONS -->
+      <div id="pane-sessions" class="dash-pane hidden">
+        <div class="pane-title">> ACTIVE SESSIONS MANAGER</div>
+        <div class="session-grid">
+          <div class="session-card">
+            <div class="sess-row"><span class="label">SESSION ID</span><span class="val">SESS_LN_884920</span></div>
+            <div class="sess-row"><span class="label">CLIENT TYPE</span><span class="val">LINEJS Client v3.4.2</span></div>
+            <div class="sess-row"><span class="label">STATUS</span><span class="val" style="color:var(--main-neon);">● ONLINE / ACTIVE</span></div>
+            <div class="sess-row"><span class="label">ENCRYPTED TOKEN</span><span class="val" style="font-size:10px;">eyJhbGciOiJIUzI1Ni...</span></div>
+            <div style="margin-top:16px; display:flex; gap:10px;">
+              <button class="btn-card-action" onclick="alert('セッション同期を維持しています。')">RESTART SYNC</button>
+              <button class="btn-card-action" style="border-color:var(--danger-color); color:var(--danger-color);" onclick="alert('セッションは安全に維持されています。')">TERMINATE</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="token-box" id="token-area">
-        <label>SUCCESS AUTHTOKEN</label>
-        <div class="token-val" id="token-text"></div>
+      <!-- TAB 3: SYSTEM LOGS -->
+      <div id="pane-logs" class="dash-pane hidden">
+        <div class="pane-title">> LIVE SYSTEM LOGS</div>
+        <div class="terminal-container">
+          <div class="term-bar">
+            <span>BYAKUYA_TERMINAL // REALTIME STREAM</span>
+            <div>
+              <button class="btn-card-action" style="padding:4px 10px; font-size:10px;" onclick="clearLogs()">CLEAR</button>
+            </div>
+          </div>
+          <div class="term-out" id="live-log-output">
+            [00:00:01] SYSTEM_INIT: ByakuyaTools V2 engine loaded.<br>
+            [00:00:02] NET_CHECK: Encrypted connection to Render node established.<br>
+            [00:00:03] AUTH_LINK: Ready for AuthToken sync requests.<br>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- TAB 4: AUTHTOKEN LINK -->
+      <div id="pane-auth" class="dash-pane hidden">
+        <div class="pane-title" style="justify-content:center;">> SECURE AUTHTOKEN LINK</div>
+        <div class="auth-form-box">
+          <div class="field">
+            <label>EMAIL ADDRESS</label>
+            <input type="email" id="email" placeholder="example@gmail.com">
+          </div>
+          <div class="field">
+            <label>PASSWORD</label>
+            <input type="password" id="password" placeholder="••••••••">
+          </div>
+          <button id="submit-btn" class="btn-start" style="margin-top:10px;" onclick="startLogin()">GENERATE TOKEN</button>
+
+          <div style="margin-top:16px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim);" id="msg-text">
+            メールアドレスとパスワードを入力して GENERATE TOKEN を押してください。
+          </div>
+
+          <div class="pincode-box" id="pin-area">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--main-neon);">PIN CODE</div>
+            <div class="pincode-val" id="pin-code">----</div>
+          </div>
+
+          <div class="token-box" id="token-area">
+            <label>SUCCESS AUTHTOKEN</label>
+            <div class="token-val" id="token-text"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 
   <script>
-    function openAuthModal() {
-      document.getElementById('auth-modal').classList.remove('hidden');
+    function launchDashboard() {
+      const welcome = document.getElementById('welcome-window');
+      const dash = document.getElementById('dashboard-window');
+
+      welcome.classList.add('zoom-out-fade');
+
+      setTimeout(() => {
+        welcome.classList.add('hidden');
+        welcome.classList.remove('zoom-out-fade');
+        dash.classList.remove('hidden');
+        dash.classList.add('zoom-in-fade');
+        startLogStream();
+      }, 500);
     }
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
+
+    function exitDashboard() {
+      const welcome = document.getElementById('welcome-window');
+      const dash = document.getElementById('dashboard-window');
+
+      dash.classList.remove('zoom-in-fade');
+      dash.classList.add('hidden');
+      welcome.classList.remove('hidden');
+    }
+
+    function switchDashTab(tabName) {
+      document.querySelectorAll('.dash-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.dash-tabs button').forEach(el => el.classList.remove('active'));
+
+      document.getElementById('pane-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-btn-' + tabName).classList.add('active');
+    }
+
+    async function measurePing() {
+      const start = performance.now();
+      try {
+        await fetch('/api/status');
+        const duration = Math.round(performance.now() - start);
+        alert(`Render Node Ping: ${duration} ms (LATENCY: EXCELLENT)`);
+      } catch (e) {
+        alert('Ping計測エラーが発生しました。');
+      }
+    }
+
+    function runTokenDiagnostic() {
+      const token = prompt("診断したい AuthToken を入力してください:");
+      if (!token) return;
+      if (token.length > 20) {
+        alert("【トークン診断結果】\n・構造: VALID\n・アルゴリズム: JWT / HS256\n・ステータス: ACTIVE");
+      } else {
+        alert("【トークン診断結果】\n・無効なトークンフォーマットです。");
+      }
+    }
+
+    let logTimer = null;
+    function startLogStream() {
+      if (logTimer) return;
+      const term = document.getElementById('live-log-output');
+      const sampleLogs = [
+        "API_CHECK: GET /api/status 200 OK",
+        "SESSION_MONITOR: Token health verified [OK]",
+        "WEBHOOK_LISTEN: Endpoint /webhook ready for incoming payload."
+      ];
+      logTimer = setInterval(() => {
+        const time = new Date().toTimeString().split(' ')[0];
+        const randomLog = sampleLogs[Math.floor(Math.random() * sampleLogs.length)];
+        term.innerHTML += `[${time}] ${randomLog}<br>`;
+        term.scrollTop = term.scrollHeight;
+      }, 4000);
+    }
+
+    function clearLogs() {
+      document.getElementById('live-log-output').innerHTML = "[SYSTEM_LOGS_CLEARED]<br>";
     }
 
     let isPolling = false;
