@@ -1,9 +1,7 @@
-﻿import { loginWithAuthToken, loginWithPassword, Client } from "jsr:@evex/linejs@^3.4.2";
+﻿import { loginWithAuthToken, loginWithPassword } from "jsr:@evex/linejs@^3.4.2";
 import { FileStorage } from "jsr:@evex/linejs@^3.4.2/storage";
 import { saveUser } from "../users/database.ts";
 import { handleSelfBotCommand } from "./engine.ts";
-
-const STORAGE_PATH = "./Storage/linejs-storage.json";
 
 export interface ActiveSession {
   userId: string;
@@ -14,35 +12,8 @@ export interface ActiveSession {
 
 const activeSessions = new Map<string, ActiveSession>();
 
-/**
- * 取得した AuthToken を .env および token.txt に自動保存
- */
-async function saveTokenToEnv(token: string) {
-  try {
-    const envPath = "./.env";
-    let content = "";
-    try {
-      content = await Deno.readTextFile(envPath);
-    } catch {
-      // ファイルが存在しない場合は新規作成
-    }
-
-    const key = "LINE_AUTH_TOKEN";
-    const newLine = `${key}="${token}"`;
-    const regex = new RegExp(`^${key}=.*$`, "m");
-
-    if (regex.test(content)) {
-      content = content.replace(regex, newLine);
-    } else {
-      content = content.trim() ? `${content.trim()}\n${newLine}\n` : `${newLine}\n`;
-    }
-
-    await Deno.writeTextFile(envPath, content);
-    await Deno.writeTextFile("./token.txt", token).catch(() => {});
-    console.log("[+] .env および token.txt に最新の AuthToken を自動保存しました。");
-  } catch (err) {
-    console.error("[-] トークン保存失敗:", err);
-  }
+function getSafeUserId(userId: string): string {
+  return userId.replace(/[^a-zA-Z0-9_-]A/g, "_");
 }
 
 export async function stopUserSession(userId: string): Promise<boolean> {
@@ -61,22 +32,30 @@ export async function stopUserSession(userId: string): Promise<boolean> {
 }
 
 /**
- * AuthToken によるセッション起動
+ * 1. AuthToken ログイン
  */
 export async function startUserSession(
   userId: string,
   token: string
 ): Promise<boolean> {
   const normalizedToken = token.trim().replace(/^["']|["']$/g, "");
-  if (!userId.trim() || !normalizedToken) return false;
+  if (!userId.trim() || !normalizedToken) {
+    console.error(`[SESSION_ERROR] userId または AuthToken が空です。`);
+    return false;
+  }
 
   if (activeSessions.has(userId)) {
     await stopUserSession(userId);
   }
 
+  await Deno.mkdir("./data", { recursive: true });
+
+  const safeUserId = getSafeUserId(userId);
+  const storagePath = `./data/storage_${safeUserId}.json`;
+
   try {
-    await Deno.mkdir("./Storage", { recursive: true });
-    const storage = new FileStorage(STORAGE_PATH);
+    console.log(`[SESSION] ユーザー (${safeUserId}) の loginWithAuthToken を起動中...`);
+    const storage = new FileStorage(storagePath);
 
     const client = await loginWithAuthToken(normalizedToken, {
       device: "DESKTOPMAC",
@@ -91,7 +70,12 @@ export async function startUserSession(
       await handleSelfBotCommand(msg, client, userId);
     });
 
-    client.listen({ talk: true, square: true });
+    client.listen({
+      talk: true,
+      square: true,
+    });
+
+    console.log(`[SESSION_SUCCESS] ユーザー (${safeUserId}) の LINEJS ポーリング受信を開始しました！`);
 
     activeSessions.set(userId, {
       userId,
@@ -100,7 +84,6 @@ export async function startUserSession(
       startedAt: new Date(),
     });
 
-    await saveTokenToEnv(normalizedToken);
     await saveUser({
       userId,
       authToken: normalizedToken,
@@ -109,14 +92,30 @@ export async function startUserSession(
     });
 
     return true;
-  } catch (err) {
-    console.error(`[SESSION_ERROR] AuthToken 起動失敗:`, err);
+  } catch (err: any) {
+    const errorMsg = String(err?.message || err);
+    if (
+      errorMsg.includes("V3_TOKEN_CLIENT_LOGGED_OUT") ||
+      errorMsg.includes("NOT_AUTHORIZED_DEVICE")
+    ) {
+      console.error(
+        `[SESSION_ERROR] ユーザー (${userId}) の AuthToken は失効・ログアウトされています。`
+      );
+      await saveUser({
+        userId,
+        authToken: normalizedToken,
+        linkedAt: new Date().toISOString(),
+        status: "DISABLED",
+      });
+    } else {
+      console.error(`[SESSION_ERROR] ユーザー (${userId}) の起動失敗:`, err);
+    }
     return false;
   }
 }
 
 /**
- * Eメール + パスワード -> PINコード認証ログイン (ByakuyaTools 方式)
+ * 2. メール・パスワード + PINコード ログイン (loginWithPassword を利用)
  */
 export async function startUserSessionWithEmail(
   userId: string,
@@ -124,27 +123,30 @@ export async function startUserSessionWithEmail(
   pass: string,
   onPincode: (pincode: string) => Promise<void>
 ): Promise<boolean> {
-  const cleanEmail = email.trim();
-  const cleanPass = pass.trim();
-
-  if (!userId.trim() || !cleanEmail || !cleanPass) return false;
+  if (!userId.trim() || !email.trim() || !pass.trim()) {
+    return false;
+  }
 
   if (activeSessions.has(userId)) {
     await stopUserSession(userId);
   }
 
+  await Deno.mkdir("./data", { recursive: true });
+
+  const safeUserId = getSafeUserId(userId);
+  const storagePath = `./data/storage_${safeUserId}.json`;
+
   try {
-    await Deno.mkdir("./Storage", { recursive: true });
-    const storage = new FileStorage(STORAGE_PATH);
+    console.log(`[SESSION] ユーザー (${safeUserId}) の loginWithPassword を起動中...`);
+    const storage = new FileStorage(storagePath);
 
-    console.log(`[SESSION] Eメールログイン要求送信: ${cleanEmail}`);
-
+    // loginWithPassword で PIN コード受信用コールバックを指定
     const client = await loginWithPassword(
       {
-        email: cleanEmail,
-        password: cleanPass,
+        email: email.trim(),
+        password: pass.trim(),
         onPincodeRequest: async (pin: string) => {
-          console.log(`📍 PINコード発行成功: 【 ${pin} 】`);
+          console.log(`[SESSION_PIN] ユーザー (${userId}) 用PINコード発行: ${pin}`);
           await onPincode(pin);
         },
       },
@@ -154,17 +156,6 @@ export async function startUserSessionWithEmail(
       }
     );
 
-    const authToken = client.authToken;
-    if (authToken) {
-      await saveTokenToEnv(authToken);
-      await saveUser({
-        userId,
-        authToken,
-        linkedAt: new Date().toISOString(),
-        status: "ACTIVE",
-      });
-    }
-
     client.on("message", async (msg: any) => {
       await handleSelfBotCommand(msg, client, userId);
     });
@@ -173,18 +164,22 @@ export async function startUserSessionWithEmail(
       await handleSelfBotCommand(msg, client, userId);
     });
 
-    client.listen({ talk: true, square: true });
+    client.listen({
+      talk: true,
+      square: true,
+    });
+
+    console.log(`[SESSION_SUCCESS] ユーザー (${safeUserId}) の LINEJS ポーリング受信を開始しました！`);
 
     activeSessions.set(userId, {
       userId,
       client,
-      token: authToken,
       startedAt: new Date(),
     });
 
     return true;
   } catch (err: any) {
-    console.error(`[SESSION_ERROR] ログイン認証失敗:`, err);
+    console.error(`[SESSION_ERROR] ユーザー (${userId}) の起動失敗:`, err);
     return false;
   }
 }
