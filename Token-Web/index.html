@@ -37,7 +37,6 @@
       user-select: none;
     }
 
-    /* アプリ枠コンテナ */
     .app-window {
       width: 100vw;
       height: 100vh;
@@ -78,7 +77,6 @@
       margin-top: 2px;
     }
 
-    /* 狐ロゴメインカード */
     .fox-card {
       background: #0B0F0C;
       border: 1px solid rgba(0, 245, 138, 0.25);
@@ -91,7 +89,6 @@
       margin: auto 0;
     }
 
-    /* コーナーアクセント線 */
     .fox-card::before {
       content: '';
       position: absolute;
@@ -199,9 +196,7 @@
       cursor: pointer;
     }
 
-    .welcome-header {
-      margin-top: 10px;
-    }
+    .welcome-header { margin-top: 10px; }
 
     .welcome-badge {
       font-family: 'JetBrains Mono', monospace;
@@ -236,7 +231,6 @@
       margin-top: 14px;
     }
 
-    /* SYSTEM CHECK CARD */
     .system-check-box {
       background: #0B0E0C;
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -277,7 +271,6 @@
       letter-spacing: 1px;
     }
 
-    /* START BUTTON */
     .action-area {
       margin-top: 24px;
       text-align: center;
@@ -322,11 +315,8 @@
       letter-spacing: 1px;
     }
 
-    /* 画面切り替え用 */
-    .view-pane { transition: opacity 0.3s; }
     .hidden { display: none !important; }
 
-    /* AUTH / SECURE LINK MODAL */
     .modal-overlay {
       position: absolute;
       inset: 0;
@@ -378,7 +368,8 @@
 
       <!-- 狐ロゴカード -->
       <div class="fox-card">
-        <img src="/assets/ByakuyaBot_AppIcon.ico" class="fox-svg-icon" alt="ByakuyaBot App Icon">
+        <!-- ico読み込み失敗時に自動で fox-logo.svg に切り替わる安全設定 -->
+        <img src="/assets/ByakuyaBot_AppIcon.ico" class="fox-svg-icon" alt="ByakuyaBot App Icon" onerror="this.onerror=null; this.src='/assets/fox-logo.svg';">
 
         <div class="card-brand">
           <div class="byakuya">BYAKUYA</div>
@@ -408,7 +399,6 @@
         <div class="welcome-sub2">LINE OpenChat / LINEJS management environment</div>
       </div>
 
-      <!-- SYSTEM CHECK BOX -->
       <div class="system-check-box">
         <div class="check-title">SYSTEM CHECK</div>
         
@@ -430,7 +420,6 @@
         <div class="checking-log" id="system-log-text">CHECKING LINEJS...</div>
       </div>
 
-      <!-- ACTION BUTTON AREA -->
       <div class="action-area">
         <button class="btn-start" onclick="openAuthModal()">START BYAKUYA TOOLS</button>
         <div class="btn-note">Press START to initialize the control center</div>
@@ -444,7 +433,7 @@
 
   </div>
 
-  <!-- AUTH MODAL (SECURE LINK / AUTHTOKEN PORTAL) -->
+  <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay hidden">
     <div class="auth-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
