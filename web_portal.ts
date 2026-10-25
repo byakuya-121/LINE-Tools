@@ -1,5 +1,5 @@
-﻿import { Client } from "@evex/linejs";
-import { FileStorage } from "@evex/linejs/storage";
+import { Client } from "npm:@evex/linejs";
+import { FileStorage } from "npm:@evex/linejs/storage";
 
 let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -30,10 +30,10 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       );
     }
 
-    console.log(`\n==================================================`);
-    console.log(`[LINEJS_AUTH] LINE サーバーへ接続試行中 (@evex/linejs)...`);
-    console.log(` 📧 EMAIL : ${email}`);
-    console.log(`==================================================`);
+    console.log(\n==================================================);
+    console.log([LINEJS_AUTH] LINE サーバーへ接続試行中...);
+    console.log( 📧 EMAIL : );
+    console.log(==================================================);
 
     currentStatus = {
       status: "IDLE",
@@ -47,7 +47,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
     });
 
     client.on("pincode", (pin: string) => {
-      console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
+      console.log(\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: );
       currentStatus = {
         status: "PIN_REQUIRED",
         message: "スマホのLINEアプリを開き、表示されているPINコードを入力してください。",
@@ -57,8 +57,8 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
     });
 
     client.on("ready", () => {
-      const authToken = (client as unknown as { authToken?: string }).authToken || "";
-      console.log(`\n✅ [AUTH_SUCCESS] 認証成功! Token: ${authToken}`);
+      const authToken = (client as any).authToken || "";
+      console.log(\n✅ [AUTH_SUCCESS] 認証成功! Token: );
       currentStatus = {
         status: "SUCCESS",
         message: "AuthToken の取得に成功しました！",
@@ -70,8 +70,8 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
     client.login({
       email: email,
       password: password,
-    }).catch((err: Error) => {
-      console.error(`❌ [LINE_LOGIN_ERROR]`, err);
+    }).catch((err: any) => {
+      console.error(❌ [LINE_LOGIN_ERROR], err);
       currentStatus = {
         status: "ERROR",
         message: err.message || "LINEログインに失敗しました（パスワード不一致またはIPブロック）。",
@@ -84,17 +84,16 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       JSON.stringify({ success: true, message: "LINE 認証リクエストを開始しました。" }),
       { headers: { "Content-Type": "application/json" } }
     );
-  } catch (err: unknown) {
-    const error = err as Error;
-    console.error(`[AUTH_FATAL_ERROR]`, error);
+  } catch (err: any) {
+    console.error([AUTH_FATAL_ERROR], err);
     currentStatus = {
       status: "ERROR",
-      message: error.message || "サーバー内部エラーが発生しました。",
+      message: err.message || "サーバー内部エラーが発生しました。",
       pincode: "",
       token: "",
     };
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: err.message }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
