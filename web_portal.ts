@@ -46,7 +46,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       storage: new FileStorage("./storage.json"),
     });
 
-    // PINコード受信イベント（LINEアプリへ実コードを送信）
+    // PINコード受信イベント
     client.on("pincode", (pin: string) => {
       console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
       currentStatus = {
