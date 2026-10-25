@@ -14,19 +14,16 @@ Deno.serve({ port: PORT }, async (req: Request) => {
   requestCount++;
   const url = new URL(req.url);
 
-  // A. LINE Webhook
   if (req.method === "POST" && url.pathname === "/webhook") {
     try {
       const body = await req.json();
       const events = body.events || [];
-
       for (const event of events) {
         if (event.type === "message" && event.message?.type === "text") {
           const replyText = await handleCommand(event);
           if (replyText) {
             const replyToken = event.replyToken;
             const accessToken = Deno.env.get("LINE_CHANNEL_ACCESS_TOKEN");
-
             if (replyToken && accessToken) {
               await fetch("https://api.line.me/v2/bot/message/reply", {
                 method: "POST",
@@ -50,18 +47,15 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     }
   }
 
-  // B. Web API: ログイン処理
   if (req.method === "POST" && url.pathname === "/api/login") {
     console.log("[AUTH_TRY] ログインリクエストを受信しました...");
     return await handlePortalLogin(req);
   }
 
-  // C. Web API: ステータス取得
   if (req.method === "GET" && url.pathname === "/api/status") {
     return getPortalStatus();
   }
 
-  // C2. Web API: メトリクス
   if (req.method === "GET" && url.pathname === "/api/metrics") {
     const uptimeSec = Math.floor((Date.now() - serverStartTime) / 1000);
     const mem = Deno.memoryUsage();
@@ -77,46 +71,20 @@ Deno.serve({ port: PORT }, async (req: Request) => {
     );
   }
 
-  // D. 静的コンテンツ配信 (Token-Web/)
   if (req.method === "GET") {
     try {
       const pathname = decodeURIComponent(url.pathname);
       const relativePath = pathname === "/" ? "/index.html" : pathname;
-
-      let fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
-      let fileData: Uint8Array | null = null;
-
-      try {
-        fileData = await Deno.readFile(fileUrl);
-      } catch (_) {
-        if (relativePath.startsWith("/assets/")) {
-          const fileName = relativePath.replace("/assets/", "").toLowerCase();
-          const assetsDir = new URL("./Token-Web/assets/", import.meta.url);
-          try {
-            for await (const entry of Deno.readDir(assetsDir)) {
-              if (entry.isFile && entry.name.toLowerCase() === fileName) {
-                const matchedUrl = new URL(`./Token-Web/assets/${entry.name}`, import.meta.url);
-                fileData = await Deno.readFile(matchedUrl);
-                break;
-              }
-            }
-          } catch (_) {}
-        }
-      }
-
-      if (!fileData) {
-        return new Response("Not Found", { status: 404 });
-      }
+      const fileUrl = new URL(`./Token-Web${relativePath}`, import.meta.url);
+      const fileData = await Deno.readFile(fileUrl);
 
       const ext = relativePath.split(".").pop()?.toLowerCase();
       const mimeTypes: Record<string, string> = {
         html: "text/html; charset=utf-8",
         css: "text/css",
         js: "application/javascript",
-        svg: "image/svg+xml",
         png: "image/png",
         jpg: "image/jpeg",
-        jpeg: "image/jpeg",
         ico: "image/x-icon",
       };
 

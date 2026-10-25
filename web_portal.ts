@@ -1,5 +1,5 @@
-﻿import { Client } from "npm:@evex/linejs";
-import { FileStorage } from "npm:@evex/linejs/storage";
+﻿import { Client } from "@evex/linejs";
+import { FileStorage } from "@evex/linejs/storage";
 
 let currentStatus: {
   status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
@@ -46,7 +46,6 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       storage: new FileStorage("./storage.json"),
     });
 
-    // PINコード受信イベント
     client.on("pincode", (pin: string) => {
       console.log(`\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: ${pin}`);
       currentStatus = {
@@ -57,9 +56,8 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
-    // ログイン成功イベント
     client.on("ready", () => {
-      const authToken = (client as any).authToken || "";
+      const authToken = (client as unknown as { authToken?: string }).authToken || "";
       console.log(`\n✅ [AUTH_SUCCESS] 認証成功! Token: ${authToken}`);
       currentStatus = {
         status: "SUCCESS",
@@ -69,11 +67,10 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
-    // ログイン実行
     client.login({
       email: email,
       password: password,
-    }).catch((err: any) => {
+    }).catch((err: Error) => {
       console.error(`❌ [LINE_LOGIN_ERROR]`, err);
       currentStatus = {
         status: "ERROR",
@@ -87,16 +84,17 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       JSON.stringify({ success: true, message: "LINE 認証リクエストを開始しました。" }),
       { headers: { "Content-Type": "application/json" } }
     );
-  } catch (err: any) {
-    console.error(`[AUTH_FATAL_ERROR]`, err);
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error(`[AUTH_FATAL_ERROR]`, error);
     currentStatus = {
       status: "ERROR",
-      message: err.message || "サーバー内部エラーが発生しました。",
+      message: error.message || "サーバー内部エラーが発生しました。",
       pincode: "",
       token: "",
     };
     return new Response(
-      JSON.stringify({ error: err.message }),
+      JSON.stringify({ error: error.message }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

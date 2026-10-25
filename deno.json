@@ -1,5 +1,16 @@
-{
-  "tasks": {
-    "start": "deno run --allow-all --env-file=.env bot/server.ts"
+﻿{
+  "imports": {
+    "@evex/linejs": "npm:@evex/linejs@^2.0.0",
+    "@evex/linejs/base": "npm:@evex/linejs@^2.0.0/base",
+    "@evex/linejs/storage": "npm:@evex/linejs@^2.0.0/storage",
+    "linejs": "npm:@evex/linejs@^2.0.0"
+  },
+  "compilerOptions": {
+    "strict": true
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
   }
 }
