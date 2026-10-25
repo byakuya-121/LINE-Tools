@@ -1,6 +1,6 @@
-import { Client } from "@evex/linejs";
-import { BaseClient } from "@evex/linejs/base";
-import { FileStorage } from "@evex/linejs/storage";
+﻿import { Client } from "npm:@evex/linejs";
+import { BaseClient } from "npm:@evex/linejs/base";
+import { FileStorage } from "npm:@evex/linejs/storage";
 
 const PREFIX = "$<";
 const VERSION = "1.0.0";
@@ -124,7 +124,7 @@ function getHelp(): string {
 /**
  * OpenChatのコマンドを処理する。
  */
-async function handleCommand(message: any): Promise<void> {
+async function handleCommand(message: unknown): Promise<void> {
   const text = String(message.text ?? "").trim();
 
   if (!text.startsWith(PREFIX)) {
@@ -311,7 +311,7 @@ async function main(): Promise<void> {
   /*
    * OpenChatのメッセージイベントを受信する。
    */
-  client.on("square:message", async (message: any) => {
+  client.on("square:message", async (message: unknown) => {
     try {
       await handleCommand(message);
     } catch (error) {
