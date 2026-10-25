@@ -117,31 +117,10 @@
       display: flex; flex-direction: column; justify-content: space-between; position: relative;
     }
 
-    /* タイピング・文字アニメーション表示 */
-    .welcome-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--main-neon); font-weight: 700; margin-bottom: 6px; letter-spacing: 2px;
-      opacity: 0; animation: fadeInScan 0.8s ease forwards;
-    }
-
-    .welcome-title {
-      font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 0;
-      min-height: 46px; display: inline-block;
-    }
-
-    .welcome-sub1 {
-      font-size: 14px; color: var(--text-dim); margin-top: 4px; font-weight: 600;
-      min-height: 20px;
-    }
-
-    .welcome-sub2 {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A8C81; margin-top: 14px;
-      min-height: 18px;
-    }
-
-    @keyframes fadeInScan {
-      0% { opacity: 0; transform: translateY(-5px); filter: blur(3px); }
-      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
+    .welcome-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--main-neon); font-weight: 700; margin-bottom: 6px; letter-spacing: 2px; }
+    .welcome-title { font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 0; min-height: 46px; }
+    .welcome-sub1 { font-size: 14px; color: var(--text-dim); margin-top: 4px; font-weight: 600; min-height: 20px; }
+    .welcome-sub2 { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A8C81; margin-top: 14px; min-height: 18px; }
 
     .system-check-box {
       background: #0B0E0C; border: 1px solid rgba(255, 255, 255, 0.05);
@@ -242,9 +221,35 @@
     .btn-card-action {
       width: 100%; background: rgba(0, 245, 138, 0.1); border: 1px solid var(--main-neon);
       color: var(--main-neon); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-      padding: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-align: center;
+      padding: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; text-align: center; text-decoration: none; display: inline-block;
     }
     .btn-card-action:hover { background: var(--main-neon); color: #000000; }
+
+    /* DEVELOPER & COMMUNITY LINKS SECTION */
+    .community-promo-section {
+      margin-top: 36px; padding-top: 24px;
+      border-top: 1px dashed rgba(0, 245, 138, 0.25);
+    }
+    .promo-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;
+    }
+    .promo-card {
+      background: #090E0B; border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 6px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;
+      transition: all 0.25s ease;
+    }
+    .promo-card:hover {
+      border-color: var(--accent-cyan); box-shadow: 0 0 20px rgba(0, 240, 255, 0.15); transform: translateY(-2px);
+    }
+    .promo-card .promo-icon { font-size: 20px; margin-bottom: 8px; }
+    .promo-card .promo-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .promo-card .promo-desc { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); line-height: 1.5; margin-bottom: 16px; }
+    .btn-promo-action {
+      background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-cyan); color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 10px; border-radius: 4px; text-align: center; text-decoration: none; transition: all 0.2s;
+    }
+    .btn-promo-action:hover { background: var(--accent-cyan); color: #000; }
 
     .session-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
     .session-card { background: var(--panel-bg); border: 1px solid var(--panel-border); border-left: 4px solid var(--main-neon); border-radius: 6px; padding: 20px; }
@@ -297,7 +302,7 @@
       .dash-tabs { width: 100%; justify-content: flex-start; }
       .dash-content { padding: 16px; }
       .resource-monitor-card { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .tool-matrix-grid, .session-grid { grid-template-columns: 1fr; }
+      .tool-matrix-grid, .session-grid, .promo-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -457,6 +462,44 @@
           </div>
 
         </div>
+
+        <!-- DEVELOPER & COMMUNITY PROMO SECTION -->
+        <div class="community-promo-section">
+          <div class="pane-title" style="font-size:15px; color:var(--accent-cyan); margin-bottom:16px;">
+            > DEVELOPER & COMMUNITY LINKS
+          </div>
+          <div class="promo-grid">
+            
+            <div class="promo-card">
+              <div>
+                <div class="promo-icon">🐦</div>
+                <div class="promo-title">X (Twitter) Official</div>
+                <div class="promo-desc">ByakuyaTools の最新アップデート情報やメンテナンステキストを配信。</div>
+              </div>
+              <!-- 必要に応じて href をお名前に変更してください -->
+              <a href="https://x.com" target="_blank" class="btn-promo-action">FOLLOW ON X ➔</a>
+            </div>
+
+            <div class="promo-card">
+              <div>
+                <div class="promo-icon">💬</div>
+                <div class="promo-title">LINE OpenChat Community</div>
+                <div class="promo-desc">LINEJS 開発者・ユーザーが集まるコミュニティ。質問や要望はこちらへ。</div>
+              </div>
+              <a href="https://line.me" target="_blank" class="btn-promo-action">JOIN OPENCHAT ➔</a>
+            </div>
+
+            <div class="promo-card">
+              <div>
+                <div class="promo-icon">📦</div>
+                <div class="promo-title">GitHub Repository</div>
+                <div class="promo-desc">LINE-Tools ソースコードのリポジトリとドキュメント。</div>
+              </div>
+              <a href="https://github.com/byakuya-121/LINE-Tools" target="_blank" class="btn-promo-action">VIEW REPOSITORY ➔</a>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <!-- TAB 2: SESSIONS -->
@@ -558,7 +601,6 @@
   </div>
 
   <script>
-    // TYPING ANIMATION FOR WELCOME SCREEN
     function startTypingAnimations() {
       const titleText = 'Welcome';
       const sub1Text = 'Byakuya Tools Control Center';
@@ -589,7 +631,6 @@
       type();
     }
 
-    // DOTS ANIMATION FOR CHECKING LOG
     let dotStep = 0;
     setInterval(function() {
       const elem = document.getElementById('checking-dots');
@@ -647,7 +688,6 @@
       if (targetBtn) targetBtn.classList.add('active');
     }
 
-    // METRICS
     let metricsTimer = null;
     function startMetricsMonitor() {
       if (metricsTimer) return;
