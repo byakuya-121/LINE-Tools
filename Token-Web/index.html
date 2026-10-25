@@ -453,7 +453,7 @@
 
       welcome.classList.add('zoom-out-fade');
 
-      setTimeout(() => {
+      setTimeout(function() {
         welcome.classList.add('hidden');
         welcome.classList.remove('zoom-out-fade');
         dash.classList.remove('hidden');
@@ -472,11 +472,21 @@
     }
 
     function switchDashTab(tabName) {
-      document.querySelectorAll('.dash-pane').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.dash-tabs button').forEach(el => el.classList.remove('active'));
+      const panes = document.querySelectorAll('.dash-pane');
+      for (let i = 0; i < panes.length; i++) {
+        panes[i].classList.add('hidden');
+      }
 
-      document.getElementById('pane-' + tabName).classList.remove('hidden');
-      document.getElementById('tab-btn-' + tabName).classList.add('active');
+      const tabs = document.querySelectorAll('.dash-tabs button');
+      for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+
+      const targetPane = document.getElementById('pane-' + tabName);
+      if (targetPane) targetPane.classList.remove('hidden');
+
+      const targetBtn = document.getElementById('tab-btn-' + tabName);
+      if (targetBtn) targetBtn.classList.add('active');
     }
 
     async function measurePing() {
@@ -484,19 +494,19 @@
       try {
         await fetch('/api/status');
         const duration = Math.round(performance.now() - start);
-        alert(Render Node Ping:  ms (LATENCY: EXCELLENT));
+        alert('Render Node Ping: ' + duration + ' ms (LATENCY: EXCELLENT)');
       } catch (e) {
         alert('Ping計測エラーが発生しました。');
       }
     }
 
     function runTokenDiagnostic() {
-      const token = prompt("診断したい AuthToken を入力してください:");
+      const token = prompt('診断したい AuthToken を入力してください:');
       if (!token) return;
       if (token.length > 20) {
-        alert("【トークン診断結果】\n・構造: VALID\n・アルゴリズム: JWT / HS256\n・ステータス: ACTIVE");
+        alert('【トークン診断結果】\n・構造: VALID\n・アルゴリズム: JWT / HS256\n・ステータス: ACTIVE');
       } else {
-        alert("【トークン診断結果】\n・無効なトークンフォーマットです。");
+        alert('【トークン診断結果】\n・無効なトークンフォーマットです。');
       }
     }
 
@@ -505,20 +515,20 @@
       if (logTimer) return;
       const term = document.getElementById('live-log-output');
       const sampleLogs = [
-        "API_CHECK: GET /api/status 200 OK",
-        "SESSION_MONITOR: Token health verified [OK]",
-        "WEBHOOK_LISTEN: Endpoint /webhook ready for incoming payload."
+        'API_CHECK: GET /api/status 200 OK',
+        'SESSION_MONITOR: Token health verified [OK]',
+        'WEBHOOK_LISTEN: Endpoint /webhook ready for incoming payload.'
       ];
-      logTimer = setInterval(() => {
+      logTimer = setInterval(function() {
         const time = new Date().toTimeString().split(' ')[0];
         const randomLog = sampleLogs[Math.floor(Math.random() * sampleLogs.length)];
-        term.innerHTML += [] <br>;
+        term.innerHTML += '[' + time + '] ' + randomLog + '<br>';
         term.scrollTop = term.scrollHeight;
       }, 4000);
     }
 
     function clearLogs() {
-      document.getElementById('live-log-output').innerHTML = "[SYSTEM_LOGS_CLEARED]<br>";
+      document.getElementById('live-log-output').innerHTML = '[SYSTEM_LOGS_CLEARED]<br>';
     }
 
     let isPolling = false;
