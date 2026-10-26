@@ -31,7 +31,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
     }
 
     console.log(\n==================================================);
-    console.log([LINEJS_AUTH] LINE サーバーへ接続試行中...);
+    console.log([LINEJS_AUTH] ログイン要求を受信);
     console.log( 📧 EMAIL : );
     console.log(==================================================);
 
@@ -46,8 +46,9 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       storage: new FileStorage("./storage.json"),
     });
 
+    // PINコード発生時のイベント
     client.on("pincode", (pin: string) => {
-      console.log(\n🔥 [REAL_PIN_CODE] LINEアプリに認証コードが送信されました: );
+      console.log(\n🔥 [PIN_CODE] LINEアプリ認証コード: );
       currentStatus = {
         status: "PIN_REQUIRED",
         message: "スマホのLINEアプリを開き、表示されているPINコードを入力してください。",
@@ -56,6 +57,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
+    // ログイン完了時のイベント
     client.on("ready", () => {
       const authToken = (client as any).authToken || "";
       console.log(\n✅ [AUTH_SUCCESS] 認証成功! Token: );
@@ -67,6 +69,7 @@ export async function handlePortalLogin(req: Request): Promise<Response> {
       };
     });
 
+    // ログイン処理開始
     client.login({
       email: email,
       password: password,
