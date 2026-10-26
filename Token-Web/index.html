@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -8,21 +8,17 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg-base: #050806;
-      --panel-bg: rgba(10, 16, 12, 0.88);
-      --panel-dark: rgba(4, 7, 5, 0.95);
-      --panel-border: rgba(0, 245, 138, 0.3);
-      --main-neon: #00F58A;
-      --sub-neon: #78FFC0;
-      --text-main: #E8F5EC;
-      --text-dim: #60756A;
-      --danger-color: #FF4A4A;
-      --warning-color: #FFC857;
-      --neon-glow: 0 0 15px rgba(0, 245, 138, 0.4);
+      --bg-base: #0A0C0B;
+      --panel-bg: #111413;
+      --main-neon: #00FF87;
+      --text-main: #FFFFFF;
+      --text-dim: #606864;
+      --text-sub: #8A948F;
+      --border-color: rgba(0, 255, 135, 0.2);
     }
 
     * {
@@ -37,333 +33,373 @@
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* 背景サイバーグリッド & スキャンライン */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: 
-        linear-gradient(rgba(0, 245, 138, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 245, 138, 0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0) 50%,
-        rgba(0, 0, 0, 0.3) 50%,
-        rgba(0, 0, 0, 0.3)
-      );
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.6;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .dim {
-      color: var(--text-dim);
-    }
-
-    /* Cyberpunk Welcome Window */
-    #welcome-window {
-      position: relative;
-      z-index: 2;
-      width: min(1080px, 92vw);
-      min-height: min(600px, 85vh);
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      display: flex;
-      box-shadow: 0 0 50px rgba(0, 245, 138, 0.1), inset 0 0 30px rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-      clip-path: polygon(
-        0 0, 
-        calc(100% - 30px) 0, 
-        100% 30px, 
-        100% 100%, 
-        30px 100%, 
-        0 calc(100% - 30px)
-      );
-    }
-
-    /* サイバー角パーツ */
-    .cyber-corner {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border: 2px solid var(--main-neon);
-      pointer-events: none;
-      z-index: 5;
-    }
-    .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
-    .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
-    .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
-    .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
-
-    /* 左パネル */
-    .left-panel {
-      width: 380px;
-      flex-shrink: 0;
-      background: var(--panel-dark);
-      border-right: 1px solid var(--panel-border);
-      padding: 36px 30px;
-      display: flex;
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      padding: 24px 32px;
     }
 
-    .left-panel::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(180deg, var(--main-neon), transparent);
-    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .hidden { display: none !important; }
 
-    .dev-header-box {
+    /* Top Navigation Header */
+    header.top-bar {
       display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .dev-avatar-wrapper {
-      position: relative;
-      width: 64px;
-      height: 64px;
-      flex-shrink: 0;
-    }
-
-    .dev-avatar-wrapper::before {
-      content: '';
-      position: absolute;
-      inset: -5px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--main-neon), transparent 70%, var(--sub-neon));
-      animation: rotateRing 6s linear infinite;
-      z-index: 1;
-    }
-
-    .dev-avatar {
-      position: relative;
+      justify-content: space-between;
+      align-items: flex-start;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      background: var(--panel-dark);
-      border: 2px solid var(--main-neon);
-      z-index: 2;
+      z-index: 10;
     }
 
-    @keyframes rotateRing {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .animated-tools-title {
+    .brand-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 17px;
-      font-weight: 900;
+      font-size: 13px;
+      font-weight: 800;
       color: var(--main-neon);
-      letter-spacing: 2px;
-      text-shadow: var(--neon-glow);
+      letter-spacing: 1.5px;
     }
 
-    .dev-subtitle {
+    .brand-sub {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
-      color: var(--sub-neon);
-      letter-spacing: 1.5px;
-      margin-top: 4px;
-      opacity: 0.8;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 3px;
     }
 
-    .cyber-hud-box {
-      margin-top: 20px;
-      border: 1px solid rgba(0, 245, 138, 0.15);
-      background: rgba(0, 245, 138, 0.02);
-      padding: 12px;
-      border-radius: 4px;
+    .close-btn {
+      color: var(--text-dim);
+      font-size: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
     }
 
-    .hud-line {
+    .close-btn:hover {
+      color: var(--text-main);
+    }
+
+    /* Main Content Area */
+    .portal-container {
       display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      margin-bottom: 6px;
-    }
-
-    .hud-bar {
-      height: 4px;
-      background: rgba(0, 245, 138, 0.15);
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      max-width: 1100px;
+      margin: auto;
+      width: 100%;
       position: relative;
-      overflow: hidden;
-      border-radius: 2px;
+      padding: 20px 0;
     }
 
-    .hud-bar-inner {
-      width: 75%;
-      height: 100%;
-      background: var(--main-neon);
-      box-shadow: 0 0 8px var(--main-neon);
-      animation: pulseBar 2s infinite alternate;
-    }
-
-    @keyframes pulseBar {
-      0% { width: 60%; }
-      100% { width: 85%; }
-    }
-
-    .welcome-mark {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 110px;
-      font-weight: 900;
-      color: var(--main-neon);
-      opacity: 0.05;
-      user-select: none;
-      line-height: 0.8;
+    /* 中央の縦ライン */
+    .vertical-divider {
       position: absolute;
-      bottom: 60px;
-      right: -20px;
-      pointer-events: none;
+      left: calc(42% - 1px);
+      top: -40px;
+      bottom: -40px;
+      width: 1px;
+      background: var(--main-neon);
+      box-shadow: 0 0 8px rgba(0, 255, 135, 0.4);
     }
 
-    /* 右パネル */
-    .right-panel {
-      flex: 1;
-      padding: 48px;
+    /* 左カード */
+    .left-card {
+      width: 42%;
+      background: var(--panel-bg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      padding: 36px 32px;
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 30px;
-      position: relative;
+      min-height: 420px;
     }
 
-    .section-label {
-      color: var(--main-neon);
-      font: 700 11px 'JetBrains Mono', monospace;
-      letter-spacing: 2px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .section-label::before {
+    .left-card::before {
       content: "";
-      display: inline-block;
-      width: 6px;
-      height: 6px;
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 70px;
+      height: 2px;
       background: var(--main-neon);
       box-shadow: 0 0 6px var(--main-neon);
     }
 
-    .welcome-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(26px, 3.5vw, 38px);
-      font-weight: 900;
-      color: #FFF;
-      line-height: 1.2;
-      margin: 0 0 16px;
-      letter-spacing: 1px;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    .left-card::after {
+      content: "";
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 70px;
+      height: 2px;
+      background: var(--main-neon);
+      box-shadow: 0 0 6px var(--main-neon);
     }
 
-    .welcome-desc {
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      margin: 20px 0;
+    }
+
+    .developer-avatar {
+      max-width: 200px;
+      max-height: 200px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(0, 255, 135, 0.15));
+    }
+
+    .left-card-info {
+      margin-top: auto;
+    }
+
+    .left-card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+    }
+
+    .left-card-title span {
+      color: var(--main-neon);
+      display: block;
+    }
+
+    .left-card-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
       color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 12px;
+    }
+
+    .left-card-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--main-neon);
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    /* 右エリア */
+    .right-area {
+      width: 58%;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .welcome-header .welcome-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--main-neon);
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .welcome-header h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .welcome-header .byakuya-sub {
       font-size: 13px;
-      line-height: 1.9;
-      border-left: 2px solid rgba(0, 245, 138, 0.3);
-      padding-left: 14px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .welcome-header .env-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    /* システムチェックボックス */
+    .system-check-box {
+      background: var(--panel-bg);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-left: 3px solid var(--main-neon);
+      border-radius: 2px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .check-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .check-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      padding-bottom: 10px;
+    }
+
+    .check-row:last-of-type {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .check-label {
+      color: var(--text-sub);
+    }
+
+    .check-value {
+      font-weight: 700;
+      color: var(--main-neon);
+    }
+
+    .check-value.white {
+      color: #FFFFFF;
+    }
+
+    .checking-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--main-neon);
+      margin-top: 8px;
+      letter-spacing: 1px;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ボタンエリア */
+    .action-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
     }
 
     .btn-start {
       width: 100%;
-      background: var(--main-neon);
-      color: #020804;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 900;
-      padding: 18px 24px;
-      border: none;
-      cursor: pointer;
+      background: #080A09;
+      border: 1px solid var(--main-neon);
+      color: var(--main-neon);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
       font-size: 14px;
-      letter-spacing: 2px;
-      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      padding: 16px;
+      cursor: pointer;
+      letter-spacing: 1.5px;
+      border-radius: 2px;
       transition: all 0.2s ease;
-      box-shadow: 0 0 25px rgba(0, 245, 138, 0.4);
-      position: relative;
+      box-shadow: 0 0 10px rgba(0, 255, 135, 0.1);
     }
 
     .btn-start:hover {
-      background: #33FF9E;
-      transform: translateY(-2px);
-      box-shadow: 0 0 35px rgba(0, 245, 138, 0.7);
+      background: var(--main-neon);
+      color: #000000;
+      box-shadow: 0 0 20px rgba(0, 255, 135, 0.5);
     }
 
-    .btn-start:active {
-      transform: translateY(0);
+    .btn-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
     }
 
-    /* ダッシュボードスタイル */
+    /* Footer Status Bar */
+    footer.bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      z-index: 10;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--main-neon);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--main-neon);
+    }
+
+    .footer-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Dashboard UI */
     #dashboard-window {
-      width: 100vw;
-      min-height: 100vh;
+      position: fixed;
+      inset: 0;
       background: var(--bg-base);
-      z-index: 2;
+      z-index: 100;
+      overflow-y: auto;
     }
 
     header.dash-header {
       background: var(--panel-bg);
-      border-bottom: 1px solid var(--panel-border);
+      border-bottom: 1px solid var(--border-color);
       padding: 16px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
     .dash-brand {
       font-family: 'Orbitron', sans-serif;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
-      color: #fff;
+      color: #FFF;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .api-indicator {
@@ -377,313 +413,178 @@
     .status-dot {
       width: 8px;
       height: 8px;
-      display: inline-block;
       border-radius: 50%;
       background: var(--text-dim);
     }
-
-    .status-dot.online {
-      background: var(--main-neon);
-      box-shadow: 0 0 10px var(--main-neon);
-    }
-
-    .status-dot.offline {
-      background: var(--danger-color);
-      box-shadow: 0 0 8px var(--danger-color);
-    }
-
-    .status-dot.warning {
-      background: var(--warning-color);
-    }
+    .status-dot.online { background: var(--main-neon); box-shadow: 0 0 10px var(--main-neon); }
+    .status-dot.offline { background: #FF4A4A; box-shadow: 0 0 8px #FF4A4A; }
 
     .btn-small {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--main-neon);
       color: var(--main-neon);
-      padding: 9px 12px;
-      border-radius: 4px;
+      padding: 8px 12px;
+      border-radius: 3px;
       cursor: pointer;
       font-size: 11px;
       font-weight: 700;
     }
 
-    .btn-small:hover {
-      background: rgba(0, 245, 138, 0.1);
-    }
-
     .dash-content {
-      max-width: 1280px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 28px;
     }
 
-    .page-heading {
-      margin-bottom: 24px;
-    }
-
-    .page-heading h1 {
-      font-size: 25px;
-      margin: 0 0 8px;
-      color: #fff;
-    }
-
-    .page-heading p {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.7;
-      color: var(--text-dim);
-    }
-
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      margin-bottom: 30px;
+      margin: 24px 0;
     }
 
     .stat-card {
-      min-width: 0;
       background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      padding: 22px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 20px;
     }
 
     .stat-title {
       font: 700 10px 'JetBrains Mono', monospace;
       color: var(--text-dim);
-      letter-spacing: 0.7px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .stat-value {
-      font: 900 clamp(20px, 3vw, 30px) 'Orbitron', sans-serif;
+      font: 900 24px 'Orbitron', sans-serif;
       color: var(--main-neon);
-      overflow-wrap: anywhere;
-    }
-
-    .stat-note {
-      color: var(--text-dim);
-      font-size: 11px;
-      margin-top: 10px;
-      line-height: 1.6;
     }
 
     .panel {
       background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 6px;
-      margin-bottom: 24px;
-      overflow: hidden;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      margin-bottom: 20px;
     }
 
     .panel-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 17px 20px;
-      border-bottom: 1px solid var(--panel-border);
-    }
-
-    .panel-title {
-      color: #fff;
-      font-size: 13px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 12px;
       font-weight: 800;
     }
 
-    .panel-body {
-      padding: 20px;
-    }
+    .panel-body { padding: 18px; }
 
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .info-item {
-      min-width: 0;
-    }
-
-    .info-label {
-      color: var(--text-dim);
-      font: 10px 'JetBrains Mono', monospace;
-      margin-bottom: 8px;
-    }
-
-    .info-value {
-      color: var(--text-main);
-      font: 12px 'JetBrains Mono', monospace;
-      overflow-wrap: anywhere;
-      line-height: 1.7;
-    }
-
-    .session-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .session-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
-      background: var(--panel-dark);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 15px;
-      border-radius: 4px;
-    }
-
-    .session-user {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 700;
-      overflow-wrap: anywhere;
     }
 
-    .session-start {
-      font: 10px 'JetBrains Mono', monospace;
-      color: var(--text-dim);
-      margin-top: 6px;
-    }
+    .info-label { color: var(--text-dim); font-size: 10px; margin-bottom: 6px; }
 
-    .badge {
-      flex-shrink: 0;
-      border: 1px solid var(--panel-border);
-      color: var(--main-neon);
-      font: 10px 'JetBrains Mono', monospace;
-      padding: 5px 8px;
-      border-radius: 3px;
-    }
-
-    .empty-state {
-      color: var(--text-dim);
-      font-size: 12px;
-      line-height: 1.8;
-      padding: 10px 0;
-    }
-
-    .notice {
-      padding: 13px 15px;
-      border: 1px solid rgba(255, 200, 87, 0.35);
-      background: rgba(255, 200, 87, 0.05);
-      color: var(--warning-color);
-      font-size: 11px;
-      line-height: 1.8;
-      border-radius: 4px;
-      margin-bottom: 24px;
-    }
-
-    .error-box {
-      padding: 14px;
-      border: 1px solid rgba(255, 74, 74, 0.35);
-      background: rgba(255, 74, 74, 0.05);
-      color: #ffaaaa;
-      font-size: 12px;
-      line-height: 1.8;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-
-    footer {
-      padding: 22px 0 6px;
-      color: var(--text-dim);
-      font: 10px 'JetBrains Mono', monospace;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 760px) {
-      #welcome-window {
+    @media (max-width: 850px) {
+      .portal-container {
         flex-direction: column;
-        width: 100vw;
-        min-height: 100vh;
-        clip-path: none;
+        gap: 24px;
       }
-
-      .left-panel {
-        width: 100%;
-        min-height: 220px;
-        border-right: 0;
-        border-bottom: 1px solid var(--main-neon);
-      }
-
-      .right-panel {
-        padding: 28px;
-      }
-
-      .stat-grid, .info-grid {
-        grid-template-columns: 1fr;
-      }
+      .vertical-divider { display: none; }
+      .left-card, .right-area { width: 100%; padding-left: 0; }
     }
   </style>
 </head>
 
 <body>
-  <section id="welcome-window">
-    <div class="cyber-corner corner-tl"></div>
-    <div class="cyber-corner corner-tr"></div>
-    <div class="cyber-corner corner-bl"></div>
-    <div class="cyber-corner corner-br"></div>
-
-    <div class="left-panel">
+  <section id="welcome-window" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh; width: 100%;">
+    <header class="top-bar">
       <div>
-        <div class="dev-header-box">
-          <div class="dev-avatar-wrapper">
-            <img src="assets/Developer.jpg" alt="Developer" class="dev-avatar" onerror="this.src='assets/ByakuyaBot_AppIcon.ico'; this.onerror=function(){this.style.display='none';}">
-          </div>
-          <div class="dev-title-wrap">
-            <div class="animated-tools-title">BYAKUYA TOOLS</div>
-            <div class="dev-subtitle">// SYSTEM CORE v3.4</div>
-          </div>
-        </div>
+        <div class="brand-title">BYAKUYA TOOLS</div>
+        <div class="brand-sub">LINE OPENCHAT CONTROL SYSTEM</div>
+      </div>
+      <button class="close-btn" id="close-btn">✕</button>
+    </header>
 
-        <div class="cyber-hud-box">
-          <div class="hud-line mono dim">
-            <span>CORE STATUS</span>
-            <span style="color:var(--main-neon)">ONLINE</span>
-          </div>
-          <div class="hud-bar">
-            <div class="hud-bar-inner"></div>
-          </div>
-        </div>
+    <div class="portal-container">
+      <div class="vertical-divider"></div>
 
-        <div class="welcome-mark">BT</div>
+      <!-- 左カード -->
+      <div class="left-card">
+        <div class="logo-container">
+          <img src="assets/Developer.jpg" alt="Byakuya Logo" class="developer-avatar" onerror="this.src='assets/ByakuyaBot_AppIcon.ico'; this.onerror=function(){this.style.display='none';}">
+        </div>
+        <div class="left-card-info">
+          <div class="left-card-title">
+            BYAKUYA
+            <span>TOOLS</span>
+          </div>
+          <div class="left-card-sub">CONTROL CENTER</div>
+          <div class="left-card-status">SYSTEM / INITIALIZATIO_</div>
+        </div>
       </div>
 
-      <div class="mono dim" style="font-size:10px; line-height:1.9;">
-        CONTROL PORTAL<br>
-        LOCAL INSTANCE<br>
-        <span style="color:var(--sub-neon)">STATUS: READY FOR CONNECTION</span>
+      <!-- 右エリア -->
+      <div class="right-area">
+        <div class="welcome-header">
+          <div class="welcome-tag">WELCOME</div>
+          <h1>Welcome</h1>
+          <div class="byakuya-sub">Byakuya Tools Control Center</div>
+          <div class="env-desc">LINE OpenChat / LINEJS management environment</div>
+        </div>
+
+        <div class="system-check-box">
+          <div class="check-title">SYSTEM CHECK</div>
+          
+          <div class="check-row">
+            <span class="check-label">LINEJS VERSION</span>
+            <span class="check-value">3.4.2</span>
+          </div>
+
+          <div class="check-row">
+            <span class="check-label">ENGINE</span>
+            <span class="check-value">READY</span>
+          </div>
+
+          <div class="check-row">
+            <span class="check-label">STATUS</span>
+            <span class="check-value white">ONLINE</span>
+          </div>
+
+          <div class="checking-text">CHECKING LINEJS...</div>
+        </div>
+
+        <div class="action-area">
+          <button class="btn-start" id="start-btn">START BYAKUYA TOOLS</button>
+          <div class="btn-hint">Press START to initialize the control center</div>
+        </div>
       </div>
     </div>
 
-    <div class="right-panel">
-      <div>
-        <div class="section-label">SYSTEM MANAGEMENT // 01</div>
-        <h1 class="welcome-title">Control Portal</h1>
-        <p class="welcome-desc">
-          サーバーの稼働状態およびLINEJSセッション情報を一元管理します。<br>
-          リアルタイムステータスおよびアクティブセッションをリアルタイムで取得・監視可能です。
-        </p>
+    <footer class="bottom-bar">
+      <div class="footer-left">
+        <div class="status-indicator">
+          <span class="dot"></span>
+          <span>SYSTEM ONLINE</span>
+        </div>
+        <div>LINEJS / CONTROL SYSTEM / V3.4.2</div>
       </div>
 
-      <div>
-        <button class="btn-start" id="start-btn">START BYAKUYA TOOLS</button>
-        <div class="mono dim" style="font-size:10px; margin-top:14px; letter-spacing:1px;">
-          BYAKUYA TOOLS // CONTROL CENTER INTEGRATED
-        </div>
+      <div class="footer-right">
+        <div>BYAKUYA TOOLS</div>
+        <div>WELCOME / SYSTEM READY</div>
       </div>
-    </div>
+    </footer>
   </section>
 
+  <!-- Dashboard Modal Window -->
   <section id="dashboard-window" class="hidden">
     <header class="dash-header">
       <div class="dash-brand">BYAKUYA TOOLS // CONTROL CENTER</div>
-
       <div class="header-right">
         <div class="api-indicator">
           <span id="api-dot" class="status-dot"></span>
@@ -695,103 +596,39 @@
     </header>
 
     <main class="dash-content">
-      <div class="page-heading">
-        <div class="section-label">SYSTEM OVERVIEW // 02</div>
-        <h1>Dashboard</h1>
-        <p>実際のサーバーAPIから取得した情報を表示します。</p>
-      </div>
-
-      <div id="error-box" class="error-box hidden" role="alert"></div>
-
-      <div class="notice">
-        表示される ONLINE は、ポータルAPIが応答していることを示します。
-        LINE側との接続やセッションの通信が正常であることを保証する表示ではありません。
-      </div>
-
       <div class="stat-grid">
         <article class="stat-card">
           <div class="stat-title">PORTAL API</div>
           <div class="stat-value" id="stat-api">--</div>
-          <div class="stat-note" id="stat-api-note">APIの応答を確認しています。</div>
         </article>
-
         <article class="stat-card">
           <div class="stat-title">SERVER UPTIME</div>
           <div class="stat-value" id="stat-uptime">--</div>
-          <div class="stat-note">現在のサーバープロセスの起動後経過時間</div>
         </article>
-
         <article class="stat-card">
           <div class="stat-title">ACTIVE SESSIONS</div>
           <div class="stat-value" id="stat-sessions">--</div>
-          <div class="stat-note">セッション管理モジュールが返した件数</div>
         </article>
       </div>
 
       <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title">SERVER INFORMATION</div>
-          <span class="badge">LIVE API</span>
-        </div>
-
+        <div class="panel-header">SERVER INFORMATION</div>
         <div class="panel-body">
           <div class="info-grid">
-            <div class="info-item">
-              <div class="info-label">SERVER MESSAGE</div>
-              <div class="info-value" id="server-message">取得待機中</div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-label">SERVER STARTED</div>
-              <div class="info-value" id="server-started">--</div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-label">SERVER TIME</div>
-              <div class="info-value" id="server-time">--</div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-label">LAST SUCCESSFUL UPDATE</div>
-              <div class="info-value" id="last-updated">まだ取得していません</div>
-            </div>
+            <div><div class="info-label">SERVER MESSAGE</div><div id="server-message">取得待機中</div></div>
+            <div><div class="info-label">SERVER STARTED</div><div id="server-started">--</div></div>
+            <div><div class="info-label">SERVER TIME</div><div id="server-time">--</div></div>
+            <div><div class="info-label">LAST UPDATED</div><div id="last-updated">--</div></div>
           </div>
         </div>
       </section>
 
       <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title">LINEJS SESSIONS</div>
-          <span class="badge" id="session-count-badge">0 SESSIONS</span>
-        </div>
-
+        <div class="panel-header">LINEJS SESSIONS (<span id="session-count-badge">0</span>)</div>
         <div class="panel-body">
-          <div id="session-list" class="session-list">
-            <div class="empty-state">セッション情報を取得しています。</div>
-          </div>
+          <div id="session-list">セッション情報を取得しています。</div>
         </div>
       </section>
-
-      <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title">AUTHENTICATION</div>
-          <span class="badge">NOT CONFIGURED</span>
-        </div>
-
-        <div class="panel-body">
-          <div class="empty-state">
-            Webポータルからのログイン認証は未設定です。<br>
-            この画面ではパスワードの収集、PINの偽装、AuthTokenの表示を行いません。
-            実際の認証処理を接続した場合にのみ、認証状態を表示するようにしてください。
-          </div>
-        </div>
-      </section>
-
-      <footer>
-        <span>BYAKUYA TOOLS</span>
-        <span>CONTROL PORTAL</span>
-        <span id="footer-state">WAITING FOR API</span>
-      </footer>
     </main>
   </section>
 
@@ -807,7 +644,6 @@
       apiDot: document.getElementById("api-dot"),
       apiStatus: document.getElementById("api-status"),
       statApi: document.getElementById("stat-api"),
-      statApiNote: document.getElementById("stat-api-note"),
       statUptime: document.getElementById("stat-uptime"),
       statSessions: document.getElementById("stat-sessions"),
       serverMessage: document.getElementById("server-message"),
@@ -815,222 +651,78 @@
       serverTime: document.getElementById("server-time"),
       lastUpdated: document.getElementById("last-updated"),
       sessionCountBadge: document.getElementById("session-count-badge"),
-      sessionList: document.getElementById("session-list"),
-      errorBox: document.getElementById("error-box"),
-      footerState: document.getElementById("footer-state")
+      sessionList: document.getElementById("session-list")
     };
 
     let refreshTimer = null;
     let requestInProgress = false;
-    let lastSuccessfulUpdate = null;
 
     function showDashboard() {
-      elements.welcome.classList.add("hidden");
       elements.dashboard.classList.remove("hidden");
-
       refreshStatus();
-
-      if (refreshTimer !== null) {
-        clearInterval(refreshTimer);
-      }
-
+      if (refreshTimer !== null) clearInterval(refreshTimer);
       refreshTimer = setInterval(refreshStatus, 5000);
     }
 
     function showWelcome() {
       elements.dashboard.classList.add("hidden");
-      elements.welcome.classList.remove("hidden");
-
       if (refreshTimer !== null) {
         clearInterval(refreshTimer);
         refreshTimer = null;
       }
     }
 
-    function formatDate(value) {
-      if (!value) return "--";
-
-      const date = new Date(value);
-
-      if (Number.isNaN(date.getTime())) {
-        return "--";
-      }
-
-      return date.toLocaleString("ja-JP", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
+    function formatDate(val) {
+      if (!val) return "--";
+      const d = new Date(val);
+      return Number.isNaN(d.getTime()) ? "--" : d.toLocaleString("ja-JP");
     }
 
-    function formatUptime(seconds) {
-      if (!Number.isFinite(seconds) || seconds < 0) {
-        return "--";
-      }
-
-      const total = Math.floor(seconds);
-      const days = Math.floor(total / 86400);
-      const hours = Math.floor((total % 86400) / 3600);
-      const minutes = Math.floor((total % 3600) / 60);
-      const secs = total % 60;
-
-      if (days > 0) {
-        return `${days}d ${hours}h`;
-      }
-
-      if (hours > 0) {
-        return `${hours}h ${minutes}m`;
-      }
-
-      if (minutes > 0) {
-        return `${minutes}m ${secs}s`;
-      }
-
-      return `${secs}s`;
-    }
-
-    function setApiState(state, message) {
-      elements.apiStatus.textContent = state;
-      elements.statApi.textContent = state;
-      elements.footerState.textContent = state;
-
-      elements.apiDot.classList.remove("online", "offline", "warning");
-
-      if (state === "ONLINE") {
-        elements.apiDot.classList.add("online");
-        elements.statApiNote.textContent = "APIから応答を受信しました。";
-      } else if (state === "OFFLINE") {
-        elements.apiDot.classList.add("offline");
-        elements.statApiNote.textContent = "APIに接続できません。";
-      } else {
-        elements.apiDot.classList.add("warning");
-        elements.statApiNote.textContent = "APIの状態を確認してください。";
-      }
-
-      if (message) {
-        elements.serverMessage.textContent = message;
-      }
-    }
-
-    function renderSessions(sessions) {
-      elements.sessionList.replaceChildren();
-
-      if (!Array.isArray(sessions) || sessions.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty-state";
-        empty.textContent = "現在、セッション管理モジュールから返されたセッションはありません。";
-        elements.sessionList.appendChild(empty);
-        return;
-      }
-
-      for (const session of sessions) {
-        const row = document.createElement("div");
-        row.className = "session-row";
-
-        const info = document.createElement("div");
-
-        const user = document.createElement("div");
-        user.className = "session-user";
-        user.textContent = String(session.userId ?? "UNKNOWN USER");
-
-        const started = document.createElement("div");
-        started.className = "session-start";
-        started.textContent = `Started: ${formatDate(session.startedAt)}`;
-
-        info.append(user, started);
-
-        const badge = document.createElement("span");
-        badge.className = "badge";
-
-        badge.textContent = session.running
-          ? "SESSION REGISTERED"
-          : "UNKNOWN";
-
-        row.append(info, badge);
-        elements.sessionList.appendChild(row);
-      }
+    function formatUptime(secs) {
+      if (!Number.isFinite(secs) || secs < 0) return "--";
+      const total = Math.floor(secs);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      const h = Math.floor((total % 86400) / 3600);
+      return `${h}h ${m}m ${s}s`;
     }
 
     async function refreshStatus() {
       if (requestInProgress) return;
-
       requestInProgress = true;
-      elements.refresh.disabled = true;
-
       try {
-        const response = await fetch("/api/status", {
-          method: "GET",
-          cache: "no-store",
-          headers: {
-            "Accept": "application/json"
-          }
-        });
+        const res = await fetch("/api/status", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        
+        elements.apiStatus.textContent = "ONLINE";
+        elements.statApi.textContent = "ONLINE";
+        elements.apiDot.className = "status-dot online";
 
-        if (!response.ok) {
-          throw new Error(`API returned HTTP ${response.status}`);
+        elements.statUptime.textContent = formatUptime(data.uptimeSeconds);
+        elements.statSessions.textContent = String(data.sessionCount);
+        elements.serverStarted.textContent = formatDate(data.startedAt);
+        elements.serverTime.textContent = formatDate(data.serverTime);
+        elements.serverMessage.textContent = data.message || "正常稼働中";
+        elements.lastUpdated.textContent = formatDate(new Date());
+        elements.sessionCountBadge.textContent = String(data.sessionCount);
+
+        if (Array.isArray(data.sessions) && data.sessions.length > 0) {
+          elements.sessionList.innerHTML = data.sessions.map(s => 
+            `<div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between;">
+              <span>${s.userId || 'UNKNOWN'}</span>
+              <span style="color:var(--main-neon); font-size:11px;">REGISTERED</span>
+            </div>`
+          ).join("");
+        } else {
+          elements.sessionList.textContent = "アクティブなセッションはありません。";
         }
-
-        const data = await response.json();
-
-        if (!data || typeof data !== "object") {
-          throw new Error("APIのレスポンス形式が不正です。");
-        }
-
-        if (
-          typeof data.uptimeSeconds !== "number" ||
-          !Array.isArray(data.sessions) ||
-          typeof data.sessionCount !== "number"
-        ) {
-          throw new Error(
-            "APIレスポンスに必要な項目がありません。web_portal.ts の内容を確認してください。"
-          );
-        }
-
-        const state = data.status === "ONLINE"
-          ? "ONLINE"
-          : "DEGRADED";
-
-        setApiState(state, data.message || "API応答を受信しました。");
-
-        elements.statUptime.textContent =
-          formatUptime(data.uptimeSeconds);
-
-        elements.statSessions.textContent =
-          String(data.sessionCount);
-
-        elements.serverStarted.textContent =
-          formatDate(data.startedAt);
-
-        elements.serverTime.textContent =
-          formatDate(data.serverTime);
-
-        renderSessions(data.sessions);
-
-        elements.sessionCountBadge.textContent =
-          `${data.sessionCount} SESSION${data.sessionCount === 1 ? "" : "S"}`;
-
-        lastSuccessfulUpdate = new Date();
-        elements.lastUpdated.textContent =
-          formatDate(lastSuccessfulUpdate.toISOString());
-
-        elements.errorBox.classList.add("hidden");
-      } catch (error) {
-        const message = error instanceof Error
-          ? error.message
-          : String(error);
-
-        setApiState("OFFLINE", "APIから最新情報を取得できません。");
-
-        elements.errorBox.textContent =
-          `取得エラー: ${message}。サーバーが起動しているか確認してください。`;
-
-        elements.errorBox.classList.remove("hidden");
+      } catch (e) {
+        elements.apiStatus.textContent = "OFFLINE";
+        elements.statApi.textContent = "OFFLINE";
+        elements.apiDot.className = "status-dot offline";
       } finally {
         requestInProgress = false;
-        elements.refresh.disabled = false;
       }
     }
 
