@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -12,165 +12,73 @@
 
   <style>
     :root {
-      --bg-base: #080B09;
-      --panel-bg: #0D110E;
-      --panel-dark: #050706;
-      --panel-border: rgba(0, 245, 138, 0.25);
+      --bg-base: #050806;
+      --panel-bg: rgba(10, 16, 12, 0.88);
+      --panel-dark: rgba(4, 7, 5, 0.95);
+      --panel-border: rgba(0, 245, 138, 0.3);
       --main-neon: #00F58A;
       --sub-neon: #78FFC0;
       --text-main: #E8F5EC;
-      --text-dim: #809087;
+      --text-dim: #60756A;
       --danger-color: #FF4A4A;
       --warning-color: #FFC857;
+      --neon-glow: 0 0 15px rgba(0, 245, 138, 0.4);
     }
 
     * {
       box-sizing: border-box;
       font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     body {
       background: var(--bg-base);
       color: var(--text-main);
-      margin: 0;
       min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 背景サイバーグリッド & スキャンライン */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: 
+        linear-gradient(rgba(0, 245, 138, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 138, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.3)
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
     }
 
     button {
       font: inherit;
     }
 
-    button:focus-visible,
-    a:focus-visible {
-      outline: 2px solid var(--sub-neon);
-      outline-offset: 3px;
-    }
-
     .hidden {
       display: none !important;
-    }
-
-    /* =========================================================
-       Welcome Window & Cyber Animations
-    ========================================================= */
-    #welcome-window {
-      width: min(1180px, 100%);
-      min-height: min(680px, 100vh);
-      margin: 0 auto;
-      background: var(--bg-base);
-      border: 1px solid var(--panel-border);
-      display: flex;
-      box-shadow: 0 0 30px rgba(0, 245, 138, 0.08);
-    }
-
-    .left-panel {
-      width: 400px;
-      flex-shrink: 0;
-      background: var(--panel-dark);
-      border-right: 1px solid var(--main-neon);
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* 開発者画像 & タイトル横並びエリア */
-    .dev-header-box {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .dev-avatar-wrapper {
-      position: relative;
-      width: 68px;
-      height: 68px;
-      flex-shrink: 0;
-    }
-
-    .dev-avatar-wrapper::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      background: conic-gradient(from 0deg, var(--main-neon), transparent 60%, var(--sub-neon));
-      animation: rotateRing 4s linear infinite;
-      z-index: 1;
-    }
-
-    .dev-avatar {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      background: var(--panel-bg);
-      border: 2px solid var(--panel-dark);
-      z-index: 2;
-    }
-
-    @keyframes rotateRing {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .dev-title-wrap {
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* アニメーション付きツール名 */
-    .animated-tools-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(0, 245, 138, 0.6);
-      animation: neonPulse 2.5s ease-in-out infinite alternate, titleSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .dev-subtitle {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--sub-neon);
-      letter-spacing: 1px;
-      margin-top: 4px;
-      opacity: 0.85;
-    }
-
-    @keyframes neonPulse {
-      0% {
-        text-shadow: 0 0 5px rgba(0, 245, 138, 0.4), 0 0 10px rgba(0, 245, 138, 0.2);
-        filter: brightness(1);
-      }
-      100% {
-        text-shadow: 0 0 12px rgba(0, 245, 138, 0.9), 0 0 25px rgba(0, 245, 138, 0.6);
-        filter: brightness(1.25);
-      }
-    }
-
-    @keyframes titleSlideIn {
-      0% {
-        opacity: 0;
-        transform: translateX(-15px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .welcome-mark {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 80px;
-      font-weight: 900;
-      color: var(--main-neon);
-      opacity: 0.15;
-      user-select: none;
-      line-height: 1;
-      margin-top: 20px;
     }
 
     .mono {
@@ -181,48 +89,255 @@
       color: var(--text-dim);
     }
 
+    /* Cyberpunk Welcome Window */
+    #welcome-window {
+      position: relative;
+      z-index: 2;
+      width: min(1080px, 92vw);
+      min-height: min(600px, 85vh);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      display: flex;
+      box-shadow: 0 0 50px rgba(0, 245, 138, 0.1), inset 0 0 30px rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      clip-path: polygon(
+        0 0, 
+        calc(100% - 30px) 0, 
+        100% 30px, 
+        100% 100%, 
+        30px 100%, 
+        0 calc(100% - 30px)
+      );
+    }
+
+    /* サイバー角パーツ */
+    .cyber-corner {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--main-neon);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+    .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+    .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+    /* 左パネル */
+    .left-panel {
+      width: 380px;
+      flex-shrink: 0;
+      background: var(--panel-dark);
+      border-right: 1px solid var(--panel-border);
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--main-neon), transparent);
+    }
+
+    .dev-header-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .dev-avatar-wrapper {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .dev-avatar-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--main-neon), transparent 70%, var(--sub-neon));
+      animation: rotateRing 6s linear infinite;
+      z-index: 1;
+    }
+
+    .dev-avatar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      background: var(--panel-dark);
+      border: 2px solid var(--main-neon);
+      z-index: 2;
+    }
+
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .animated-tools-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 2px;
+      text-shadow: var(--neon-glow);
+    }
+
+    .dev-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--sub-neon);
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    .cyber-hud-box {
+      margin-top: 20px;
+      border: 1px solid rgba(0, 245, 138, 0.15);
+      background: rgba(0, 245, 138, 0.02);
+      padding: 12px;
+      border-radius: 4px;
+    }
+
+    .hud-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+
+    .hud-bar {
+      height: 4px;
+      background: rgba(0, 245, 138, 0.15);
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .hud-bar-inner {
+      width: 75%;
+      height: 100%;
+      background: var(--main-neon);
+      box-shadow: 0 0 8px var(--main-neon);
+      animation: pulseBar 2s infinite alternate;
+    }
+
+    @keyframes pulseBar {
+      0% { width: 60%; }
+      100% { width: 85%; }
+    }
+
+    .welcome-mark {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 110px;
+      font-weight: 900;
+      color: var(--main-neon);
+      opacity: 0.05;
+      user-select: none;
+      line-height: 0.8;
+      position: absolute;
+      bottom: 60px;
+      right: -20px;
+      pointer-events: none;
+    }
+
+    /* 右パネル */
     .right-panel {
       flex: 1;
       padding: 48px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 40px;
+      gap: 30px;
+      position: relative;
+    }
+
+    .section-label {
+      color: var(--main-neon);
+      font: 700 11px 'JetBrains Mono', monospace;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--main-neon);
+      box-shadow: 0 0 6px var(--main-neon);
     }
 
     .welcome-title {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.25;
-      margin: 0 0 18px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 900;
+      color: #FFF;
+      line-height: 1.2;
+      margin: 0 0 16px;
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .welcome-desc {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.9;
+      border-left: 2px solid rgba(0, 245, 138, 0.3);
+      padding-left: 14px;
     }
 
     .btn-start {
       width: 100%;
       background: var(--main-neon);
-      color: #000;
+      color: #020804;
+      font-family: 'Orbitron', sans-serif;
       font-weight: 900;
-      padding: 16px;
+      padding: 18px 24px;
       border: none;
       cursor: pointer;
-      border-radius: 4px;
-      font-size: 13px;
-      transition: filter 0.2s, transform 0.2s, box-shadow 0.2s;
+      font-size: 14px;
+      letter-spacing: 2px;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      transition: all 0.2s ease;
+      box-shadow: 0 0 25px rgba(0, 245, 138, 0.4);
+      position: relative;
     }
 
     .btn-start:hover {
-      filter: brightness(1.12);
-      transform: translateY(-1px);
-      box-shadow: 0 0 20px rgba(0, 245, 138, 0.4);
+      background: #33FF9E;
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(0, 245, 138, 0.7);
     }
 
-    /* =========================================================
-       Dashboard Layout
-    ========================================================= */
+    .btn-start:active {
+      transform: translateY(0);
+    }
+
+    /* ダッシュボードスタイル */
     #dashboard-window {
+      width: 100vw;
       min-height: 100vh;
       background: var(--bg-base);
+      z-index: 2;
     }
 
     header.dash-header {
@@ -317,13 +432,6 @@
       font-size: 12px;
       line-height: 1.7;
       color: var(--text-dim);
-    }
-
-    .section-label {
-      color: var(--main-neon);
-      font: 700 10px 'JetBrains Mono', monospace;
-      letter-spacing: 1.4px;
-      margin-bottom: 12px;
     }
 
     .stat-grid {
@@ -491,7 +599,9 @@
     @media (max-width: 760px) {
       #welcome-window {
         flex-direction: column;
+        width: 100vw;
         min-height: 100vh;
+        clip-path: none;
       }
 
       .left-panel {
@@ -501,41 +611,12 @@
         border-bottom: 1px solid var(--main-neon);
       }
 
-      .welcome-mark {
-        font-size: 48px;
-      }
-
       .right-panel {
         padding: 28px;
-        min-height: 360px;
       }
 
-      .stat-grid {
+      .stat-grid, .info-grid {
         grid-template-columns: 1fr;
-      }
-
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .dash-content {
-        padding: 18px;
-      }
-
-      header.dash-header {
-        padding: 14px 16px;
-        align-items: flex-start;
-      }
-
-      .dash-brand {
-        font-size: 11px;
-        line-height: 1.7;
-      }
-
-      .header-right {
-        gap: 8px;
-        flex-direction: column;
-        align-items: flex-end;
       }
     }
   </style>
@@ -543,16 +624,30 @@
 
 <body>
   <section id="welcome-window">
+    <div class="cyber-corner corner-tl"></div>
+    <div class="cyber-corner corner-tr"></div>
+    <div class="cyber-corner corner-bl"></div>
+    <div class="cyber-corner corner-br"></div>
+
     <div class="left-panel">
       <div>
-        <!-- 開発者画像 + ツール名アニメーション -->
         <div class="dev-header-box">
           <div class="dev-avatar-wrapper">
             <img src="assets/developer.png" alt="Developer" class="dev-avatar" onerror="this.src='assets/ByakuyaBot_AppIcon.ico'; this.onerror=function(){this.style.display='none';}">
           </div>
           <div class="dev-title-wrap">
             <div class="animated-tools-title">BYAKUYA TOOLS</div>
-            <div class="dev-subtitle">DEVELOPER SYSTEM</div>
+            <div class="dev-subtitle">// SYSTEM CORE v3.4</div>
+          </div>
+        </div>
+
+        <div class="cyber-hud-box">
+          <div class="hud-line mono dim">
+            <span>CORE STATUS</span>
+            <span style="color:var(--main-neon)">ONLINE</span>
+          </div>
+          <div class="hud-bar">
+            <div class="hud-bar-inner"></div>
           </div>
         </div>
 
@@ -562,24 +657,24 @@
       <div class="mono dim" style="font-size:10px; line-height:1.9;">
         CONTROL PORTAL<br>
         LOCAL INSTANCE<br>
-        <span>STATUS: API CHECK REQUIRED</span>
+        <span style="color:var(--sub-neon)">STATUS: READY FOR CONNECTION</span>
       </div>
     </div>
 
     <div class="right-panel">
       <div>
-        <div class="section-label">SYSTEM MANAGEMENT / 01</div>
-        <h1 class="welcome-title">Welcome to Control Portal</h1>
-        <p class="dim" style="font-size:13px; line-height:1.9;">
-          サーバーの稼働状態とLINEJSセッションを確認します。<br>
-          表示される状態はバックエンドから取得します。
+        <div class="section-label">SYSTEM MANAGEMENT // 01</div>
+        <h1 class="welcome-title">Control Portal</h1>
+        <p class="welcome-desc">
+          サーバーの稼働状態およびLINEJSセッション情報を一元管理します。<br>
+          リアルタイムステータスおよびアクティブセッションをリアルタイムで取得・監視可能です。
         </p>
       </div>
 
       <div>
         <button class="btn-start" id="start-btn">START BYAKUYA TOOLS</button>
-        <div class="mono dim" style="font-size:10px; margin-top:14px;">
-          BYAKUYA TOOLS // CONTROL CENTER
+        <div class="mono dim" style="font-size:10px; margin-top:14px; letter-spacing:1px;">
+          BYAKUYA TOOLS // CONTROL CENTER INTEGRATED
         </div>
       </div>
     </div>
@@ -601,7 +696,7 @@
 
     <main class="dash-content">
       <div class="page-heading">
-        <div class="section-label">SYSTEM OVERVIEW / 02</div>
+        <div class="section-label">SYSTEM OVERVIEW // 02</div>
         <h1>Dashboard</h1>
         <p>実際のサーバーAPIから取得した情報を表示します。</p>
       </div>
