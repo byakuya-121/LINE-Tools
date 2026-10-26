@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@evex/linejs": "jsr:@evex/linejs@3.4.2",
+    "@evex/linejs/storage": "jsr:@evex/linejs@3.4.2/storage"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns"]
+  }
+}
