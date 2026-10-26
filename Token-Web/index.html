@@ -17,6 +17,7 @@
       --panel-dark: rgba(4, 6, 5, 0.98);
       --border-color: rgba(0, 255, 135, 0.2);
       --main-neon: #00FF87;
+      --cyan-neon: #00E5FF;
       --accent-red: #FF2A55;
       --accent-purple: #B026FF;
       --text-main: #E5EFEA;
@@ -121,6 +122,7 @@
       position: relative;
       padding: 20px 0;
       z-index: 5;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
     }
 
     .vertical-divider {
@@ -292,6 +294,8 @@
       border-radius: 2px;
       transition: all 0.25s ease;
       box-shadow: 0 0 12px rgba(0, 255, 135, 0.1);
+      position: relative;
+      overflow: hidden;
     }
 
     .btn-start:hover {
@@ -328,6 +332,181 @@
     }
 
     /* =========================================================
+       CYBER TRANSITION OVERLAY (スキャン切り替えアニメーション)
+    ========================================================= */
+    .cyber-transition-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 4, 4, 0.95);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      backdrop-filter: blur(8px);
+      animation: scanFade 0.7s forwards ease-in-out;
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--main-neon), var(--cyan-neon), transparent);
+      box-shadow: 0 0 15px var(--main-neon);
+      animation: scanMove 0.7s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% { top: 0%; }
+      100% { top: 100%; }
+    }
+
+    .transition-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 3px;
+      text-shadow: 0 0 12px var(--main-neon);
+      animation: glitchText 0.3s infinite alternate;
+    }
+
+    @keyframes glitchText {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-2px, 1px); }
+      100% { transform: translate(2px, -1px); }
+    }
+
+    .transition-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(0, 255, 135, 0.15);
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .transition-bar-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--main-neon);
+      box-shadow: 0 0 10px var(--main-neon);
+      animation: fillBar 0.6s ease-out forwards;
+    }
+
+    @keyframes fillBar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(0%); }
+    }
+
+    /* =========================================================
+       CYBER TOAST NOTIFICATIONS (右上のサイバー通知)
+    ========================================================= */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+      max-width: 360px;
+      width: calc(100vw - 48px);
+    }
+
+    .toast-card {
+      pointer-events: auto;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--main-neon);
+      border-radius: 2px;
+      padding: 14px 18px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 255, 135, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .toast-card.error {
+      border-left-color: var(--accent-red);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 42, 85, 0.2);
+    }
+
+    .toast-card.info {
+      border-left-color: var(--cyan-neon);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 229, 255, 0.2);
+    }
+
+    @keyframes toastSlideIn {
+      0% { opacity: 0; transform: translateX(60px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .toast-card.fade-out {
+      animation: toastFadeOut 0.3s forwards ease-in;
+    }
+
+    @keyframes toastFadeOut {
+      0% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(60px); }
+    }
+
+    .toast-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toast-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--main-neon);
+      letter-spacing: 1px;
+    }
+
+    .toast-card.error .toast-tag { color: var(--accent-red); }
+    .toast-card.info .toast-tag { color: var(--cyan-neon); }
+
+    .toast-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .toast-msg {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background: var(--main-neon);
+      animation: toastProgress 3s linear forwards;
+    }
+
+    .toast-card.error .toast-progress { background: var(--accent-red); }
+    .toast-card.info .toast-progress { background: var(--cyan-neon); }
+
+    @keyframes toastProgress {
+      0% { width: 100%; }
+      100% { width: 0%; }
+    }
+
+    /* =========================================================
        BLACK MARKET DASHBOARD UI
     ========================================================= */
     #dashboard-window {
@@ -337,6 +516,12 @@
       z-index: 100;
       overflow-y: auto;
       padding: 0;
+      animation: hudExpand 0.5s ease-out forwards;
+    }
+
+    @keyframes hudExpand {
+      0% { opacity: 0; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     header.dash-header {
@@ -409,7 +594,6 @@
       padding: 32px 24px;
     }
 
-    /* 検索バー */
     .market-search-box {
       background: var(--panel-dark);
       border: 1px solid var(--border-color);
@@ -443,9 +627,7 @@
       letter-spacing: 1px;
     }
 
-    .search-input::placeholder {
-      color: var(--text-dim);
-    }
+    .search-input::placeholder { color: var(--text-dim); }
 
     .stat-grid {
       display: grid;
@@ -587,10 +769,7 @@
     .log-time { color: var(--text-dim); margin-right: 8px; }
     .log-success { color: var(--main-neon); }
 
-    /* =========================================================
-       RESPONSIVE DESIGN (PC / TABLET / MOBILE)
-    ========================================================= */
-    /* Tablet (Max 1024px) */
+    /* Responsive */
     @media (max-width: 1024px) {
       body { padding: 20px; }
       .portal-container { gap: 28px; }
@@ -600,102 +779,33 @@
       .dash-content { padding: 24px 16px; }
     }
 
-    /* Tablet Portrait & Mobile (Max 768px) */
     @media (max-width: 768px) {
       body { padding: 12px; }
-      header.top-bar { padding: 4px 0; }
-      .brand-title { font-size: 12px; }
-
-      .portal-container {
-        flex-direction: column;
-        gap: 20px;
-        padding: 10px 0;
-      }
-
+      .portal-container { flex-direction: column; gap: 20px; }
       .vertical-divider { display: none; }
-
-      .left-card {
-        width: 100%;
-        min-height: auto;
-        padding: 24px 20px;
-      }
-
-      .logo-container { margin: 10px 0; }
+      .left-card { width: 100%; min-height: auto; padding: 24px 20px; }
       .developer-avatar { max-width: 130px; max-height: 130px; }
-      .left-card-title { font-size: 22px; }
-
-      .right-area {
-        width: 100%;
-        padding-left: 0;
-        gap: 20px;
-      }
-
-      .system-check-box { padding: 16px; gap: 12px; }
-
-      /* Dashboard Responsive */
-      header.dash-header {
-        padding: 12px 16px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .header-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
+      .right-area { width: 100%; padding-left: 0; gap: 20px; }
+      header.dash-header { padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 10px; }
+      .header-right { width: 100%; justify-content: space-between; }
       .dash-content { padding: 16px 8px; }
-
-      .market-search-box {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 12px 14px;
-      }
-
-      .search-input { font-size: 13px; }
-
-      .stat-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .stat-card { padding: 16px; }
-      .stat-value { font-size: 24px; }
-
-      .tools-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .info-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-      }
-
-      .panel-body { padding: 16px; }
-    }
-
-    /* Small Mobile (Max 480px) */
-    @media (max-width: 480px) {
-      body { padding: 8px; }
-      .developer-avatar { max-width: 100px; max-height: 100px; }
-      .left-card-title { font-size: 20px; }
-      .btn-start { font-size: 12px; padding: 14px; }
-
-      footer.bottom-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .footer-right { text-align: left; }
+      .stat-grid, .tools-grid, .info-grid { grid-template-columns: 1fr; gap: 12px; }
+      .market-search-box { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
   </style>
 </head>
 
 <body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Cyber Scan Transition Overlay -->
+  <div id="cyber-transition" class="cyber-transition-overlay hidden">
+    <div class="scan-line"></div>
+    <div class="transition-title">SYSTEM INITIALIZING...</div>
+    <div class="transition-bar"><div class="transition-bar-inner"></div></div>
+  </div>
+
   <!-- Welcome Portal Screen -->
   <section id="welcome-window" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh; width: 100%;">
     <header class="top-bar">
@@ -706,7 +816,7 @@
       <button class="close-btn" id="close-btn">✕</button>
     </header>
 
-    <div class="portal-container">
+    <div class="portal-container" id="portal-container">
       <div class="vertical-divider"></div>
 
       <div class="left-card">
@@ -787,13 +897,11 @@
     </header>
 
     <main class="dash-content">
-      <!-- 検索キーワードエリア -->
       <div class="market-search-box">
         <span class="search-tag">[SEARCH TOOLS]</span>
         <input type="text" id="tool-search-input" class="search-input" placeholder="Enter keywords (e.g. linejs, auto-reply, group, token)..." autocomplete="off">
       </div>
 
-      <!-- ステータス概要 -->
       <div class="stat-grid">
         <article class="stat-card">
           <div class="stat-title">PORTAL API</div>
@@ -809,7 +917,6 @@
         </article>
       </div>
 
-      <!-- モジュールリスト -->
       <div class="tools-grid" id="tools-grid">
         <div class="tool-card" data-keywords="linejs session auth auth-token">
           <div class="tool-header">
@@ -844,7 +951,6 @@
         </div>
       </div>
 
-      <!-- サーバー情報 -->
       <section class="panel">
         <div class="panel-header">
           <span>SERVER INFORMATION</span>
@@ -860,7 +966,6 @@
         </div>
       </section>
 
-      <!-- セッション一覧 -->
       <section class="panel">
         <div class="panel-header">
           <span>LINEJS SESSIONS (<span id="session-count-badge" style="color:var(--main-neon)">0</span>)</span>
@@ -872,7 +977,6 @@
         </div>
       </section>
 
-      <!-- ログコンソール -->
       <section class="panel">
         <div class="panel-header">
           <span>SYSTEM LOGS</span>
@@ -892,6 +996,9 @@
     const elements = {
       welcome: document.getElementById("welcome-window"),
       dashboard: document.getElementById("dashboard-window"),
+      transition: document.getElementById("cyber-transition"),
+      portalContainer: document.getElementById("portal-container"),
+      toastContainer: document.getElementById("toast-container"),
       start: document.getElementById("start-btn"),
       exit: document.getElementById("exit-btn"),
       refresh: document.getElementById("refresh-btn"),
@@ -914,6 +1021,30 @@
     let refreshTimer = null;
     let requestInProgress = false;
 
+    // Toast Pop-up Notification System
+    function showToast(tag, msg, type = "success") {
+      if (!elements.toastContainer) return;
+      const card = document.createElement("div");
+      card.className = `toast-card ${type}`;
+
+      const time = new Date().toLocaleTimeString("ja-JP");
+      card.innerHTML = `
+        <div class="toast-header">
+          <span class="toast-tag">[${tag.toUpperCase()}]</span>
+          <span class="toast-time">${time}</span>
+        </div>
+        <div class="toast-msg">${msg}</div>
+        <div class="toast-progress"></div>
+      `;
+
+      elements.toastContainer.appendChild(card);
+
+      setTimeout(() => {
+        card.classList.add("fade-out");
+        setTimeout(() => card.remove(), 300);
+      }, 3000);
+    }
+
     function addLog(msg, type = "info") {
       if (!elements.logs) return;
       const time = new Date().toLocaleTimeString("ja-JP");
@@ -925,7 +1056,7 @@
       elements.logs.scrollTop = elements.logs.scrollHeight;
     }
 
-    // ツール検索フィルター処理
+    // Tools Search Filter
     elements.searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase().trim();
       const cards = elements.toolsGrid.querySelectorAll(".tool-card");
@@ -943,15 +1074,23 @@
       });
     });
 
+    // Cyberpunk Transition to Dashboard
     function showDashboard() {
-      elements.dashboard.classList.remove("hidden");
-      refreshStatus();
-      if (refreshTimer !== null) clearInterval(refreshTimer);
-      refreshTimer = setInterval(refreshStatus, 5000);
+      elements.transition.classList.remove("hidden");
+
+      setTimeout(() => {
+        elements.dashboard.classList.remove("hidden");
+        elements.transition.classList.add("hidden");
+        showToast("SYSTEM", "Control Center Loaded Successfully", "success");
+        refreshStatus();
+        if (refreshTimer !== null) clearInterval(refreshTimer);
+        refreshTimer = setInterval(refreshStatus, 5000);
+      }, 650);
     }
 
     function showWelcome() {
       elements.dashboard.classList.add("hidden");
+      showToast("SYSTEM", "Returned to Gateway Portal", "info");
       if (refreshTimer !== null) {
         clearInterval(refreshTimer);
         refreshTimer = null;
@@ -1013,6 +1152,7 @@
         elements.statApi.textContent = "OFFLINE";
         elements.apiDot.className = "status-dot offline";
         addLog(`Connection error: ${e.message}`, "error");
+        showToast("API ERROR", `Failed to sync: ${e.message}`, "error");
       } finally {
         requestInProgress = false;
       }
@@ -1020,7 +1160,10 @@
 
     elements.start.addEventListener("click", showDashboard);
     elements.exit.addEventListener("click", showWelcome);
-    elements.refresh.addEventListener("click", refreshStatus);
+    elements.refresh.addEventListener("click", () => {
+      refreshStatus();
+      showToast("REFRESH", "API Status Sync Triggered", "info");
+    });
   </script>
 </body>
 </html>
