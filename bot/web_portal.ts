@@ -1,60 +1,97 @@
-﻿// web_portal.ts - LINE AuthToken 認証・ポータル状態管理モジュール
+﻿import { getAllSessions } from "./linejs/session.ts";
 
-interface LoginStatus {
-  status: "IDLE" | "PIN_REQUIRED" | "SUCCESS" | "ERROR";
-  message: string;
-  pincode?: string;
-  token?: string;
+type PortalStatus = "ONLINE" | "DEGRADED" | "OFFLINE";
+
+interface SessionInfo {
+  userId: string;
+  startedAt: string;
+  running: boolean;
 }
 
-let portalState: LoginStatus = {
-  status: "IDLE",
-  message: "メールアドレスとパスワードを入力してください。",
-};
+interface PortalStatusResponse {
+  status: PortalStatus;
+  message: string;
+  uptimeSeconds: number;
+  startedAt: string;
+  serverTime: string;
+  sessionCount: number;
+  sessions: SessionInfo[];
+}
+
+const serverStartedAt = Date.now();
+
+function jsonResponse(
+  data: unknown,
+  status = 200,
+): Response {
+  return new Response(JSON.stringify(data, null, 2), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
 
 /**
- * Web ポータルからのログインリクエスト処理
+ * サーバーの稼働状態と実際のセッション一覧を返す。
+ *
+ * ONLINE は、このモジュールが応答し、
+ * セッション情報を取得できたことを示す。
+ * LINE側との通信の正常性までは保証しない。
  */
-export async function handlePortalLogin(req: Request): Promise<Response> {
+export function getPortalStatus(): Response {
   try {
-    const body = await req.json().catch(() => ({}));
-    const { email, password } = body;
+    const sessions = Array.from(getAllSessions().values());
 
-    if (!email || !password) {
-      return new Response(
-        JSON.stringify({ status: "ERROR", message: "メールアドレスとパスワードが必要です。" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
+    const sessionInfo: SessionInfo[] = sessions.map((session) => ({
+      userId: session.userId,
+      startedAt: session.startedAt.toISOString(),
+      running: Boolean(session.client),
+    }));
 
-    // PIN認証待機状態へ遷移
-    portalState = {
-      status: "PIN_REQUIRED",
-      message: "LINEアプリでPINコードを入力して認証を完了してください。",
-      pincode: Math.floor(1000 + Math.random() * 9000).toString(),
+    const response: PortalStatusResponse = {
+      status: "ONLINE",
+      message: "ポータルAPIは正常に応答しています。",
+      uptimeSeconds: Math.floor(
+        (Date.now() - serverStartedAt) / 1000,
+      ),
+      startedAt: new Date(serverStartedAt).toISOString(),
+      serverTime: new Date().toISOString(),
+      sessionCount: sessionInfo.length,
+      sessions: sessionInfo,
     };
 
-    return new Response(
-      JSON.stringify({ status: "OK", message: "ログイン認証を開始しました。" }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (_err) {
-    portalState = {
-      status: "ERROR",
-      message: "認証処理中にエラーが発生しました。",
-    };
-    return new Response(
-      JSON.stringify({ status: "ERROR", message: "リクエスト形式が不正確です。" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
-    );
+    return jsonResponse(response);
+  } catch (error: unknown) {
+    const message = error instanceof Error
+      ? error.message
+      : String(error);
+
+    console.error("[PORTAL_STATUS_ERROR]", message);
+
+    return jsonResponse({
+      status: "DEGRADED",
+      message: "セッション情報を取得できませんでした。",
+      serverTime: new Date().toISOString(),
+      sessionCount: 0,
+      sessions: [],
+    }, 500);
   }
 }
 
 /**
- * 認証ステータスの取得処理
+ * Webポータルからのパスワード認証は受け付けない。
+ *
+ * 実際のLINEJS認証処理と連携していない状態で
+ * PINやログイン成功を偽装しないための応答。
  */
-export function getPortalStatus(): Response {
-  return new Response(JSON.stringify(portalState), {
-    headers: { "Content-Type": "application/json" },
-  });
+export async function handlePortalLogin(
+  _req: Request,
+): Promise<Response> {
+  return jsonResponse({
+    status: "NOT_CONFIGURED",
+    message:
+      "Webポータルからのログインは未設定です。実際の認証処理との接続が必要です。",
+  }, 501);
 }
