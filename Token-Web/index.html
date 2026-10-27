@@ -606,10 +606,9 @@
     .aa-wrapper {
       display: inline-block;
       position: relative;
-      padding-right: 32px; /* 文字「s」が隠れないように右側余白を確保 */
+      padding-right: 32px;
     }
 
-    /* バランス調整版 GIFバッジ (64px / AAの右上に綺麗に配置) */
     .aa-gif-badge {
       position: absolute;
       top: -12px;
@@ -946,6 +945,58 @@
     .log-time { color: var(--text-dim); margin-right: 6px; }
     .log-success { color: var(--main-neon); }
 
+    /* お知らせ掲示板スタイル */
+    .announcement-item {
+      padding: 10px 12px;
+      border-radius: 2px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: background 0.2s;
+    }
+
+    .announcement-item:last-child { margin-bottom: 0; }
+    .announcement-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+    .announcement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .announcement-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .tag-update { color: var(--main-neon); border: 1px solid var(--main-neon); background: rgba(0, 255, 135, 0.1); }
+    .tag-info { color: var(--cyan-neon); border: 1px solid var(--cyan-neon); background: rgba(0, 229, 255, 0.1); }
+    .tag-notice { color: var(--accent-purple); border: 1px solid var(--accent-purple); background: rgba(176, 38, 255, 0.1); }
+
+    .announcement-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .announcement-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .announcement-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
     /* Responsive Design Fixes for All Devices */
     @media (max-width: 1024px) {
       body { padding: 16px; }
@@ -1142,7 +1193,7 @@
     </header>
 
     <main class="dash-content">
-      <!-- LINE-Tools ASCII Art Box (位置・サイズバランス調整版) -->
+      <!-- LINE-Tools ASCII Art Box -->
       <div class="aa-dashboard-container">
         <div class="aa-wrapper">
           <img src="assets/aa-icon.gif" alt="GIF Badge" class="aa-gif-badge" onerror="this.src='assets/Developer.jpg'; this.onerror=function(){this.style.display='none';}">
@@ -1258,6 +1309,42 @@
         <div class="panel-body">
           <div class="terminal-logs" id="terminal-logs">
             <div class="log-line"><span class="log-time">[BLACKMARKET]</span><span class="log-success">System initialized. Ready for operations.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📢 開発者お知らせ掲示板 (DEVELOPER BULLETIN BOARD) -->
+      <section class="panel">
+        <div class="panel-header">
+          <span>DEVELOPER ANNOUNCEMENTS / お知らせ掲示板</span>
+          <span style="color:var(--cyan-neon); font-size:9px;">BULLETIN BOARD</span>
+        </div>
+        <div class="panel-body">
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-update">[UPDATE]</span>
+              <span class="announcement-date">2026.10.28</span>
+            </div>
+            <div class="announcement-title">LINEJS v3.4.2 ダッシュボードUI大幅リニューアル</div>
+            <div class="announcement-desc">ポータルの文字サイズ最適化、ネオンカラー（🌈 AUTOモード含む）および動的GIFバッジの反映を完了しました。</div>
+          </div>
+
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-info">[INFO]</span>
+              <span class="announcement-date">2026.10.25</span>
+            </div>
+            <div class="announcement-title">Token Auto Sync 機能の正常動作について</div>
+            <div class="announcement-desc">LINE認証トークンの取得・自動保存が正常に行われています。Render環境での動作安定性も確保済みです。</div>
+          </div>
+
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-notice">[NOTICE]</span>
+              <span class="announcement-date">2026.10.20</span>
+            </div>
+            <div class="announcement-title">サポート・バグ報告について</div>
+            <div class="announcement-desc">システムの不具合や新機能のご要望は、クイック案内バーの「お問合せ・サポート」より公式OpenChatへお知らせください。</div>
           </div>
         </div>
       </section>
