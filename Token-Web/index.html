@@ -327,7 +327,7 @@
       box-shadow: 0 0 8px var(--main-neon);
     }
 
-    /* Cyber Transition Overlay */
+    /* Cyber Scan Transition Overlay */
     .cyber-transition-overlay {
       position: fixed;
       inset: 0;
@@ -385,10 +385,7 @@
       animation: fillBar 0.6s ease-out forwards;
     }
 
-    @keyframes fillBar {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(0%); }
-    }
+    @keyframes fillBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(0%); } }
 
     /* Toast Popups */
     .toast-container {
@@ -423,7 +420,7 @@
       100% { opacity: 1; transform: translateX(0); }
     }
 
-    /* Dashboard UI */
+    /* Dashboard Main UI */
     #dashboard-window {
       position: fixed;
       inset: 0;
@@ -500,7 +497,39 @@
     .dash-content {
       max-width: 1240px;
       margin: 0 auto;
-      padding: 32px 24px;
+      padding: 24px 24px 40px;
+    }
+
+    /* Dashboard Rectangles ASCII Art Header Animation */
+    .aa-dashboard-container {
+      width: 100%;
+      text-align: center;
+      margin: 0 0 24px;
+      overflow-x: auto;
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(0, 255, 135, 0.2);
+    }
+
+    .cyber-aa {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(5px, 0.9vw, 11px);
+      line-height: 1.15;
+      color: var(--main-neon);
+      text-shadow: 0 0 12px rgba(0, 255, 135, 0.6), 0 0 25px rgba(0, 255, 135, 0.2);
+      white-space: pre;
+      display: inline-block;
+      user-select: none;
+      animation: aaGlow 3s infinite alternate, aaScanIn 0.8s ease-out forwards;
+    }
+
+    @keyframes aaScanIn {
+      0% { opacity: 0; transform: translateY(-10px) scale(0.98); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes aaGlow {
+      0% { text-shadow: 0 0 8px rgba(0, 255, 135, 0.4); }
+      100% { text-shadow: 0 0 18px rgba(0, 255, 135, 0.8), 0 0 30px rgba(0, 229, 255, 0.3); }
     }
 
     .market-search-box {
@@ -790,7 +819,7 @@
     </footer>
   </section>
 
-  <!-- Blackmarket Main Dashboard -->
+  <!-- Blackmarket Main Dashboard Home -->
   <section id="dashboard-window" class="hidden">
     <header class="dash-header">
       <div class="dash-brand">BYAKUYA TOOLS // BLACKMARKET</div>
@@ -805,6 +834,19 @@
     </header>
 
     <main class="dash-content">
+      <!-- Rectangles Font ASCII Art Header inside Home Dashboard -->
+      <div class="aa-dashboard-container">
+        <pre class="cyber-aa">
+ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄▄▄▄▄    ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄     ▄▄▄▄▄▄▄
+ █   ▄   █   ▄  █  █   ▄   █   █ █ █   █ █ █   ▄   █  █       █       █       █   █   █       █
+ █  █▄█  █  █ █ █  █  █▄█  █   █▄█ █   █▄█ █  █▄█  █  █   ▄   █   ▄   █   ▄   █   █   █  ▄▄▄▄▄█
+ █   ▄▄▄▄█   █▄▄█  █   ▄▄▄▄█      ▄█      ▄█   ▄▄▄▄█  █  █ █  █  █ █  █  █ █  █   █   █ █▄▄▄▄▄ 
+ █  █  █ █    █    █  █  █ █  ▄   █  ▄   █ █  █  █ █  █  █▄█  █  █▄█  █  █▄█  █   █▄▄▄█▄▄▄▄▄  █
+ █  █▄█  █    █    █  █▄█  █ █ █  █ █ █  █ █  █▄█  █  █       █       █       █       █       █
+ █▄▄▄▄▄▄▄█▄▄▄▄█    █▄▄▄▄▄▄▄█▄█ █▄▄█▄█ █▄▄█▄█▄▄▄▄▄▄▄█  █▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█
+        </pre>
+      </div>
+
       <div class="market-search-box">
         <span class="search-tag">[SEARCH TOOLS]</span>
         <input type="text" id="tool-search-input" class="search-input" placeholder="Enter keywords (e.g. linejs, auto-reply, group, token)..." autocomplete="off">
