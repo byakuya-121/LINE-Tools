@@ -12,30 +12,34 @@ export interface LoginResult {
 export async function loginWithEmail(email: string, password: string): Promise<LoginResult> {
     try {
         const storage = new FileStorage(STORAGE_PATH);
-        const client: any = new (Client as any)({ storage });
+        const client = new Client({ storage });
         let detectedPin: string | null = null;
 
-        // 第1引数に Client インスタンス、第2引数にログインオプションを渡して実行
+        // 第1引数に client インスタンス、第2引数にオプションを指定
         await loginWithPassword(client, {
             email,
             password,
+            fetch: globalThis.fetch.bind(globalThis), // fetchエラー対策
             onPincode: (pin: string) => {
                 console.log(`[LINEJS] PIN Code Generated: ${pin}`);
                 detectedPin = pin;
             }
         }).catch((err: any) => {
+            // 内部でPINコード入力待ち状態になった際に投げられる例外をキャッチ
             if (err?.pincode) {
                 detectedPin = String(err.pincode);
-                return null;
+                return;
             }
             throw err;
         });
 
+        // コールバックまたは例外からPINを検知した場合
         if (detectedPin) {
             return { pincode: detectedPin };
         }
 
-        const token = client?.authToken || client?.token || client?.base?.authToken;
+        // 認証成功時、トークンを取得
+        const token = (client as any).authToken || (client as any).token || (client as any).base?.authToken;
         if (token) {
             return { authToken: token };
         }
