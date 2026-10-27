@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { Client } from "@evex/linejs";
-import { FileStorage } from "@evex/linejs/storage";
+import { loginWithPassword } from "jsr:@evex/linejs@3.4.2";
+import { FileStorage } from "jsr:@evex/linejs@3.4.2/storage";
 
 const STORAGE_PATH = "./storage.json";
 
@@ -9,85 +9,42 @@ export interface LoginResult {
     pincode?: string;
 }
 
-export function loginWithEmail(email: string, password: string): Promise<LoginResult> {
-    return new Promise((resolve, reject) => {
-        try {
-            const storage = new FileStorage(STORAGE_PATH);
-            const client: any = new (Client as any)({ storage });
+export async function loginWithEmail(email: string, password: string): Promise<LoginResult> {
+    try {
+        const storage = new FileStorage(STORAGE_PATH);
+        let detectedPin: string | null = null;
 
-            let isResolved = false;
-
-            const timeout = setTimeout(() => {
-                if (!isResolved) {
-                    isResolved = true;
-                    reject(new Error("LINE認証がタイムアウトしました。"));
-                }
-            }, 45000);
-
-            // イベントリスナーの設定
-            if (typeof client.on === "function") {
-                client.on("pincode", (pin: any) => {
-                    console.log(`[LINEJS] PIN Code Generated: ${String(pin)}`);
-                    if (!isResolved) {
-                        isResolved = true;
-                        clearTimeout(timeout);
-                        resolve({ pincode: String(pin) });
-                    }
-                });
-
-                client.on("ready", () => {
-                    console.log("[LINEJS] Login Ready!");
-                    if (!isResolved) {
-                        isResolved = true;
-                        clearTimeout(timeout);
-                        if (client.authToken) {
-                            resolve({ authToken: client.authToken });
-                        } else {
-                            reject(new Error("AuthTokenの取得に失敗しました。"));
-                        }
-                    }
-                });
-
-                client.on("error", (err: any) => {
-                    console.error("[LINEJS Error]", err);
-                    if (!isResolved) {
-                        isResolved = true;
-                        clearTimeout(timeout);
-                        const msg = err instanceof Error ? err.message : String(err);
-                        reject(new Error(`LINE認証エラー: ${msg}`));
-                    }
-                });
+        // jsr:@evex/linejs@3.4.2 の loginWithPassword を実行
+        const client: any = await loginWithPassword({
+            email,
+            password,
+            storage,
+            onPincode: (pin: string) => {
+                console.log(`[LINEJS] PIN Code Generated: ${pin}`);
+                detectedPin = pin;
             }
-
-            // 利用可能なログインメソッドを安全に探索して実行
-            let loginFn: Function | null = null;
-            if (typeof client.login === "function") {
-                loginFn = () => client.login({ email, password });
-            } else if (typeof client.loginWithEmail === "function") {
-                loginFn = () => client.loginWithEmail(email, password);
-            } else if (typeof client.loginWithCredential === "function") {
-                loginFn = () => client.loginWithCredential({ email, password });
+        }).catch((err: any) => {
+            if (err?.pincode) {
+                detectedPin = String(err.pincode);
+                return null;
             }
+            throw err;
+        });
 
-            if (loginFn) {
-                loginFn().catch((err: any) => {
-                    if (!isResolved) {
-                        isResolved = true;
-                        clearTimeout(timeout);
-                        const msg = err instanceof Error ? err.message : String(err);
-                        reject(new Error(`ログイン失敗: ${msg}`));
-                    }
-                });
-            } else {
-                clearTimeout(timeout);
-                reject(new Error("LINEJS v3.4.2 では Eメール認証関数が提供されていません。『トークン手動確認/コピー』タブから AuthToken を入力・保持してください。"));
-            }
-
-        } catch (err: any) {
-            const msg = err instanceof Error ? err.message : String(err);
-            reject(new Error(`初期化エラー: ${msg}`));
+        if (detectedPin) {
+            return { pincode: detectedPin };
         }
-    });
+
+        const token = client?.authToken || client?.token || client?.base?.authToken;
+        if (token) {
+            return { authToken: token };
+        }
+
+        throw new Error("AuthTokenの取得に失敗しました。メールアドレスまたはパスワードを確認してください。");
+    } catch (err: any) {
+        const msg = err instanceof Error ? err.message : String(err);
+        throw new Error(`LINE認証エラー: ${msg}`);
+    }
 }
 
 function getAuthToken(): string {
@@ -99,7 +56,7 @@ function getAuthToken(): string {
 }
 
 function main(): void {
-    console.log("LINEJS Session Engine loaded.");
+    console.log("LINEJS Session Engine loaded with jsr:@evex/linejs@3.4.2");
 }
 
 if (import.meta.main) {
