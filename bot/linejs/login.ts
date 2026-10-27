@@ -13,50 +13,38 @@ export async function loginWithEmail(email: string, password: string): Promise<L
     try {
         const storage = new FileStorage(STORAGE_PATH);
         const client = new Client({ storage });
-        let detectedPin: string | null = null;
 
-        // 第1引数に client インスタンス、第2引数にオプションを指定
+        console.log("ログイン処理を開始します...");
+
+        // loginWithPassword はスマホでPINが入力されるまで自動で待機してくれます
         await loginWithPassword(client, {
             email,
             password,
-            fetch: globalThis.fetch.bind(globalThis), // fetchエラー対策
+            fetch: globalThis.fetch.bind(globalThis),
             onPincode: (pin: string) => {
-                console.log(`[LINEJS] PIN Code Generated: ${pin}`);
-                detectedPin = pin;
+                console.log(`\n=================================================`);
+                console.log(`📱 【重要】スマホのLINEアプリを開いてください！`);
+                console.log(`本人確認画面が表示されたら、以下のPINコードを入力してください:`);
+                console.log(`👉  [ ${pin} ]  👈`);
+                console.log(`※入力が終わるまで、このプログラムは待機します...`);
+                console.log(`=================================================\n`);
             }
-        }).catch((err: any) => {
-            // 内部でPINコード入力待ち状態になった際に投げられる例外をキャッチ
-            if (err?.pincode) {
-                detectedPin = String(err.pincode);
-                return;
-            }
-            throw err;
         });
 
-        // コールバックまたは例外からPINを検知した場合
-        if (detectedPin) {
-            return { pincode: detectedPin };
-        }
+        // スマホで正しくPINが入力されると、待機が解除されてここに進みます
+        console.log("✅ スマホでの認証が確認できました！連携処理を完了します...");
 
-        // 認証成功時、トークンを取得
         const token = (client as any).authToken || (client as any).token || (client as any).base?.authToken;
         if (token) {
+            console.log("🎉 AuthTokenの取得に成功しました！");
             return { authToken: token };
         }
 
-        throw new Error("AuthTokenの取得に失敗しました。メールアドレスまたはパスワードを確認してください。");
+        throw new Error("認証は通過しましたが、AuthTokenの取得に失敗しました。");
     } catch (err: any) {
         const msg = err instanceof Error ? err.message : String(err);
         throw new Error(`LINE認証エラー: ${msg}`);
     }
-}
-
-function getAuthToken(): string {
-    const token = Deno.env.get("LINE_AUTH_TOKEN")?.trim();
-    if (!token) {
-        throw new Error("LINE_AUTH_TOKEN が設定されていません。");
-    }
-    return token;
 }
 
 function main(): void {
