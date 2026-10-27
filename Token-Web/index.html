@@ -44,7 +44,6 @@
       position: relative;
     }
 
-    /* ディープグリッド & ノイズスキャンライン */
     body::before {
       content: "";
       position: fixed;
@@ -110,7 +109,7 @@
 
     .close-btn:hover { color: var(--accent-red); }
 
-    /* Welcome Container */
+    /* Welcome Container Layout */
     .portal-container {
       display: flex;
       align-items: center;
@@ -122,7 +121,6 @@
       position: relative;
       padding: 20px 0;
       z-index: 5;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
     }
 
     .vertical-divider {
@@ -294,8 +292,6 @@
       border-radius: 2px;
       transition: all 0.25s ease;
       box-shadow: 0 0 12px rgba(0, 255, 135, 0.1);
-      position: relative;
-      overflow: hidden;
     }
 
     .btn-start:hover {
@@ -331,9 +327,7 @@
       box-shadow: 0 0 8px var(--main-neon);
     }
 
-    /* =========================================================
-       CYBER TRANSITION OVERLAY (スキャン切り替えアニメーション)
-    ========================================================= */
+    /* Cyber Transition Overlay */
     .cyber-transition-overlay {
       position: fixed;
       inset: 0;
@@ -345,24 +339,18 @@
       align-items: center;
       gap: 16px;
       backdrop-filter: blur(8px);
-      animation: scanFade 0.7s forwards ease-in-out;
     }
 
     .scan-line {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 4px;
       background: linear-gradient(90deg, transparent, var(--main-neon), var(--cyan-neon), transparent);
       box-shadow: 0 0 15px var(--main-neon);
       animation: scanMove 0.7s linear infinite;
     }
 
-    @keyframes scanMove {
-      0% { top: 0%; }
-      100% { top: 100%; }
-    }
+    @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
 
     .transition-title {
       font-family: 'Orbitron', sans-serif;
@@ -402,9 +390,7 @@
       100% { transform: translateX(0%); }
     }
 
-    /* =========================================================
-       CYBER TOAST NOTIFICATIONS (右上のサイバー通知)
-    ========================================================= */
+    /* Toast Popups */
     .toast-container {
       position: fixed;
       top: 24px;
@@ -425,90 +411,19 @@
       border-left: 4px solid var(--main-neon);
       border-radius: 2px;
       padding: 14px 18px;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 255, 135, 0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-      animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+      animation: toastSlideIn 0.35s ease forwards;
     }
 
-    .toast-card.error {
-      border-left-color: var(--accent-red);
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(255, 42, 85, 0.2);
-    }
-
-    .toast-card.info {
-      border-left-color: var(--cyan-neon);
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 229, 255, 0.2);
-    }
+    .toast-card.error { border-left-color: var(--accent-red); }
+    .toast-card.info { border-left-color: var(--cyan-neon); }
 
     @keyframes toastSlideIn {
       0% { opacity: 0; transform: translateX(60px); }
       100% { opacity: 1; transform: translateX(0); }
     }
 
-    .toast-card.fade-out {
-      animation: toastFadeOut 0.3s forwards ease-in;
-    }
-
-    @keyframes toastFadeOut {
-      0% { opacity: 1; transform: translateX(0); }
-      100% { opacity: 0; transform: translateX(60px); }
-    }
-
-    .toast-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .toast-tag {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--main-neon);
-      letter-spacing: 1px;
-    }
-
-    .toast-card.error .toast-tag { color: var(--accent-red); }
-    .toast-card.info .toast-tag { color: var(--cyan-neon); }
-
-    .toast-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-    }
-
-    .toast-msg {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-main);
-      line-height: 1.5;
-    }
-
-    .toast-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 2px;
-      width: 100%;
-      background: var(--main-neon);
-      animation: toastProgress 3s linear forwards;
-    }
-
-    .toast-card.error .toast-progress { background: var(--accent-red); }
-    .toast-card.info .toast-progress { background: var(--cyan-neon); }
-
-    @keyframes toastProgress {
-      0% { width: 100%; }
-      100% { width: 0%; }
-    }
-
-    /* =========================================================
-       BLACK MARKET DASHBOARD UI
-    ========================================================= */
+    /* Dashboard UI */
     #dashboard-window {
       position: fixed;
       inset: 0;
@@ -516,12 +431,6 @@
       z-index: 100;
       overflow-y: auto;
       padding: 0;
-      animation: hudExpand 0.5s ease-out forwards;
-    }
-
-    @keyframes hudExpand {
-      0% { opacity: 0; transform: scale(0.98); }
-      100% { opacity: 1; transform: scale(1); }
     }
 
     header.dash-header {
@@ -678,7 +587,6 @@
       border-radius: 3px;
       padding: 18px;
       transition: all 0.25s ease;
-      position: relative;
     }
 
     .tool-card:hover {
@@ -796,7 +704,7 @@
 </head>
 
 <body>
-  <!-- Toast Notification Container -->
+  <!-- Toast Popup Container -->
   <div id="toast-container" class="toast-container"></div>
 
   <!-- Cyber Scan Transition Overlay -->
@@ -816,7 +724,7 @@
       <button class="close-btn" id="close-btn">✕</button>
     </header>
 
-    <div class="portal-container" id="portal-container">
+    <div class="portal-container">
       <div class="vertical-divider"></div>
 
       <div class="left-card">
@@ -997,7 +905,6 @@
       welcome: document.getElementById("welcome-window"),
       dashboard: document.getElementById("dashboard-window"),
       transition: document.getElementById("cyber-transition"),
-      portalContainer: document.getElementById("portal-container"),
       toastContainer: document.getElementById("toast-container"),
       start: document.getElementById("start-btn"),
       exit: document.getElementById("exit-btn"),
@@ -1021,28 +928,20 @@
     let refreshTimer = null;
     let requestInProgress = false;
 
-    // Toast Pop-up Notification System
     function showToast(tag, msg, type = "success") {
       if (!elements.toastContainer) return;
       const card = document.createElement("div");
       card.className = `toast-card ${type}`;
-
       const time = new Date().toLocaleTimeString("ja-JP");
       card.innerHTML = `
-        <div class="toast-header">
-          <span class="toast-tag">[${tag.toUpperCase()}]</span>
-          <span class="toast-time">${time}</span>
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span style="font-family:'Orbitron',sans-serif; font-size:10px; font-weight:800; color:var(--main-neon);">[${tag.toUpperCase()}]</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text-dim);">${time}</span>
         </div>
-        <div class="toast-msg">${msg}</div>
-        <div class="toast-progress"></div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#FFF;">${msg}</div>
       `;
-
       elements.toastContainer.appendChild(card);
-
-      setTimeout(() => {
-        card.classList.add("fade-out");
-        setTimeout(() => card.remove(), 300);
-      }, 3000);
+      setTimeout(() => card.remove(), 3200);
     }
 
     function addLog(msg, type = "info") {
@@ -1056,16 +955,13 @@
       elements.logs.scrollTop = elements.logs.scrollHeight;
     }
 
-    // Tools Search Filter
     elements.searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase().trim();
       const cards = elements.toolsGrid.querySelectorAll(".tool-card");
-
       cards.forEach(card => {
         const title = card.querySelector(".tool-title").textContent.toLowerCase();
         const desc = card.querySelector(".tool-desc").textContent.toLowerCase();
         const keywords = card.getAttribute("data-keywords") || "";
-
         if (!keyword || title.includes(keyword) || desc.includes(keyword) || keywords.includes(keyword)) {
           card.classList.remove("hidden");
         } else {
@@ -1074,14 +970,12 @@
       });
     });
 
-    // Cyberpunk Transition to Dashboard
     function showDashboard() {
       elements.transition.classList.remove("hidden");
-
       setTimeout(() => {
         elements.dashboard.classList.remove("hidden");
         elements.transition.classList.add("hidden");
-        showToast("SYSTEM", "Control Center Loaded Successfully", "success");
+        showToast("SYSTEM", "Control Center Loaded", "success");
         refreshStatus();
         if (refreshTimer !== null) clearInterval(refreshTimer);
         refreshTimer = setInterval(refreshStatus, 5000);
@@ -1090,7 +984,7 @@
 
     function showWelcome() {
       elements.dashboard.classList.add("hidden");
-      showToast("SYSTEM", "Returned to Gateway Portal", "info");
+      showToast("SYSTEM", "Returned to Welcome Portal", "info");
       if (refreshTimer !== null) {
         clearInterval(refreshTimer);
         refreshTimer = null;
@@ -1162,7 +1056,7 @@
     elements.exit.addEventListener("click", showWelcome);
     elements.refresh.addEventListener("click", () => {
       refreshStatus();
-      showToast("REFRESH", "API Status Sync Triggered", "info");
+      showToast("REFRESH", "API Sync Triggered", "info");
     });
   </script>
 </body>
