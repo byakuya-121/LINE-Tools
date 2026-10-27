@@ -369,6 +369,14 @@ document.getElementById('btn-verify-token')?.addEventListener('click', async () 
       body: JSON.stringify({ authToken: tokenInput })
     });
 
+    if (!res.ok) {
+      const errText = await res.text();
+      if (res.status === 404) {
+        throw new Error("404 Not Found: サーバー側で /api/verify-token が未反映です。Renderのデプロイ完了をお待ちください。");
+      }
+      throw new Error(HTTP : );
+    }
+
     const data = await res.json();
     if (data.valid) {
       statusText.innerHTML = `<span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN</span><br><span style="color:#FFF;">アカウント表示名: ${data.displayName || 'LINE User'}</span>`;
