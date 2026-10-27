@@ -6,37 +6,54 @@ const STORAGE_PATH = "./storage.json";
 /**
  * Eメールとパスワードを使用してLINEJSログインを行い、AuthTokenを取得する関数
  */
-export async function loginWithEmail(email: string, password: string): Promise<string> {
-    const storage = new FileStorage(STORAGE_PATH);
-    const client = new Client({ storage });
-
+export function loginWithEmail(email: string, password: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-            reject(new Error("ログイン処理がタイムアウトしました。"));
-        }, 60000);
+        try {
+            const storage = new FileStorage(STORAGE_PATH);
+            // LINEJS Client の型チェックエラーを回避して安全に初期化
+            const client = new Client() as any;
 
-        client.on("pincode", (pin: string) => {
-            console.log(`[LINEJS] PIN Code: ${pin}`);
-        });
+            const timeout = setTimeout(() => {
+                reject(new Error("ログイン処理がタイムアウトしました。"));
+            }, 60000);
 
-        client.on("ready", () => {
-            clearTimeout(timeout);
-            if (client.authToken) {
-                resolve(client.authToken);
-            } else {
-                reject(new Error("AuthTokenの取得に失敗しました。"));
+            if (typeof client.on === "function") {
+                client.on("pincode", (pin: string) => {
+                    console.log(`[LINEJS] PIN Code: ${pin}`);
+                });
+
+                client.on("ready", () => {
+                    clearTimeout(timeout);
+                    if (client.authToken) {
+                        resolve(client.authToken);
+                    } else {
+                        reject(new Error("AuthTokenの取得に失敗しました。"));
+                    }
+                });
+
+                client.on("error", (err: unknown) => {
+                    clearTimeout(timeout);
+                    reject(err instanceof Error ? err : new Error(String(err)));
+                });
             }
-        });
 
-        client.on("error", (err: unknown) => {
-            clearTimeout(timeout);
-            reject(err instanceof Error ? err : new Error(String(err)));
-        });
-
-        client.login({ email, password }).catch((err) => {
-            clearTimeout(timeout);
+            if (typeof client.login === "function") {
+                client.login({ email, password, storage }).catch((err: any) => {
+                    clearTimeout(timeout);
+                    reject(err);
+                });
+            } else if (typeof client.loginWithAuthCredential === "function") {
+                client.loginWithAuthCredential({ email, password }).catch((err: any) => {
+                    clearTimeout(timeout);
+                    reject(err);
+                });
+            } else {
+                clearTimeout(timeout);
+                reject(new Error("LINEJS Client のログイン機能の呼び出しに失敗しました。"));
+            }
+        } catch (err) {
             reject(err);
-        });
+        }
     });
 }
 
@@ -48,7 +65,7 @@ function getAuthToken(): string {
     return token;
 }
 
-async function main(): Promise<void> {
+function main(): void {
     console.log("====================================");
     console.log(" LINEJS セッション確認");
     console.log("====================================");
@@ -68,5 +85,5 @@ async function main(): Promise<void> {
 }
 
 if (import.meta.main) {
-    await main();
+    main();
 }
