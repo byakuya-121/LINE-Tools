@@ -20,11 +20,11 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
             const timeout = setTimeout(() => {
                 if (!isResolved) {
                     isResolved = true;
-                    reject(new Error("LINE認証がタイムアウトしました。スマホのログイン許可設定を確認してください。"));
+                    reject(new Error("LINE認証がタイムアウトしました。"));
                 }
-            }, 60000);
+            }, 45000);
 
-            // PINコード検知
+            // イベントリスナーの設定
             if (typeof client.on === "function") {
                 client.on("pincode", (pin: any) => {
                     console.log(`[LINEJS] PIN Code Generated: ${String(pin)}`);
@@ -35,7 +35,6 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                     }
                 });
 
-                // ログイン成功
                 client.on("ready", () => {
                     console.log("[LINEJS] Login Ready!");
                     if (!isResolved) {
@@ -49,7 +48,6 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                     }
                 });
 
-                // エラー発生
                 client.on("error", (err: any) => {
                     console.error("[LINEJS Error]", err);
                     if (!isResolved) {
@@ -61,15 +59,29 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                 });
             }
 
-            // LINEJS v3.4.2 ログイン実行
-            client.login({ email, password }).catch((err: any) => {
-                if (!isResolved) {
-                    isResolved = true;
-                    clearTimeout(timeout);
-                    const msg = err instanceof Error ? err.message : String(err);
-                    reject(new Error(`ログイン失敗: ${msg}`));
-                }
-            });
+            // 利用可能なログインメソッドを安全に探索して実行
+            let loginFn: Function | null = null;
+            if (typeof client.login === "function") {
+                loginFn = () => client.login({ email, password });
+            } else if (typeof client.loginWithEmail === "function") {
+                loginFn = () => client.loginWithEmail(email, password);
+            } else if (typeof client.loginWithCredential === "function") {
+                loginFn = () => client.loginWithCredential({ email, password });
+            }
+
+            if (loginFn) {
+                loginFn().catch((err: any) => {
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timeout);
+                        const msg = err instanceof Error ? err.message : String(err);
+                        reject(new Error(`ログイン失敗: ${msg}`));
+                    }
+                });
+            } else {
+                clearTimeout(timeout);
+                reject(new Error("LINEJS v3.4.2 では Eメール認証関数が提供されていません。『トークン手動確認/コピー』タブから AuthToken を入力・保持してください。"));
+            }
 
         } catch (err: any) {
             const msg = err instanceof Error ? err.message : String(err);
