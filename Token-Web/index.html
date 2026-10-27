@@ -55,6 +55,12 @@
       --panel-dark: rgba(8, 6, 3, 0.98);
     }
 
+    /* 🌈 Auto Rainbow テーマ */
+    body[data-theme="auto"] {
+      --panel-bg: rgba(12, 12, 16, 0.93);
+      --panel-dark: rgba(5, 5, 8, 0.98);
+    }
+
     * {
       box-sizing: border-box;
       font-family: 'Inter', sans-serif;
@@ -957,7 +963,7 @@
           <li><strong>1. APIステータス確認:</strong> 上部の「PORTAL API」がONLINEになっていることを確認します。</li>
           <li><strong>2. ツール検索:</strong> 検索バーにキーワード（例: `linejs`, `webhook`）を入力すると、対象ツールを即座に抽出できます。</li>
           <li><strong>3. セッション同期:</strong> Token Auto Sync機能により、認証トークンが自動的に保持・更新されます。</li>
-          <li><strong>4. カラー変更:</strong> 右上のテーマスイッチャーからお好みのネオンカラーを選択可能です。</li>
+          <li><strong>4. カラー変更:</strong> 右上のテーマスイッチャー（🌈 AUTO / 💚 / 💜 / 💙 / 💛）からネオンカラーを変更可能。</li>
         </ol>
         <p style="color:var(--text-dim); font-size:11px;">※Renderサーバーは一定時間アクセスがない場合サスペンドされるため、初回同期に数秒かかる場合があります。</p>
       </div>
@@ -1086,9 +1092,10 @@
     <header class="dash-header">
       <div class="dash-brand">BYAKUYA TOOLS // BLACKMARKET</div>
       <div class="header-right">
-        <!-- カラーテーマ切り替えボタン群 -->
+        <!-- カラーテーマ切り替えボタン群 (AUTOモード追加) -->
         <div class="theme-switcher">
           <span class="theme-label">COLOR:</span>
+          <button class="theme-btn" onclick="setTheme('auto')" title="Auto Rainbow Glow">🌈 AUTO</button>
           <button class="theme-btn active" onclick="setTheme('matrix')" title="Matrix Green">💚</button>
           <button class="theme-btn" onclick="setTheme('purple')" title="Cyber Purple">💜</button>
           <button class="theme-btn" onclick="setTheme('cyan')" title="Neon Cyan">💙</button>
@@ -1255,18 +1262,56 @@
     let refreshTimer = null;
     let requestInProgress = false;
 
+    // 🌈 AUTO モード用 7色レインボー循環タイマー
+    let autoThemeTimer = null;
+    let autoHue = 0;
+
+    function stopAutoTheme() {
+      if (autoThemeTimer) {
+        clearInterval(autoThemeTimer);
+        autoThemeTimer = null;
+      }
+      document.body.style.removeProperty('--main-neon');
+      document.body.style.removeProperty('--cyan-neon');
+      document.body.style.removeProperty('--border-color');
+      document.body.style.removeProperty('--accent-purple');
+    }
+
+    function startAutoTheme() {
+      stopAutoTheme();
+      autoThemeTimer = setInterval(() => {
+        autoHue = (autoHue + 1) % 360;
+        const mainNeon = `hsl(${autoHue}, 100%, 50%)`;
+        const cyanNeon = `hsl(${(autoHue + 60) % 360}, 100%, 50%)`;
+        const borderCol = `hsla(${autoHue}, 100%, 50%, 0.35)`;
+        const accentPurp = `hsl(${(autoHue + 120) % 360}, 100%, 50%)`;
+
+        document.body.style.setProperty('--main-neon', mainNeon);
+        document.body.style.setProperty('--cyan-neon', cyanNeon);
+        document.body.style.setProperty('--border-color', borderCol);
+        document.body.style.setProperty('--accent-purple', accentPurp);
+      }, 40);
+    }
+
     // カラーテーマの適用と保持
     window.setTheme = function(themeName) {
-      if (themeName === "matrix") {
-        document.body.removeAttribute("data-theme");
+      const themes = ["auto", "matrix", "purple", "cyan", "amber"];
+
+      if (themeName === "auto") {
+        document.body.setAttribute("data-theme", "auto");
+        startAutoTheme();
       } else {
-        document.body.setAttribute("data-theme", themeName);
+        stopAutoTheme();
+        if (themeName === "matrix") {
+          document.body.removeAttribute("data-theme");
+        } else {
+          document.body.setAttribute("data-theme", themeName);
+        }
       }
       localStorage.setItem("byakuya_theme", themeName);
 
-      // ボタンアクティブ表示の切り替え
+      // ボタンアクティブ表示の更新
       document.querySelectorAll(".theme-btn").forEach((btn, index) => {
-        const themes = ["matrix", "purple", "cyan", "amber"];
         if (themes[index] === themeName) {
           btn.classList.add("active");
         } else {
@@ -1274,19 +1319,12 @@
         }
       });
 
-      showToast("THEME", `Switched to ${themeName.toUpperCase()} theme`, "info");
+      showToast("THEME", `Switched to ${themeName.toUpperCase()} mode`, "info");
     };
 
     // 初期化時に保存テーマを復元
     const savedTheme = localStorage.getItem("byakuya_theme") || "matrix";
-    if (savedTheme !== "matrix") {
-      document.body.setAttribute("data-theme", savedTheme);
-      document.querySelectorAll(".theme-btn").forEach((btn, index) => {
-        const themes = ["matrix", "purple", "cyan", "amber"];
-        if (themes[index] === savedTheme) btn.classList.add("active");
-        else btn.classList.remove("active");
-      });
-    }
+    window.setTheme(savedTheme);
 
     // タイピングアニメーション
     const subtitleString = "// NEXT-GEN LINEJS & OPENCHAT AUTOMATION SYSTEM [v3.4.2]";
