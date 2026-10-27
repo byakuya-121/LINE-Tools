@@ -586,7 +586,21 @@ header.dash-header {
 .aa-wrapper {
   display: inline-block;
   position: relative;
+  padding-left: 78px;
   padding-right: 78px;
+}
+
+.aa-gif-badge.badge-left {
+  top: 18px;
+  left: -58px;
+  border: 1.5px solid var(--accent-purple);
+  box-shadow: 0 0 16px var(--accent-purple);
+  animation: floatBadgeLeft 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes floatBadgeLeft {
+  0% { transform: translateY(0px) rotate(-4deg); }
+  100% { transform: translateY(-8px) rotate(2deg); }
 }
 
 .aa-gif-badge {
