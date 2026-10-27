@@ -578,7 +578,7 @@
       padding: 24px 24px 40px;
     }
 
-    /* AA Header Box */
+    /* AA Header Box & Relative Wrapper */
     .aa-dashboard-container {
       width: 100%;
       text-align: center;
@@ -601,6 +601,33 @@
       100% {
         box-shadow: 0 0 45px rgba(0, 255, 135, 0.22), inset 0 0 35px rgba(0, 255, 135, 0.1);
       }
+    }
+
+    .aa-wrapper {
+      display: inline-block;
+      position: relative;
+    }
+
+    /* AAアートの文字末尾に浮かぶ GIFバッジ */
+    .aa-gif-badge {
+      position: absolute;
+      top: -12px;
+      right: -18px;
+      width: 44px;
+      height: 44px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid var(--main-neon);
+      box-shadow: 0 0 15px var(--main-neon);
+      animation: floatBadge 3s ease-in-out infinite alternate;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    @keyframes floatBadge {
+      0% { transform: translateY(0px) rotate(-4deg); }
+      100% { transform: translateY(-8px) rotate(4deg); }
     }
 
     .cyber-aa {
@@ -942,6 +969,7 @@
       .market-search-box { flex-direction: column; align-items: flex-start; gap: 8px; }
       .quick-nav-bar { gap: 8px; }
       .quick-nav-btn { font-size: 10px; padding: 6px 12px; }
+      .aa-gif-badge { width: 32px; height: 32px; top: -8px; right: -12px; }
     }
   </style>
 </head>
@@ -1092,7 +1120,7 @@
     <header class="dash-header">
       <div class="dash-brand">BYAKUYA TOOLS // BLACKMARKET</div>
       <div class="header-right">
-        <!-- カラーテーマ切り替えボタン群 (AUTOモード追加) -->
+        <!-- カラーテーマ切り替えボタン群 (AUTOモード付き) -->
         <div class="theme-switcher">
           <span class="theme-label">COLOR:</span>
           <button class="theme-btn" onclick="setTheme('auto')" title="Auto Rainbow Glow">🌈 AUTO</button>
@@ -1112,9 +1140,11 @@
     </header>
 
     <main class="dash-content">
-      <!-- LINE-Tools ASCII Art Box -->
+      <!-- LINE-Tools ASCII Art Box (GIF Badge Overlay付き) -->
       <div class="aa-dashboard-container">
-        <pre class="cyber-aa">
+        <div class="aa-wrapper">
+          <img src="assets/aa-icon.gif" alt="GIF Badge" class="aa-gif-badge" onerror="this.src='assets/Developer.jpg'; this.onerror=function(){this.style.display='none';}">
+          <pre class="cyber-aa">
  █████       █████ ██████   █████ ██████████            ███████████                    ████         
 ░░███       ░░███ ░░██████ ░░███ ░░███░░░░░█           ░█░░░███░░░█                   ░░███         
  ░███        ░███  ░███░███ ░███  ░███  █ ░             ░   ░███  ░   ██████   ██████  ░███   █████ 
@@ -1123,7 +1153,8 @@
  ░███     █  ░███  ░███  ░░█████  ░███ ░   █                ░███    ░███ ░███░███ ░███ ░███  ░░░░███
  ███████████ █████ █████  ░░█████ ██████████                █████   ░░██████ ░░██████  █████ ██████ 
 ░░░░░░░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░░░░░░                ░░░░░     ░░░░░░   ░░░░░░  ░░░░░ ░░░░░░ 
-        </pre>
+          </pre>
+        </div>
       </div>
 
       <!-- サイバータイピング・サブタイトル -->
