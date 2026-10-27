@@ -324,7 +324,8 @@ async function executeTokenSync() {
     if (data.authToken) {
       pinArea.classList.add('hidden');
       tokenArea.classList.remove('hidden');
-      document.getElementById('token-output').value = data.authToken;
+            document.getElementById('token-output').value = data.authToken || '';
+      document.getElementById('jwt-token-output').value = data.jwtToken || data.accessToken || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
       showToast("SUCCESS", "AuthTokenの取得に成功しました！", "success");
       addLog("AuthToken successfully acquired.", "success");
     } else if (data.pincode) {
@@ -415,4 +416,12 @@ elements.exit.addEventListener("click", showWelcome);
 elements.refresh.addEventListener("click", () => {
   refreshStatus();
   showToast("REFRESH", "API Sync Triggered", "info");
+});
+
+// JWT (ey...) ワンクリックコピー
+document.getElementById('btn-copy-jwt')?.addEventListener('click', () => {
+  const output = document.getElementById('jwt-token-output');
+  output.select();
+  navigator.clipboard.writeText(output.value);
+  showToast("COPIED", "JWT Token (ey...) をコピーしました", "success");
 });

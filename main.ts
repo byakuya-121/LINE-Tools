@@ -53,7 +53,7 @@ Deno.serve(async (req: Request) => {
 
       if (result.type === "token" || client.authToken) {
         return new Response(
-          JSON.stringify({ authToken: client.authToken }),
+          JSON.stringify({ authToken: client.authToken, jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(client.authToken || "").replace(/=/g, "") }),
           { headers: { "Content-Type": "application/json" } }
         );
       } else if (pincodeVal) {

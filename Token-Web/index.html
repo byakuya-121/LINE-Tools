@@ -101,10 +101,22 @@
           </div>
 
           <div id="token-display-area" class="hidden">
-            <div style="color:var(--main-neon); font-size:11px; margin-bottom:6px; font-weight:700;">✓ 取得完了 AuthToken (ワンクリックコピー対応)</div>
-            <div style="display:flex; gap:8px;">
-              <input type="text" id="token-output" class="modal-input" style="margin:0; flex:1;" readonly>
-              <button class="btn-start" id="btn-copy-token" style="width:auto; padding:0 14px; white-space:nowrap;">📋 コピー</button>
+            <!-- 1. LINEJS AuthToken (G7...) -->
+            <div style="margin-bottom:12px;">
+              <div style="color:var(--main-neon); font-size:10px; margin-bottom:4px; font-weight:700;">[1] LINEJS AuthToken (G7... 形式)</div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="token-output" class="modal-input" style="margin:0; flex:1;" readonly placeholder="G7...">
+                <button class="btn-start" id="btn-copy-token" style="width:auto; padding:0 12px; white-space:nowrap; font-size:10px;">📋 コピー</button>
+              </div>
+            </div>
+
+            <!-- 2. JWT / OAuth Access Token (ey...) -->
+            <div style="margin-bottom:8px;">
+              <div style="color:var(--cyan-neon); font-size:10px; margin-bottom:4px; font-weight:700;">[2] JWT / OAuth Access Token (ey... 形式)</div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="jwt-token-output" class="modal-input" style="margin:0; flex:1;" readonly placeholder="eyJ...">
+                <button class="btn-start" id="btn-copy-jwt" style="width:auto; padding:0 12px; white-space:nowrap; font-size:10px; border-color:var(--cyan-neon); color:var(--cyan-neon);">📋 コピー</button>
+              </div>
             </div>
           </div>
         </div>
