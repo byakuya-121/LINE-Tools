@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import { Client } from "@evex/linejs";
 import { FileStorage } from "@evex/linejs/storage";
 
@@ -12,8 +13,7 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
     return new Promise((resolve, reject) => {
         try {
             const storage = new FileStorage(STORAGE_PATH);
-            const clientCtor = Client as unknown as new (opts: unknown) => unknown;
-            const client = new clientCtor({ storage }) as any;
+            const client: any = new (Client as any)({ storage });
 
             let isResolved = false;
 
@@ -22,11 +22,11 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                     isResolved = true;
                     reject(new Error("LINE認証がタイムアウトしました。スマホのログイン許可設定を確認してください。"));
                 }
-            }, 45000);
+            }, 60000);
 
+            // PINコード検知
             if (typeof client.on === "function") {
-                // PINコード要求を検知
-                client.on("pincode", (pin: unknown) => {
+                client.on("pincode", (pin: any) => {
                     console.log(`[LINEJS] PIN Code Generated: ${String(pin)}`);
                     if (!isResolved) {
                         isResolved = true;
@@ -50,7 +50,7 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                 });
 
                 // エラー発生
-                client.on("error", (err: unknown) => {
+                client.on("error", (err: any) => {
                     console.error("[LINEJS Error]", err);
                     if (!isResolved) {
                         isResolved = true;
@@ -61,14 +61,8 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                 });
             }
 
-            // ログイン実行
-            const loginPromise = typeof client.login === "function"
-                ? client.login({ email, password, storage })
-                : typeof client.loginWithAuthCredential === "function"
-                    ? client.loginWithAuthCredential({ email, password })
-                    : Promise.reject(new Error("LINEJSのログインメソッドが見つかりません。"));
-
-            loginPromise.catch((err: unknown) => {
+            // LINEJS v3.4.2 ログイン実行
+            client.login({ email, password }).catch((err: any) => {
                 if (!isResolved) {
                     isResolved = true;
                     clearTimeout(timeout);
@@ -77,7 +71,7 @@ export function loginWithEmail(email: string, password: string): Promise<LoginRe
                 }
             });
 
-        } catch (err: unknown) {
+        } catch (err: any) {
             const msg = err instanceof Error ? err.message : String(err);
             reject(new Error(`初期化エラー: ${msg}`));
         }
