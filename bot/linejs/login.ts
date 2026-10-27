@@ -1,5 +1,5 @@
-// deno-lint-ignore-file no-explicit-any
-import { Client, loginWithPassword } from "jsr:@evex/linejs@3.4.2";
+// deno-lint-ignore-file no-explicit-any no-import-prefix
+import { loginWithPassword } from "jsr:@evex/linejs@3.4.2";
 import { FileStorage } from "jsr:@evex/linejs@3.4.2/storage";
 
 const STORAGE_PATH = "./storage.json";
@@ -12,21 +12,17 @@ export interface LoginResult {
 export async function loginWithEmail(email: string, password: string): Promise<LoginResult> {
     try {
         const storage = new FileStorage(STORAGE_PATH);
-        
-        // 1. Clientインスタンスを先に作成し、deviceを指定
-        const client = new Client({
-            storage: storage,
-            device: "IOSIPAD"
-        } as any);
 
         console.log("ログイン処理を開始します...");
 
-        // 2. 第1引数にclient、第2引数にオプションを渡す
-        await loginWithPassword(client, {
+        // すべての設定を1つのオブジェクトにまとめて渡すのが正解です
+        const client: any = await loginWithPassword({
             email,
             password,
-            fetch: globalThis.fetch.bind(globalThis), // fetchエラー対策
-            onPincode: (pin: string) => {             // onPincodeを使用
+            device: "IOSIPAD",
+            storage: storage,
+            fetch: globalThis.fetch.bind(globalThis),
+            onPincodeRequest: (pin: string) => {
                 console.log(`\n=================================================`);
                 console.log(`📱 【重要】スマホのLINEアプリを開いてください！`);
                 console.log(`本人確認画面が表示されたら、以下のPINコードを入力してください:`);
@@ -34,11 +30,11 @@ export async function loginWithEmail(email: string, password: string): Promise<L
                 console.log(`※入力が終わるまで、このプログラムは待機します...`);
                 console.log(`=================================================\n`);
             }
-        });
+        } as any);
 
         console.log("✅ スマホでの認証が確認できました！連携処理を完了します...");
 
-        const token = (client as any).authToken || (client as any).token || (client as any).base?.authToken;
+        const token = client?.authToken || client?.token || client?.base?.authToken;
         if (token) {
             console.log("🎉 AuthTokenの取得に成功しました！");
             return { authToken: token };
