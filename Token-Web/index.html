@@ -1,719 +1,1654 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BYAKUYA TOOLS // BLACKMARKET</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <style id="theme-style">
-        :root {
-            --primary-color: #00ff88;
-            --primary-glow: rgba(0, 255, 136, 0.4);
-            --bg-color: #050505;
-            --card-bg: #0d0d0d;
-            --border-color: #00ff88;
-            --text-color: #00ff88;
-            --muted-text: #888888;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>BYAKUYA // BLACKMARKET CONTROL</title>
 
-        [data-theme="purple"] {
-            --primary-color: #a855f7;
-            --primary-glow: rgba(168, 85, 247, 0.4);
-            --border-color: #a855f7;
-            --text-color: #a855f7;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
 
-        [data-theme="blue"] {
-            --primary-color: #00d2ff;
-            --primary-glow: rgba(0, 210, 255, 0.4);
-            --border-color: #00d2ff;
-            --text-color: #00d2ff;
-        }
+  <style>
+    :root {
+      --bg-base: #030404;
+      --panel-bg: rgba(10, 14, 12, 0.93);
+      --panel-dark: rgba(4, 6, 5, 0.98);
+      --border-color: rgba(0, 255, 135, 0.25);
+      --main-neon: #00FF87;
+      --cyan-neon: #00E5FF;
+      --accent-red: #FF2A55;
+      --accent-purple: #B026FF;
+      --text-main: #E5EFEA;
+      --text-dim: #4B5A52;
+      --text-sub: #7A8C82;
+    }
 
-        [data-theme="orange"] {
-            --primary-color: #ff9900;
-            --primary-glow: rgba(255, 153, 0, 0.4);
-            --border-color: #ff9900;
-            --text-color: #ff9900;
-        }
+    /* 💜 Cyber Purple テーマ */
+    body[data-theme="purple"] {
+      --main-neon: #FF2E93;
+      --cyan-neon: #00E5FF;
+      --border-color: rgba(255, 46, 147, 0.3);
+      --accent-purple: #D100D1;
+      --panel-bg: rgba(18, 10, 16, 0.93);
+      --panel-dark: rgba(8, 4, 7, 0.98);
+    }
 
-        /* 🌈 AUTO：虹色（RGBグラデーション）アニメーション */
-        @keyframes rainbow-hue {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
+    /* 💙 Neon Cyan テーマ */
+    body[data-theme="cyan"] {
+      --main-neon: #00E5FF;
+      --cyan-neon: #00FF87;
+      --border-color: rgba(0, 229, 255, 0.3);
+      --accent-purple: #B026FF;
+      --panel-bg: rgba(8, 14, 18, 0.93);
+      --panel-dark: rgba(3, 6, 8, 0.98);
+    }
 
-        [data-theme="rainbow"] {
-            --primary-color: #00ff88;
-            --primary-glow: rgba(0, 255, 136, 0.6);
-            --border-color: #00ff88;
-            --text-color: #00ff88;
-            animation: rainbow-hue 4s linear infinite;
-        }
+    /* 💛 Amber Orange テーマ */
+    body[data-theme="amber"] {
+      --main-neon: #FFB300;
+      --cyan-neon: #FF5722;
+      --border-color: rgba(255, 179, 0, 0.3);
+      --accent-purple: #FF3D00;
+      --panel-bg: rgba(18, 14, 8, 0.93);
+      --panel-dark: rgba(8, 6, 3, 0.98);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Share Tech Mono', monospace;
-        }
+    /* 🌈 Auto Rainbow テーマ */
+    body[data-theme="auto"] {
+      --panel-bg: rgba(12, 12, 16, 0.93);
+      --panel-dark: rgba(5, 5, 8, 0.98);
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 20px;
-            min-height: 100vh;
-        }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* ヘッダー */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      padding: 20px 28px;
+      position: relative;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-        .brand-title {
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 50% 20%, rgba(176, 38, 255, 0.04) 0%, rgba(0, 255, 135, 0.02) 40%, transparent 80%),
+        linear-gradient(rgba(0, 255, 135, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 135, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, transparent, transparent 50%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5));
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.7;
+    }
 
-        .color-selector {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #111;
-            padding: 4px 10px;
-            border: 1px solid #333;
-            border-radius: 4px;
-        }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .hidden { display: none !important; }
 
-        .theme-btn {
-            cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-            user-select: none;
-            font-size: 13px;
-        }
+    /* Top Bar */
+    header.top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      z-index: 10;
+    }
 
-        .theme-btn:hover {
-            transform: scale(1.3);
-            opacity: 0.8;
-        }
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--main-neon);
+      transition: color 0.3s ease;
+    }
 
-        .btn-sm {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 3px 8px;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
 
-        .btn-sm:hover {
-            background: var(--primary-color);
-            color: #000;
-        }
+    .close-btn {
+      color: var(--text-dim);
+      font-size: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+    }
 
-        /* メインタイトルのバナー */
-        .banner-container {
-            border: 2px solid var(--border-color);
-            box-shadow: 0 0 15px var(--primary-glow);
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.6);
-        }
+    .close-btn:hover { color: var(--accent-red); }
 
-        .banner-title {
-            font-size: 52px;
-            letter-spacing: 4px;
-            color: var(--text-color);
-            text-shadow: 0 0 10px var(--primary-glow);
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-        }
+    /* Welcome Container Layout */
+    .portal-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      max-width: 1000px;
+      margin: auto;
+      width: 100%;
+      position: relative;
+      padding: 16px 0;
+      z-index: 5;
+    }
 
-        .avatar-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
+    .vertical-divider {
+      position: absolute;
+      left: calc(42% - 1px);
+      top: -40px;
+      bottom: -40px;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--accent-purple), var(--main-neon), transparent);
+      box-shadow: 0 0 8px var(--main-neon);
+    }
 
-        .guide-btn-wrap {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .left-card {
+      width: 42%;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 28px 24px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 360px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+      transition: border-color 0.3s ease;
+    }
 
-        /* 検索バー */
-        .search-container {
-            margin-bottom: 25px;
-        }
+    .left-card::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 50px;
+      height: 2px;
+      background: var(--accent-purple);
+      box-shadow: 0 0 8px var(--accent-purple);
+    }
 
-        .search-input {
-            width: 100%;
-            background: #0a0a0a;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 12px 15px;
-            font-size: 14px;
-            outline: none;
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
-        }
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      margin: 16px 0;
+    }
 
-        /* メトリックスグリッド */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+    .developer-avatar {
+      max-width: 140px;
+      max-height: 140px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
+    }
 
-        .metric-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            box-shadow: 0 0 8px var(--primary-glow);
-        }
+    .left-card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #FFFFFF;
+      letter-spacing: 1px;
+    }
 
-        .metric-label {
-            font-size: 11px;
-            color: #666;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
+    .left-card-title span {
+      color: var(--main-neon);
+      display: block;
+    }
 
-        .metric-value {
-            font-size: 22px;
-            font-weight: bold;
-        }
+    .left-card-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
 
-        /* ツール一覧 */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+    .left-card-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--accent-purple);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
 
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
+    .right-area {
+      width: 58%;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
 
-        .tool-card {
-            background: var(--card-bg);
-            border: 1px solid #222;
-            padding: 15px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
+    .welcome-header .welcome-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-purple);
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
 
-        .tool-card:hover {
-            border-color: var(--border-color);
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
+    .welcome-header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
 
-        .tool-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+    .welcome-header .byakuya-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
 
-        .tool-name {
-            font-weight: bold;
-            font-size: 14px;
-            color: #fff;
-        }
+    .welcome-header .env-desc {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
 
-        .badge {
-            font-size: 10px;
-            padding: 2px 6px;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
+    .system-check-box {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--main-neon);
+      border-radius: 2px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .tool-desc {
-            font-size: 11px;
-            color: #888;
-            line-height: 1.4;
-        }
+    .check-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
 
-        /* 情報パネル & ログ */
-        .info-panel, .log-panel {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            margin-bottom: 20px;
-        }
+    .check-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding-bottom: 8px;
+    }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            font-size: 12px;
-            margin-top: 10px;
-        }
+    .check-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+    .check-label { color: var(--text-sub); }
+    .check-value { font-weight: 700; color: var(--main-neon); }
 
-        .info-item span {
-            color: #666;
-            display: block;
-            margin-bottom: 3px;
-        }
+    .btn-start {
+      width: 100%;
+      background: rgba(0, 255, 135, 0.05);
+      border: 1px solid var(--main-neon);
+      color: var(--main-neon);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 13px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      border-radius: 2px;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 135, 0.1);
+    }
 
-        .log-box {
-            background: #000;
-            border: 1px solid #222;
-            padding: 10px;
-            font-size: 12px;
-            height: 60px;
-            margin-top: 10px;
-            color: var(--primary-color);
-        }
+    .btn-start:hover {
+      background: var(--main-neon);
+      color: #000;
+      box-shadow: 0 0 20px var(--main-neon);
+    }
 
-        /* モーダル (Token Auto Sync) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    footer.bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+      z-index: 10;
+    }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
 
-        .modal-content {
-            background: #0a0a0a;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 0 25px var(--primary-glow);
-            width: 550px;
-            max-width: 90%;
-            padding: 20px;
-            position: relative;
-        }
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--main-neon);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--main-neon);
+    }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #222;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            font-weight: bold;
-        }
+    /* Cyber Scan Transition Overlay */
+    .cyber-transition-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 4, 4, 0.95);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      backdrop-filter: blur(8px);
+    }
 
-        .close-btn {
-            cursor: pointer;
-            font-size: 18px;
-            color: #666;
-        }
+    .scan-line {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--main-neon), var(--cyan-neon), transparent);
+      box-shadow: 0 0 12px var(--main-neon);
+      animation: scanMove 0.7s linear infinite;
+    }
 
-        .close-btn:hover {
-            color: #fff;
-        }
+    @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
 
-        .tab-menu {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    .transition-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--main-neon);
+      animation: glitchText 0.3s infinite alternate;
+    }
 
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: #111;
-            border: 1px solid #333;
-            color: #888;
-            cursor: pointer;
-            text-align: center;
-            font-size: 13px;
-        }
+    @keyframes glitchText {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-2px, 1px); }
+      100% { transform: translate(2px, -1px); }
+    }
 
-        .tab-btn.active {
-            background: transparent;
-            border-color: var(--border-color);
-            color: var(--text-color);
-            font-weight: bold;
-        }
+    .transition-bar {
+      width: 180px;
+      height: 3px;
+      background: rgba(0, 255, 135, 0.15);
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .transition-bar-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--main-neon);
+      box-shadow: 0 0 8px var(--main-neon);
+      animation: fillBar 0.6s ease-out forwards;
+    }
 
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 6px;
-        }
+    @keyframes fillBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(0%); } }
 
-        .form-control {
-            width: 100%;
-            background: #111;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 10px;
-            font-size: 13px;
-            outline: none;
-        }
+    /* Toast Popups */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+      max-width: 320px;
+      width: calc(100vw - 40px);
+    }
 
-        .form-control:focus {
-            border-color: var(--border-color);
-        }
+    .toast-card {
+      pointer-events: auto;
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--main-neon);
+      border-radius: 2px;
+      padding: 12px 14px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+      animation: toastSlideIn 0.35s ease forwards;
+    }
 
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 10px;
-        }
+    .toast-card.error { border-left-color: var(--accent-red); }
+    .toast-card.info { border-left-color: var(--cyan-neon); }
 
-        .btn-submit:hover {
-            background: var(--primary-color);
-            color: #000;
-        }
+    @keyframes toastSlideIn {
+      0% { opacity: 0; transform: translateX(50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
 
-        .result-box {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #333;
-            display: none;
-        }
+    /* Dashboard Main UI */
+    #dashboard-window {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-base);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 0;
+    }
 
-        .copy-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
+    header.dash-header {
+      background: var(--panel-dark);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-        .token-output {
-            flex: 1;
-            background: #000;
-            border: 1px solid var(--border-color);
-            color: var(--primary-color);
-            padding: 8px 12px;
-            font-size: 12px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+    .dash-brand {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      color: #FFF;
+      letter-spacing: 1px;
+    }
 
-        .btn-copy {
-            background: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 0 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* サイバーテーマ切り替えボタン群 */
+    .theme-switcher {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      padding: 3px 6px;
+      border-radius: 3px;
+    }
+
+    .theme-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--text-dim);
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      font-size: 11px;
+      padding: 2px 4px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+      line-height: 1;
+    }
+
+    .theme-btn:hover, .theme-btn.active {
+      border-color: var(--main-neon);
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+
+    .api-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-dim);
+    }
+    .status-dot.online { background: var(--main-neon); box-shadow: 0 0 8px var(--main-neon); }
+    .status-dot.offline { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
+
+    .btn-small {
+      background: rgba(0, 255, 135, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--main-neon);
+      padding: 6px 11px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+
+    .btn-small:hover {
+      background: var(--main-neon);
+      color: #000;
+      box-shadow: 0 0 10px var(--main-neon);
+    }
+
+    .dash-content {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 20px 20px 32px;
+    }
+
+    /* AA Header Box & Relative Wrapper */
+    .aa-dashboard-container {
+      width: 100%;
+      text-align: center;
+      margin: 0 0 16px;
+      overflow-x: auto;
+      padding: 20px 12px;
+      position: relative;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: radial-gradient(ellipse at center, rgba(0, 255, 135, 0.18) 0%, rgba(176, 38, 255, 0.09) 45%, rgba(3, 4, 4, 0) 75%);
+      box-shadow: 0 0 30px rgba(0, 255, 135, 0.12), inset 0 0 20px rgba(0, 255, 135, 0.06);
+      animation: hologramGlowPulse 4s infinite alternate;
+      transition: border-color 0.3s ease;
+    }
+
+    @keyframes hologramGlowPulse {
+      0% {
+        box-shadow: 0 0 15px rgba(0, 255, 135, 0.08), inset 0 0 12px rgba(0, 255, 135, 0.04);
+      }
+      100% {
+        box-shadow: 0 0 35px rgba(0, 255, 135, 0.22), inset 0 0 25px rgba(0, 255, 135, 0.1);
+      }
+    }
+
+    .aa-wrapper {
+      display: inline-block;
+      position: relative;
+      padding-right: 32px;
+    }
+
+    .aa-gif-badge {
+      position: absolute;
+      top: -12px;
+      right: -24px;
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1.5px solid var(--main-neon);
+      box-shadow: 0 0 18px var(--main-neon);
+      animation: floatBadge 3s ease-in-out infinite alternate;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
+
+    @keyframes floatBadge {
+      0% { transform: translateY(0px) rotate(-3deg); }
+      100% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    .cyber-aa {
+      font-family: 'Courier New', 'JetBrains Mono', monospace;
+      font-size: clamp(6px, 0.95vw, 11px);
+      line-height: 1.1;
+      letter-spacing: 0px;
+      color: var(--main-neon);
+      text-shadow: 0 0 6px var(--main-neon);
+      white-space: pre;
+      display: inline-block;
+      user-select: none;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* サイバータイピング・サブタイトル */
+    .typing-subtitle-wrap {
+      text-align: center;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+
+    .typing-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan-neon);
+      letter-spacing: 1.2px;
+      text-shadow: 0 0 6px var(--cyan-neon);
+      display: inline-block;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 12px;
+      background: var(--main-neon);
+      vertical-align: middle;
+      margin-left: 3px;
+      box-shadow: 0 0 6px var(--main-neon);
+      animation: cursorBlink 0.8s infinite;
+    }
+
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* クイック案内バー */
+    .quick-nav-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .quick-nav-btn {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 13px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .quick-nav-btn:hover {
+      border-color: var(--main-neon);
+      color: var(--main-neon);
+      box-shadow: 0 0 12px var(--main-neon);
+      transform: translateY(-2px);
+      background: rgba(0, 255, 135, 0.05);
+    }
+
+    /* Modal Popups */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 3, 3, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-top: 3px solid var(--main-neon);
+      border-radius: 4px;
+      max-width: 560px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 1px;
+    }
+
+    .modal-body {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 16px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--accent-red); }
+
+    .market-search-box {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-purple);
+      border-radius: 3px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-purple);
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .search-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--main-neon);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .search-input::placeholder { color: var(--text-dim); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      padding: 16px;
+      position: relative;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--main-neon);
+    }
+
+    .stat-title {
+      font: 700 9px 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font: 900 22px 'Orbitron', sans-serif;
+      color: var(--main-neon);
+      text-shadow: 0 0 8px var(--main-neon);
+    }
+
+    /* ツール一覧の区切り用ヘッダー */
+    .section-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-title-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #FFF;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title-label::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 12px;
+      background: var(--main-neon);
+      box-shadow: 0 0 8px var(--main-neon);
+    }
+
+    .section-title-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--cyan-neon);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .tool-card {
+      background: var(--panel-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      padding: 14px;
+      transition: all 0.25s ease;
+    }
+
+    .tool-card:hover {
+      border-color: var(--main-neon);
+      box-shadow: 0 0 12px var(--main-neon);
+      transform: translateY(-2px);
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tool-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .tool-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: var(--main-neon);
+      border: 1px solid var(--border-color);
+      padding: 2px 5px;
+      border-radius: 2px;
+    }
+
+    .tool-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #FFF;
+    }
+
+    .panel-body { padding: 16px; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .info-label { color: var(--text-dim); font-size: 9px; margin-bottom: 4px; }
+    .info-val { color: var(--text-main); overflow-wrap: anywhere; }
+
+    .terminal-logs {
+      background: #020303;
+      border: 1px solid rgba(0, 255, 135, 0.15);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #A3B5A9;
+      padding: 12px;
+      border-radius: 2px;
+      max-height: 140px;
+      overflow-y: auto;
+      line-height: 1.7;
+    }
+
+    .log-line { margin-bottom: 3px; }
+    .log-time { color: var(--text-dim); margin-right: 6px; }
+    .log-success { color: var(--main-neon); }
+
+    /* お知らせ掲示板スタイル */
+    .announcement-item {
+      padding: 10px 12px;
+      border-radius: 2px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: background 0.2s;
+    }
+
+    .announcement-item:last-child { margin-bottom: 0; }
+    .announcement-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+    .announcement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .announcement-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .tag-update { color: var(--main-neon); border: 1px solid var(--main-neon); background: rgba(0, 255, 135, 0.1); }
+    .tag-info { color: var(--cyan-neon); border: 1px solid var(--cyan-neon); background: rgba(0, 229, 255, 0.1); }
+    .tag-notice { color: var(--accent-purple); border: 1px solid var(--accent-purple); background: rgba(176, 38, 255, 0.1); }
+
+    .announcement-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .announcement-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .announcement-desc {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* Responsive Design Fixes for All Devices */
+    @media (max-width: 1024px) {
+      body { padding: 16px; }
+      .portal-container { gap: 24px; }
+      .left-card { width: 45%; padding: 22px 18px; min-height: 340px; }
+      .right-area { width: 55%; padding-left: 10px; gap: 18px; }
+      header.dash-header { padding: 10px 16px; }
+      .dash-content { padding: 16px 10px; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .portal-container { flex-direction: column; gap: 16px; }
+      .vertical-divider { display: none; }
+      .left-card { width: 100%; min-height: auto; padding: 16px 14px; }
+      .developer-avatar { max-width: 100px; max-height: 100px; }
+      .right-area { width: 100%; padding-left: 0; gap: 14px; }
+      header.dash-header { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 8px; }
+      .header-right { width: 100%; justify-content: space-between; }
+      .dash-content { padding: 10px 4px; }
+      .stat-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+      .tools-grid, .info-grid { grid-template-columns: 1fr; gap: 10px; }
+      .market-search-box { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .quick-nav-bar { gap: 6px; }
+      .quick-nav-btn { font-size: 9px; padding: 5px 10px; }
+      .aa-wrapper { padding-right: 18px; }
+      .aa-gif-badge { width: 44px; height: 44px; top: -10px; right: -12px; }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- Toast Popup Container -->
+  <div id="toast-container" class="toast-container"></div>
 
-    <!-- ヘッダー -->
-    <div class="top-header">
-        <div class="brand-title">BYAKUYA TOOLS // BLACKMARKET</div>
-        <div class="header-controls">
-            <div class="color-selector">
-                <span style="font-size:11px; color:#888;">COLOR:</span>
-                <span class="theme-btn" data-theme="rainbow">🧪 AUTO</span>
-                <span class="theme-btn" data-theme="green">💚</span>
-                <span class="theme-btn" data-theme="purple">💜</span>
-                <span class="theme-btn" data-theme="blue">💙</span>
-                <span class="theme-btn" data-theme="orange">🧡</span>
-            </div>
-            <span>• ONLINE</span>
-            <button class="btn-sm" onclick="location.reload()">REFRESH</button>
-            <button class="btn-sm">EXIT</button>
+  <!-- Modal Windows Container -->
+  <div id="guide-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 📖 SYSTEM GUIDE / 使い方 ]</span>
+        <button class="modal-close" onclick="closeModal('guide-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--main-neon); margin-bottom:10px;">■ BYAKUYA TOOLS 基本操作ガイド</p>
+        <ol style="padding-left:16px; margin-bottom:14px;">
+          <li><strong>1. APIステータス確認:</strong> 上部の「PORTAL API」がONLINEになっていることを確認します。</li>
+          <li><strong>2. ツール検索:</strong> 検索バーにキーワード（例: `linejs`, `webhook`）を入力すると、対象ツールを即座に抽出できます。</li>
+          <li><strong>3. セッション同期:</strong> Token Auto Sync機能により、認証トークンが自動的に保持・更新されます。</li>
+          <li><strong>4. カラー変更:</strong> 右上のテーマスイッチャー（🌈 AUTO / 💚 / 💜 / 💙 / 💛）からネオンカラーを変更可能。</li>
+        </ol>
+        <p style="color:var(--text-dim); font-size:10px;">※Renderサーバーは一定時間アクセスがない場合サスペンドされるため、初回同期に数秒かかる場合があります。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="contact-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 💬 CONTACT & SUPPORT / お問合せ ]</span>
+        <button class="modal-close" onclick="closeModal('contact-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--cyan-neon); margin-bottom:10px;">■ 開発者・サポート窓口</p>
+        <div style="background:rgba(0,0,0,0.5); padding:12px; border:1px solid var(--border-color); margin-bottom:12px;">
+          <div>・<strong>Developer:</strong> BYAKUYA (@ByakuyaTools)</div>
+          <div>・<strong>LINE OpenChat:</strong> Byakuya Tools Official Core</div>
+          <div>・<strong>System Core:</strong> LINEJS 3.4.2 Engine</div>
         </div>
+        <p style="color:var(--text-sub); font-size:10px;">バグ報告や機能拡張のご要望は、公式OpenChatまたはDMまでご連絡ください。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="rules-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 📜 BLACKMARKET TERMS / 利用規約 ]</span>
+        <button class="modal-close" onclick="closeModal('rules-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--accent-purple); margin-bottom:10px;">■ システム利用上の注意事項</p>
+        <ul style="padding-left:16px; margin-bottom:14px;">
+          <li>本ポータルで管理するTokenおよびセッション情報は厳重に管理してください。</li>
+          <li>スパム行為やLINE利用規約に著しく違反する運用は禁止されています。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cyber Scan Transition Overlay -->
+  <div id="cyber-transition" class="cyber-transition-overlay hidden">
+    <div class="scan-line"></div>
+    <div class="transition-title">SYSTEM INITIALIZING...</div>
+    <div class="transition-bar"><div class="transition-bar-inner"></div></div>
+  </div>
+
+  <!-- Welcome Portal Screen -->
+  <section id="welcome-window" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh; width: 100%;">
+    <header class="top-bar">
+      <div>
+        <div class="brand-title">BYAKUYA TOOLS</div>
+        <div class="brand-sub">BLACKMARKET CONTROL SYSTEM</div>
+      </div>
+      <button class="close-btn" id="close-btn">✕</button>
+    </header>
+
+    <div class="portal-container">
+      <div class="vertical-divider"></div>
+
+      <div class="left-card">
+        <div class="logo-container">
+          <img src="assets/Developer.jpg" alt="Byakuya Logo" class="developer-avatar" onerror="this.src='assets/ByakuyaBot_AppIcon.ico'; this.onerror=function(){this.style.display='none';}">
+        </div>
+        <div class="left-card-info">
+          <div class="left-card-title">
+            BYAKUYA
+            <span>TOOLS</span>
+          </div>
+          <div class="left-card-sub">BLACKMARKET CENTER</div>
+          <div class="left-card-status">SYSTEM / INITIALIZATIO_</div>
+        </div>
+      </div>
+
+      <div class="right-area">
+        <div class="welcome-header">
+          <div class="welcome-tag">BLACKMARKET // GATEWAY</div>
+          <h1>Welcome</h1>
+          <div class="byakuya-sub">Byakuya Tools Control Center</div>
+          <div class="env-desc">LINE OpenChat / LINEJS management environment</div>
+        </div>
+
+        <div class="system-check-box">
+          <div class="check-title">SYSTEM CHECK</div>
+          
+          <div class="check-row">
+            <span class="check-label">LINEJS VERSION</span>
+            <span class="check-value">3.4.2</span>
+          </div>
+
+          <div class="check-row">
+            <span class="check-label">ENGINE</span>
+            <span class="check-value">READY</span>
+          </div>
+
+          <div class="check-row">
+            <span class="check-label">STATUS</span>
+            <span class="check-value">ONLINE</span>
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-start" id="start-btn">START BYAKUYA TOOLS</button>
+        </div>
+      </div>
     </div>
 
-    <!-- メインバナー -->
-    <div class="banner-container">
-        <div class="banner-title">
-            LINE-Tools
-            <img src="https://via.placeholder.com/48/000000/00ff88?text=BOT" alt="Avatar" class="avatar-img" id="avatar-img">
+    <footer class="bottom-bar">
+      <div class="footer-left">
+        <div class="status-indicator">
+          <span class="dot"></span>
+          <span>SYSTEM ONLINE</span>
         </div>
-    </div>
+        <div>LINEJS / CONTROL SYSTEM / V3.4.2</div>
+      </div>
 
-    <div class="guide-btn-wrap">
-        <button class="btn-sm" style="padding: 6px 16px;">■ 使い方ガイド</button>
-    </div>
+      <div class="footer-right">
+        <div>BYAKUYA TOOLS</div>
+        <div>WELCOME / SYSTEM READY</div>
+      </div>
+    </footer>
+  </section>
 
-    <!-- 検索バー -->
-    <div class="search-container">
-        <input type="text" class="search-input" placeholder="[SEARCH TOOLS] Enter keywords (e.g. linejs, auto-reply, group, token)...">
-    </div>
-
-    <!-- メトリックス -->
-    <div class="metrics-grid">
-        <div class="metric-card">
-            <div class="metric-label">PORTAL API</div>
-            <div class="metric-value">ONLINE</div>
+  <!-- Blackmarket Main Dashboard Home -->
+  <section id="dashboard-window" class="hidden">
+    <header class="dash-header">
+      <div class="dash-brand">BYAKUYA TOOLS // BLACKMARKET</div>
+      <div class="header-right">
+        <!-- カラーテーマ切り替えボタン群 (AUTOモード付き) -->
+        <div class="theme-switcher">
+          <span class="theme-label">COLOR:</span>
+          <button class="theme-btn" onclick="setTheme('auto')" title="Auto Rainbow Glow">🌈 AUTO</button>
+          <button class="theme-btn active" onclick="setTheme('matrix')" title="Matrix Green">💚</button>
+          <button class="theme-btn" onclick="setTheme('purple')" title="Cyber Purple">💜</button>
+          <button class="theme-btn" onclick="setTheme('cyan')" title="Neon Cyan">💙</button>
+          <button class="theme-btn" onclick="setTheme('amber')" title="Amber Orange">💛</button>
         </div>
-        <div class="metric-card">
-            <div class="metric-label">SERVER UPTIME</div>
-            <div class="metric-value" id="uptime">0h 0m 0s</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">ACTIVE SESSIONS</div>
-            <div class="metric-value">1</div>
-        </div>
-    </div>
 
-    <!-- ツール一覧 -->
-    <div class="section-header">
-        <div>[ AVAILABLE TOOLS / ツール一覧 ]</div>
-        <div style="font-size:12px; color:#666;">4 MODULES ONLINE</div>
-    </div>
+        <div class="api-indicator">
+          <span id="api-dot" class="status-dot"></span>
+          <span id="api-status">CHECKING API</span>
+        </div>
+        <button class="btn-small" id="refresh-btn">REFRESH</button>
+        <button class="btn-small" id="exit-btn">EXIT</button>
+      </div>
+    </header>
 
-    <div class="tools-grid">
-        <div class="tool-card">
-            <div class="tool-header">
-                <div class="tool-name">LINEJS Session Engine</div>
-                <span class="badge">ACTIVE</span>
+    <main class="dash-content">
+      <!-- LINE-Tools ASCII Art Box -->
+      <div class="aa-dashboard-container">
+        <div class="aa-wrapper">
+          <img src="assets/aa-icon.gif" alt="GIF Badge" class="aa-gif-badge" onerror="this.src='assets/Developer.jpg'; this.onerror=function(){this.style.display='none';}">
+          <pre class="cyber-aa">
+ █████       █████ ██████   █████ ██████████            ███████████                    ████         
+░░███       ░░███ ░░██████ ░░███ ░░███░░░░░█           ░█░░░███░░░█                   ░░███         
+ ░███        ░███  ░███░███ ░███  ░███  █ ░             ░   ░███  ░   ██████   ██████  ░███   █████ 
+ ░███        ░███  ░███░░███░███  ░██████    ██████████     ░███     ███░░███ ███░░███ ░███  ███░░  
+ ░███        ░███  ░███ ░░██████  ░███░░█   ░░░░░░░░░░      ░███    ░███ ░███░███ ░███ ░███ ░░█████ 
+ ░███     █  ░███  ░███  ░░█████  ░███ ░   █                ░███    ░███ ░███░███ ░███ ░███  ░░░░███
+ ███████████ █████ █████  ░░█████ ██████████                █████   ░░██████ ░░██████  █████ ██████ 
+░░░░░░░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░░░░░░                ░░░░░     ░░░░░░   ░░░░░░  ░░░░░ ░░░░░░ 
+          </pre>
+        </div>
+      </div>
+
+      <!-- サイバータイピング・サブタイトル -->
+      <div class="typing-subtitle-wrap">
+        <span class="typing-subtitle" id="typing-sub-text"></span><span class="typing-cursor"></span>
+      </div>
+
+      <!-- クイック案内バー (使い方 / お問合せ / 利用規約) -->
+      <div class="quick-nav-bar">
+        <button class="quick-nav-btn" onclick="openModal('guide-modal')">📖 使い方ガイド</button>
+        <button class="quick-nav-btn" onclick="openModal('contact-modal')">💬 お問合せ・サポート</button>
+        <button class="quick-nav-btn" onclick="openModal('rules-modal')">📜 利用規約</button>
+      </div>
+
+      <div class="market-search-box">
+        <span class="search-tag">[SEARCH TOOLS]</span>
+        <input type="text" id="tool-search-input" class="search-input" placeholder="Enter keywords (e.g. linejs, auto-reply, group, token)..." autocomplete="off">
+      </div>
+
+      <div class="stat-grid">
+        <article class="stat-card">
+          <div class="stat-title">PORTAL API</div>
+          <div class="stat-value" id="stat-api">--</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-title">SERVER UPTIME</div>
+          <div class="stat-value" id="stat-uptime">--</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-title">ACTIVE SESSIONS</div>
+          <div class="stat-value" id="stat-sessions">0</div>
+        </article>
+      </div>
+
+      <!-- 🛠️ AVAILABLE TOOLS / ツール一覧 セクションヘッダー -->
+      <div class="section-title-bar">
+        <div class="section-title-label">[ AVAILABLE TOOLS / ツール一覧 ]</div>
+        <div class="section-title-badge">4 MODULES ONLINE</div>
+      </div>
+
+      <div class="tools-grid" id="tools-grid">
+        <div class="tool-card" data-keywords="linejs session auth auth-token">
+          <div class="tool-header">
+            <span class="tool-title">LINEJS Session Engine</span>
+            <span class="tool-badge">ACTIVE</span>
+          </div>
+          <div class="tool-desc">LINEアカウントの認証状態およびアクティブセッションの統括管理。</div>
+        </div>
+
+        <div class="tool-card" data-keywords="auto-reply bot webhook commands">
+          <div class="tool-header">
+            <span class="tool-title">Webhook Handler</span>
+            <span class="tool-badge">LISTENING</span>
+          </div>
+          <div class="tool-desc">LINEグループおよびOpenChatのメッセージイベント自動受送信。</div>
+        </div>
+
+        <div class="tool-card" data-keywords="token refresher env storage">
+          <div class="tool-header">
+            <span class="tool-title">Token Auto Sync</span>
+            <span class="tool-badge">SYNCED</span>
+          </div>
+          <div class="tool-desc">取得したLINE AuthTokenをToken/.envファイルへ自動書き込み。</div>
+        </div>
+
+        <div class="tool-card" data-keywords="group openchat manager audit">
+          <div class="tool-header">
+            <span class="tool-title">Group & OpenChat Audit</span>
+            <span class="tool-badge">READY</span>
+          </div>
+          <div class="tool-desc">グループメンバー監視およびOpenChatの自動モデレーションツール。</div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span>SERVER INFORMATION</span>
+          <span style="color:var(--main-neon); font-size:9px;">LIVE API</span>
+        </div>
+        <div class="panel-body">
+          <div class="info-grid">
+            <div><div class="info-label">SERVER MESSAGE</div><div class="info-val" id="server-message">取得待機中</div></div>
+            <div><div class="info-label">SERVER STARTED</div><div class="info-val" id="server-started">--</div></div>
+            <div><div class="info-label">SERVER TIME</div><div class="info-val" id="server-time">--</div></div>
+            <div><div class="info-label">LAST UPDATED</div><div class="info-val" id="last-updated">--</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span>LINEJS SESSIONS (<span id="session-count-badge" style="color:var(--main-neon)">0</span>)</span>
+        </div>
+        <div class="panel-body">
+          <div id="session-list" class="mono" style="font-size:11px; color:var(--text-sub);">
+            アクティブなセッションはありません。
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <span>SYSTEM LOGS</span>
+        </div>
+        <div class="panel-body">
+          <div class="terminal-logs" id="terminal-logs">
+            <div class="log-line"><span class="log-time">[BLACKMARKET]</span><span class="log-success">System initialized. Ready for operations.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📢 開発者お知らせ掲示板 -->
+      <section class="panel">
+        <div class="panel-header">
+          <span>DEVELOPER ANNOUNCEMENTS / お知らせ掲示板</span>
+          <span style="color:var(--cyan-neon); font-size:9px;">BULLETIN BOARD</span>
+        </div>
+        <div class="panel-body">
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-update">[UPDATE]</span>
+              <span class="announcement-date">2026.10.28</span>
             </div>
-            <div class="tool-desc">LINEアカウントの認証状態およびアクティブセッションの統括管理。</div>
+            <div class="announcement-title">LINEJS v3.4.2 ダッシュボードUI大幅リニューアル</div>
+            <div class="announcement-desc">ポータルの文字サイズ最適化、ネオンカラー（🌈 AUTOモード含む）および動的GIFバッジの反映を完了しました。</div>
+          </div>
+
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-info">[INFO]</span>
+              <span class="announcement-date">2026.10.25</span>
+            </div>
+            <div class="announcement-title">Token Auto Sync 機能の正常動作について</div>
+            <div class="announcement-desc">LINE認証トークンの取得・自動保存が正常に行われています。Render環境での動作安定性も確保済みです。</div>
+          </div>
+
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <span class="announcement-tag tag-notice">[NOTICE]</span>
+              <span class="announcement-date">2026.10.20</span>
+            </div>
+            <div class="announcement-title">サポート・バグ報告について</div>
+            <div class="announcement-desc">システムの不具合や新機能のご要望は、クイック案内バーの「お問合せ・サポート」より公式OpenChatへお知らせください。</div>
+          </div>
         </div>
-        <div class="tool-card">
-            <div class="tool-header">
-                <div class="tool-name">Webhook Handler</div>
-                <span class="badge">LISTENING</span>
-            </div>
-            <div class="tool-desc">LINEグループおよびOpenChatのメッセージイベント自動受送信。</div>
+      </section>
+    </main>
+  </section>
+
+  <script>
+    "use strict";
+
+    const elements = {
+      welcome: document.getElementById("welcome-window"),
+      dashboard: document.getElementById("dashboard-window"),
+      transition: document.getElementById("cyber-transition"),
+      toastContainer: document.getElementById("toast-container"),
+      start: document.getElementById("start-btn"),
+      exit: document.getElementById("exit-btn"),
+      refresh: document.getElementById("refresh-btn"),
+      apiDot: document.getElementById("api-dot"),
+      apiStatus: document.getElementById("api-status"),
+      statApi: document.getElementById("stat-api"),
+      statUptime: document.getElementById("stat-uptime"),
+      statSessions: document.getElementById("stat-sessions"),
+      serverMessage: document.getElementById("server-message"),
+      serverStarted: document.getElementById("server-started"),
+      serverTime: document.getElementById("server-time"),
+      lastUpdated: document.getElementById("last-updated"),
+      sessionCountBadge: document.getElementById("session-count-badge"),
+      sessionList: document.getElementById("session-list"),
+      logs: document.getElementById("terminal-logs"),
+      searchInput: document.getElementById("tool-search-input"),
+      toolsGrid: document.getElementById("tools-grid"),
+      typingText: document.getElementById("typing-sub-text")
+    };
+
+    let refreshTimer = null;
+    let requestInProgress = false;
+
+    // 🌈 AUTO モード用 7色レインボー循環タイマー
+    let autoThemeTimer = null;
+    let autoHue = 0;
+
+    function stopAutoTheme() {
+      if (autoThemeTimer) {
+        clearInterval(autoThemeTimer);
+        autoThemeTimer = null;
+      }
+      document.body.style.removeProperty('--main-neon');
+      document.body.style.removeProperty('--cyan-neon');
+      document.body.style.removeProperty('--border-color');
+      document.body.style.removeProperty('--accent-purple');
+    }
+
+    function startAutoTheme() {
+      stopAutoTheme();
+      autoThemeTimer = setInterval(() => {
+        autoHue = (autoHue + 1) % 360;
+        const mainNeon = `hsl(${autoHue}, 100%, 50%)`;
+        const cyanNeon = `hsl(${(autoHue + 60) % 360}, 100%, 50%)`;
+        const borderCol = `hsla(${autoHue}, 100%, 50%, 0.35)`;
+        const accentPurp = `hsl(${(autoHue + 120) % 360}, 100%, 50%)`;
+
+        document.body.style.setProperty('--main-neon', mainNeon);
+        document.body.style.setProperty('--cyan-neon', cyanNeon);
+        document.body.style.setProperty('--border-color', borderCol);
+        document.body.style.setProperty('--accent-purple', accentPurp);
+      }, 40);
+    }
+
+    // カラーテーマの適用と保持
+    window.setTheme = function(themeName) {
+      const themes = ["auto", "matrix", "purple", "cyan", "amber"];
+
+      if (themeName === "auto") {
+        document.body.setAttribute("data-theme", "auto");
+        startAutoTheme();
+      } else {
+        stopAutoTheme();
+        if (themeName === "matrix") {
+          document.body.removeAttribute("data-theme");
+        } else {
+          document.body.setAttribute("data-theme", themeName);
+        }
+      }
+      localStorage.setItem("byakuya_theme", themeName);
+
+      // ボタンアクティブ表示の更新
+      document.querySelectorAll(".theme-btn").forEach((btn, index) => {
+        if (themes[index] === themeName) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      showToast("THEME", `Switched to ${themeName.toUpperCase()} mode`, "info");
+    };
+
+    // 初期化時に保存テーマを復元
+    const savedTheme = localStorage.getItem("byakuya_theme") || "matrix";
+    window.setTheme(savedTheme);
+
+    // タイピングアニメーション
+    const subtitleString = "// NEXT-GEN LINEJS & OPENCHAT AUTOMATION SYSTEM [v3.4.2]";
+    let typingIndex = 0;
+
+    function startTypingAnimation() {
+      if (!elements.typingText) return;
+      elements.typingText.textContent = "";
+      typingIndex = 0;
+      const interval = setInterval(() => {
+        if (typingIndex < subtitleString.length) {
+          elements.typingText.textContent += subtitleString.charAt(typingIndex);
+          typingIndex++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 40);
+    }
+
+    // モーダル操作
+    window.openModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+    };
+
+    window.closeModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    };
+
+    function showToast(tag, msg, type = "success") {
+      if (!elements.toastContainer) return;
+      const card = document.createElement("div");
+      card.className = `toast-card ${type}`;
+      const time = new Date().toLocaleTimeString("ja-JP");
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+          <span style="font-family:'Orbitron',sans-serif; font-size:9px; font-weight:800; color:var(--main-neon);">[${tag.toUpperCase()}]</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--text-dim);">${time}</span>
         </div>
-        <div class="tool-card" id="open-token-modal">
-            <div class="tool-header">
-                <div class="tool-name">Token Auto Sync</div>
-                <span class="badge">SYNCED</span>
-            </div>
-            <div class="tool-desc">Eメール・パスワードによるAuthToken発行、または手動保存・ワンクリックコピー。</div>
-        </div>
-        <div class="tool-card">
-            <div class="tool-header">
-                <div class="tool-name">Group & OpenChat Audit</div>
-                <span class="badge">READY</span>
-            </div>
-            <div class="tool-desc">グループメンバー監視およびOpenChatの自動モデレーションツール。</div>
-        </div>
-    </div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#FFF;">${msg}</div>
+      `;
+      elements.toastContainer.appendChild(card);
+      setTimeout(() => card.remove(), 3200);
+    }
 
-    <!-- サーバ情報パネル -->
-    <div class="info-panel">
-        <div class="section-header" style="margin-bottom:0;">
-            <div>SERVER INFORMATION</div>
-            <div style="font-size:11px; color:#666;">LIVE API</div>
-        </div>
-        <div class="info-grid">
-            <div class="info-item">
-                <span>SERVER MESSAGE</span>
-                BYAKUYA Control Engine Running
-            </div>
-            <div class="info-item">
-                <span>SERVER STARTED</span>
-                2026/10/28 4:45:29
-            </div>
-            <div class="info-item">
-                <span>LAST UPDATED</span>
-                <div id="last-updated">2026/10/28 4:45:29</div>
-            </div>
-        </div>
-    </div>
+    function addLog(msg, type = "info") {
+      if (!elements.logs) return;
+      const time = new Date().toLocaleTimeString("ja-JP");
+      const line = document.createElement("div");
+      line.className = "log-line";
+      const cls = type === "success" ? "log-success" : "";
+      line.innerHTML = `<span class="log-time">[${time}]</span><span class="${cls}">${msg}</span>`;
+      elements.logs.appendChild(line);
+      elements.logs.scrollTop = elements.logs.scrollHeight;
+    }
 
-    <!-- システムログ -->
-    <div class="log-panel">
-        <div style="font-size:12px; font-weight:bold;">SYSTEM LOGS</div>
-        <div class="log-box" id="log-box">
-            [BLACKMARKET] System initialized. Ready for operations.
-        </div>
-    </div>
+    elements.searchInput.addEventListener("input", (e) => {
+      const keyword = e.target.value.toLowerCase().trim();
+      const cards = elements.toolsGrid.querySelectorAll(".tool-card");
+      cards.forEach(card => {
+        const title = card.querySelector(".tool-title").textContent.toLowerCase();
+        const desc = card.querySelector(".tool-desc").textContent.toLowerCase();
+        const keywords = card.getAttribute("data-keywords") || "";
+        if (!keyword || title.includes(keyword) || desc.includes(keyword) || keywords.includes(keyword)) {
+          card.classList.remove("hidden");
+        } else {
+          card.classList.add("hidden");
+        }
+      });
+    });
 
-    <!-- Token Auto Sync モーダル -->
-    <div class="modal-overlay" id="token-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div>【 🔑 TOKEN AUTO SYNC / トークン取得 】</div>
-                <div class="close-btn" id="close-token-modal">✕</div>
-            </div>
+    function showDashboard() {
+      elements.transition.classList.remove("hidden");
+      setTimeout(() => {
+        elements.dashboard.classList.remove("hidden");
+        elements.transition.classList.add("hidden");
+        startTypingAnimation();
+        showToast("SYSTEM", "Control Center Loaded", "success");
+        refreshStatus();
+        if (refreshTimer !== null) clearInterval(refreshTimer);
+        refreshTimer = setInterval(refreshStatus, 5000);
+      }, 650);
+    }
 
-            <div class="tab-menu">
-                <div class="tab-btn active" id="tab-login">🔑 ログイン認証取得</div>
-                <div class="tab-btn" id="tab-manual">📝 トークン手動確認/コピー</div>
-            </div>
+    function showWelcome() {
+      elements.dashboard.classList.add("hidden");
+      showToast("SYSTEM", "Returned to Welcome Portal", "info");
+      if (refreshTimer !== null) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+      }
+    }
 
-            <div id="tab-content-login">
-                <div style="font-size:13px; margin-bottom:15px; color:#fff;">■ LINEアカウントログイン & AuthToken取得</div>
-                <div class="form-group">
-                    <label>LINE Eメールアドレス</label>
-                    <input type="email" class="form-control" id="line-email" placeholder="email@example.com">
-                </div>
-                <div class="form-group">
-                    <label>パスワード</label>
-                    <input type="password" class="form-control" id="line-password" placeholder="••••••••">
-                </div>
-                <button class="btn-submit" id="btn-sync-token">🔑 AUTHTOKEN 発行・取得</button>
+    function formatDate(val) {
+      if (!val) return "--";
+      const d = new Date(val);
+      return Number.isNaN(d.getTime()) ? "--" : d.toLocaleString("ja-JP");
+    }
 
-                <div class="result-box" id="result-box">
-                    <div style="font-size:12px; color:var(--primary-color);">✓ 取得完了 AuthToken (ワンクリックコピー対応)</div>
-                    <div class="copy-group">
-                        <input type="text" class="token-output" id="token-output" readonly value="">
-                        <button class="btn-copy" id="btn-copy-token">📋 コピー</button>
-                    </div>
-                    <div style="font-size:11px; color:#666; margin-top:6px;">※発行されたTokenはコピーボタンを押してご使用ください。</div>
-                </div>
-            </div>
+    function formatUptime(secs) {
+      if (!Number.isFinite(secs) || secs < 0) return "--";
+      const total = Math.floor(secs);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      const h = Math.floor((total % 86400) / 3600);
+      return `${h}h ${m}m ${s}s`;
+    }
 
-            <div id="tab-content-manual" style="display:none;">
-                <div style="font-size:13px; margin-bottom:15px; color:#fff;">■ 現在保存されている AuthToken</div>
-                <div class="form-group">
-                    <label>現在設定中の Token (.env / LocalStorage)</label>
-                    <input type="text" class="form-control" readonly value="G7W0efktkR4y9Pe7GTkd..." style="color:var(--primary-color);">
-                </div>
-            </div>
-        </div>
-    </div>
+    async function refreshStatus() {
+      if (requestInProgress) return;
+      requestInProgress = true;
+      try {
+        const res = await fetch("/api/status", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        
+        elements.apiStatus.textContent = "ONLINE";
+        elements.statApi.textContent = "ONLINE";
+        elements.apiDot.className = "status-dot online";
 
-    <!-- スクリプト類 -->
-    <script>
-        // テーマ切り替え & LocalStorage 保存
-        (function() {
-            const savedTheme = localStorage.getItem('byakuya_theme') || 'green';
-            if (savedTheme !== 'green') {
-                document.documentElement.setAttribute('data-theme', savedTheme);
-            }
+        elements.statUptime.textContent = formatUptime(data.uptimeSeconds);
+        elements.statSessions.textContent = String(data.sessionCount);
+        elements.serverStarted.textContent = formatDate(data.startedAt);
+        elements.serverTime.textContent = formatDate(data.serverTime);
+        elements.serverMessage.textContent = data.message || "正常稼働中";
+        elements.lastUpdated.textContent = formatDate(new Date());
+        elements.sessionCountBadge.textContent = String(data.sessionCount);
 
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('.theme-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const theme = btn.getAttribute('data-theme');
-                        if (theme === 'green') {
-                            document.documentElement.removeAttribute('data-theme');
-                        } else {
-                            document.documentElement.setAttribute('data-theme', theme);
-                        }
-                        localStorage.setItem('byakuya_theme', theme);
-                    });
-                });
-            });
-        })();
+        if (Array.isArray(data.sessions) && data.sessions.length > 0) {
+          elements.sessionList.innerHTML = data.sessions.map(s => 
+            `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700; color:#FFF;">${s.userId || 'UNKNOWN USER'}</div>
+                <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">Started: ${formatDate(s.startedAt)}</div>
+              </div>
+              <span style="font-size:8px; color:var(--main-neon); border:1px solid var(--border-color); padding:2px 5px;">REGISTERED</span>
+            </div>`
+          ).join("");
+        } else {
+          elements.sessionList.textContent = "アクティブなセッションはありません。";
+        }
 
-        // Uptimeタイマー
-        let seconds = 0;
-        setInterval(() => {
-            seconds++;
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            document.getElementById('uptime').textContent = `${h}h ${m}m ${s}s`;
-        }, 1000);
+        addLog("Status synchronized with server.", "success");
+      } catch (e) {
+        elements.apiStatus.textContent = "OFFLINE";
+        elements.statApi.textContent = "OFFLINE";
+        elements.apiDot.className = "status-dot offline";
+        addLog(`Connection error: ${e.message}`, "error");
+        showToast("API ERROR", `Failed to sync: ${e.message}`, "error");
+      } finally {
+        requestInProgress = false;
+      }
+    }
 
-        // モーダル開閉
-        const modal = document.getElementById('token-modal');
-        document.getElementById('open-token-modal').addEventListener('click', () => {
-            modal.classList.add('active');
-        });
-        document.getElementById('close-token-modal').addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-
-        // タブ切り替え
-        const tabLogin = document.getElementById('tab-login');
-        const tabManual = document.getElementById('tab-manual');
-        const contentLogin = document.getElementById('tab-content-login');
-        const contentManual = document.getElementById('tab-content-manual');
-
-        tabLogin.addEventListener('click', () => {
-            tabLogin.classList.add('active');
-            tabManual.classList.remove('active');
-            contentLogin.style.display = 'block';
-            contentManual.style.display = 'none';
-        });
-
-        tabManual.addEventListener('click', () => {
-            tabManual.classList.add('active');
-            tabLogin.classList.remove('active');
-            contentManual.style.display = 'block';
-            contentLogin.style.display = 'none';
-        });
-
-        // AuthToken 発行 API 呼び出し
-        document.getElementById('btn-sync-token').addEventListener('click', async () => {
-            const email = document.getElementById('line-email').value.trim();
-            const password = document.getElementById('line-password').value.trim();
-
-            if (!email || !password) {
-                alert('Eメールとパスワードを入力してください。');
-                return;
-            }
-
-            const btn = document.getElementById('btn-sync-token');
-            btn.textContent = '⌛ 認証要求中...';
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/api/sync-token', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-                if (data.authToken) {
-                    document.getElementById('token-output').value = data.authToken;
-                    document.getElementById('result-box').style.display = 'block';
-                } else if (data.pincode) {
-                    alert(`スマホのLINEアプリでPINコード [ ${data.pincode} ] を入力してください。`);
-                } else {
-                    alert(data.error || '認証に失敗しました。');
-                }
-            } catch (err) {
-                alert('エラーが発生しました: ' + err.message);
-            } finally {
-                btn.textContent = '🔑 AUTHTOKEN 発行・取得';
-                btn.disabled = false;
-            }
-        });
-
-        // コピー機能
-        document.getElementById('btn-copy-token').addEventListener('click', () => {
-            const output = document.getElementById('token-output');
-            output.select();
-            navigator.clipboard.writeText(output.value);
-            const btn = document.getElementById('btn-copy-token');
-            btn.textContent = '✓ 完了!';
-            setTimeout(() => { btn.textContent = '📋 コピー'; }, 2000);
-        });
-    </script>
+    elements.start.addEventListener("click", showDashboard);
+    elements.exit.addEventListener("click", showWelcome);
+    elements.refresh.addEventListener("click", () => {
+      refreshStatus();
+      showToast("REFRESH", "API Sync Triggered", "info");
+    });
+  </script>
 </body>
 </html>
