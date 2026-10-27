@@ -194,6 +194,7 @@
     .log-time { color: var(--text-dim); margin-right: 6px; }
     .log-success { color: var(--main-neon); }
   </style>
+
 <style id="theme-style">
     :root {
         --primary-color: #00ff88;
@@ -215,6 +216,17 @@
         --primary-glow: rgba(255, 153, 0, 0.4);
         --border-color: #ff9900;
     }
+    /* 🌈 虹色（AUTO）テーマ用アニメーション */
+    @keyframes rainbow-hue {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+    }
+    [data-theme="rainbow"] {
+        --primary-color: #ff0055;
+        --primary-glow: rgba(255, 0, 85, 0.5);
+        --border-color: #ff0055;
+        animation: rainbow-hue 4s linear infinite;
+    }
     .theme-btn {
         cursor: pointer;
         transition: transform 0.2s ease, opacity 0.2s ease;
@@ -233,15 +245,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const themeMap = {
-                '💚': 'green',
-                '💜': 'purple',
-                '💙': 'blue',
-                '🧡': 'orange',
-                'AUTO': 'green'
-            };
-
-            // ヘッダー内の要素を探してイベントを設定
             document.querySelectorAll('body *').forEach(el => {
                 const text = el.textContent ? el.textContent.trim() : '';
                 if (['💚', '💜', '💙', '🧡'].includes(text) || text.includes('AUTO')) {
@@ -252,6 +255,7 @@
                         if (text.includes('💜')) theme = 'purple';
                         else if (text.includes('💙')) theme = 'blue';
                         else if (text.includes('🧡')) theme = 'orange';
+                        else if (text.includes('AUTO')) theme = 'rainbow'; // 🌈 AUTOで虹色
 
                         if (theme === 'green') {
                             document.documentElement.removeAttribute('data-theme');
