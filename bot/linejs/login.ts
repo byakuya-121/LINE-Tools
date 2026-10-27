@@ -12,11 +12,15 @@ export interface LoginResult {
 export async function loginWithEmail(email: string, password: string): Promise<LoginResult> {
     try {
         const storage = new FileStorage(STORAGE_PATH);
-        const client = new Client({ storage });
+        
+        // 【修正】deviceを指定 ("MAC", "CHROMEOS", "IOSIPAD" などを指定必須)
+        const client = new Client({
+            storage: storage,
+            device: "MAC" 
+        });
 
         console.log("ログイン処理を開始します...");
 
-        // loginWithPassword はスマホでPINが入力されるまで自動で待機してくれます
         await loginWithPassword(client, {
             email,
             password,
@@ -31,7 +35,6 @@ export async function loginWithEmail(email: string, password: string): Promise<L
             }
         });
 
-        // スマホで正しくPINが入力されると、待機が解除されてここに進みます
         console.log("✅ スマホでの認証が確認できました！連携処理を完了します...");
 
         const token = (client as any).authToken || (client as any).token || (client as any).base?.authToken;
