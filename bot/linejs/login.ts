@@ -14,11 +14,12 @@ export async function loginWithEmail(email: string, password: string): Promise<L
         const storage = new FileStorage(STORAGE_PATH);
         let detectedPin: string | null = null;
 
-        // jsr:@evex/linejs@3.4.2 の loginWithPassword を実行
+        // globalThis.fetch を明示的に指定して内部の fetch 参照エラーを防止
         const client: any = await loginWithPassword({
             email,
             password,
             storage,
+            fetch: globalThis.fetch.bind(globalThis),
             onPincode: (pin: string) => {
                 console.log(`[LINEJS] PIN Code Generated: ${pin}`);
                 detectedPin = pin;
