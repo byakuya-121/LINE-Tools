@@ -23,7 +23,7 @@ export async function handlePortalLogin(email: string, password: string): Promis
     try {
       envContent = await Deno.readTextFile(envPath);
     } catch {
-      // File not found
+      // ファイル未存在時は新規作成
     }
 
     const newEnvLine = `LINE_AUTH_TOKEN=${authToken}`;
@@ -42,13 +42,15 @@ export async function handlePortalLogin(email: string, password: string): Promis
 export async function handleApiRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
 
+  // ステータス確認
   if (url.pathname === "/api/status" && req.method === "GET") {
     return new Response(
       JSON.stringify(getPortalStatus()),
-      { headers: { "Content-Type": "application/json" } }
+      { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } }
     );
   }
 
+  // Token Auto Sync 認証
   if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
       const body = await req.json();
