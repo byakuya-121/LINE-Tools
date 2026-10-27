@@ -13,19 +13,20 @@ export async function loginWithEmail(email: string, password: string): Promise<L
     try {
         const storage = new FileStorage(STORAGE_PATH);
         
-        // 【修正】deviceを指定 ("MAC", "CHROMEOS", "IOSIPAD" などを指定必須)
+        // 1. Clientインスタンスを先に作成し、deviceを指定
         const client = new Client({
             storage: storage,
-            device: "IOSIPAD", // 例: "MAC", "CHROMEOS", "IOSIPAD" など
+            device: "IOSIPAD"
         } as any);
 
         console.log("ログイン処理を開始します...");
 
+        // 2. 第1引数にclient、第2引数にオプションを渡す
         await loginWithPassword(client, {
             email,
             password,
-            fetch: globalThis.fetch.bind(globalThis),
-            onPincode: (pin: string) => {
+            fetch: globalThis.fetch.bind(globalThis), // fetchエラー対策
+            onPincode: (pin: string) => {             // onPincodeを使用
                 console.log(`\n=================================================`);
                 console.log(`📱 【重要】スマホのLINEアプリを開いてください！`);
                 console.log(`本人確認画面が表示されたら、以下のPINコードを入力してください:`);
