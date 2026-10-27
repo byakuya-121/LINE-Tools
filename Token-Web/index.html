@@ -806,11 +806,12 @@
 
     .search-input::placeholder { color: var(--text-dim); }
 
+    /* 計測ステータスグリッド（下の余白を32pxへ広げて離しました） */
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 32px;
     }
 
     .stat-card {
@@ -1017,7 +1018,8 @@
       header.dash-header { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 8px; }
       .header-right { width: 100%; justify-content: space-between; }
       .dash-content { padding: 10px 4px; }
-      .stat-grid, .tools-grid, .info-grid { grid-template-columns: 1fr; gap: 10px; }
+      .stat-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 24px; }
+      .tools-grid, .info-grid { grid-template-columns: 1fr; gap: 10px; }
       .market-search-box { flex-direction: column; align-items: flex-start; gap: 6px; }
       .quick-nav-bar { gap: 6px; }
       .quick-nav-btn { font-size: 9px; padding: 5px 10px; }
@@ -1313,7 +1315,7 @@
         </div>
       </section>
 
-      <!-- 📢 開発者お知らせ掲示板 (DEVELOPER BULLETIN BOARD) -->
+      <!-- 📢 開発者お知らせ掲示板 -->
       <section class="panel">
         <div class="panel-header">
           <span>DEVELOPER ANNOUNCEMENTS / お知らせ掲示板</span>
