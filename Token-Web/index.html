@@ -1344,7 +1344,7 @@
           <div class="tool-desc">LINEグループおよびOpenChatのメッセージイベント自動受送信。</div>
         </div>
 
-        <!-- Token Auto Sync カード（クリックで認証モーダルを起動） -->
+        <!-- Token Auto Sync カード -->
         <div class="tool-card" style="cursor: pointer;" onclick="openModal('token-sync-modal')" data-keywords="token refresher env storage">
           <div class="tool-header">
             <span class="tool-title">Token Auto Sync</span>
@@ -1516,7 +1516,6 @@
       }
       localStorage.setItem("byakuya_theme", themeName);
 
-      // ボタンアクティブ表示の更新
       document.querySelectorAll(".theme-btn").forEach((btn, index) => {
         if (themes[index] === themeName) {
           btn.classList.add("active");
@@ -1528,11 +1527,9 @@
       showToast("THEME", `Switched to ${themeName.toUpperCase()} mode`, "info");
     };
 
-    // 初期化時に保存テーマを復元
     const savedTheme = localStorage.getItem("byakuya_theme") || "matrix";
     window.setTheme(savedTheme);
 
-    // タイピングアニメーション
     const subtitleString = "// NEXT-GEN LINEJS & OPENCHAT AUTOMATION SYSTEM [v3.4.2]";
     let typingIndex = 0;
 
@@ -1550,7 +1547,6 @@
       }, 40);
     }
 
-    // モーダル操作
     window.openModal = function(id) {
       const el = document.getElementById(id);
       if (el) el.classList.remove("hidden");
@@ -1588,7 +1584,7 @@
       elements.logs.scrollTop = elements.logs.scrollHeight;
     }
 
-    // 🔑 Token Auto Sync ログイン＆コピーロジック
+    // 🔑 Token Auto Sync ログイン通信ロジック（ダミー生成除去済み）
     window.handleTokenSync = async function() {
       const email = document.getElementById("sync-email").value.trim();
       const password = document.getElementById("sync-password").value.trim();
@@ -1610,6 +1606,10 @@
 
         const data = await res.json();
 
+        if (!res.ok) {
+          throw new Error(data.message || `HTTP ${res.status}: LINE認証に失敗しました`);
+        }
+
         if (data.pincode) {
           document.getElementById("pincode-box").classList.remove("hidden");
           document.getElementById("pincode-display").textContent = data.pincode;
@@ -1622,16 +1622,10 @@
           document.getElementById("token-result-box").classList.remove("hidden");
           showToast("SUCCESS", "AuthTokenの取得と同期に成功しました！", "success");
           addLog("AuthToken acquired successfully.", "success");
-        } else if (!data.pincode && !res.ok) {
-          throw new Error(data.message || "認証エラー");
         }
       } catch (e) {
-        // API未接続時の動作デモ用フォールバック
-        showToast("SYNC OK", "Tokenを発行し.envへ同期しました", "success");
-        const demoToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.byakuya_auth_" + Math.random().toString(36).substring(2, 12);
-        document.getElementById("generated-token").value = demoToken;
-        document.getElementById("token-result-box").classList.remove("hidden");
-        addLog(`AuthToken generated and saved to .env: ${demoToken.substring(0, 20)}...`, "success");
+        showToast("AUTH ERROR", e.message, "error");
+        addLog(`Authentication error: ${e.message}`, "error");
       }
     };
 
