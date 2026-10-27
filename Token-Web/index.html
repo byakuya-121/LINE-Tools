@@ -500,36 +500,33 @@
       padding: 24px 24px 40px;
     }
 
-    /* Dashboard Rectangles ASCII Art Header Animation */
+    /* LINE-TOOLS Custom ASCII Art Header Container */
     .aa-dashboard-container {
       width: 100%;
       text-align: center;
       margin: 0 0 24px;
       overflow-x: auto;
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 1px dashed rgba(0, 255, 135, 0.2);
     }
 
     .cyber-aa {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: clamp(5px, 0.9vw, 11px);
-      line-height: 1.15;
+      font-family: 'Courier New', 'JetBrains Mono', monospace;
+      font-size: clamp(7px, 1.05vw, 12px);
+      line-height: 1.1;
+      letter-spacing: 0px;
       color: var(--main-neon);
-      text-shadow: 0 0 12px rgba(0, 255, 135, 0.6), 0 0 25px rgba(0, 255, 135, 0.2);
+      text-shadow: 0 0 5px rgba(0, 255, 135, 0.7);
       white-space: pre;
       display: inline-block;
       user-select: none;
-      animation: aaGlow 3s infinite alternate, aaScanIn 0.8s ease-out forwards;
+      font-weight: 700;
+      animation: aaScanIn 0.6s ease-out forwards;
     }
 
     @keyframes aaScanIn {
-      0% { opacity: 0; transform: translateY(-10px) scale(0.98); filter: blur(4px); }
-      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    @keyframes aaGlow {
-      0% { text-shadow: 0 0 8px rgba(0, 255, 135, 0.4); }
-      100% { text-shadow: 0 0 18px rgba(0, 255, 135, 0.8), 0 0 30px rgba(0, 229, 255, 0.3); }
+      0% { opacity: 0; transform: translateY(-8px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .market-search-box {
@@ -834,16 +831,17 @@
     </header>
 
     <main class="dash-content">
-      <!-- Rectangles Font ASCII Art Header inside Home Dashboard -->
+      <!-- ユーザーご指定の LINE-TOOLS ASCII Art -->
       <div class="aa-dashboard-container">
         <pre class="cyber-aa">
- ▄▄▄▄▄▄▄ ▄▄▄▄▄▄  ▄▄▄▄▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄ ▄▄▄▄▄▄▄    ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄     ▄▄▄▄▄▄▄
- █   ▄   █   ▄  █  █   ▄   █   █ █ █   █ █ █   ▄   █  █       █       █       █   █   █       █
- █  █▄█  █  █ █ █  █  █▄█  █   █▄█ █   █▄█ █  █▄█  █  █   ▄   █   ▄   █   ▄   █   █   █  ▄▄▄▄▄█
- █   ▄▄▄▄█   █▄▄█  █   ▄▄▄▄█      ▄█      ▄█   ▄▄▄▄█  █  █ █  █  █ █  █  █ █  █   █   █ █▄▄▄▄▄ 
- █  █  █ █    █    █  █  █ █  ▄   █  ▄   █ █  █  █ █  █  █▄█  █  █▄█  █  █▄█  █   █▄▄▄█▄▄▄▄▄  █
- █  █▄█  █    █    █  █▄█  █ █ █  █ █ █  █ █  █▄█  █  █       █       █       █       █       █
- █▄▄▄▄▄▄▄█▄▄▄▄█    █▄▄▄▄▄▄▄█▄█ █▄▄█▄█ █▄▄█▄█▄▄▄▄▄▄▄█  █▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█▄▄▄▄▄▄▄█
+888      8888888 888b    888 8888888888    88888888888                888          
+888        888   8888b   888 888               888                    888          
+888        888   88888b  888 888               888                    888          
+888        888   888Y88b 888 8888888           888   .d88b.  .d88b.   888 .d8888b  
+888        888   888 Y88b888 888               888  d88""88b d88""88b 888 88K      
+888        888   888  Y88888 888      888888   888  888  888 888  888 888 "Y8888b. 
+888        888   888   Y8888 888               888  Y88..88P Y88..88P 888    X88 
+88888888 8888888 888    Y888 8888888888        888   "Y88P"   "Y88P"  888  88888P' 
         </pre>
       </div>
 
