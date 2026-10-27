@@ -107,12 +107,12 @@
               <button class="btn-start" id="btn-copy-token" style="width:auto; padding:0 14px; white-space:nowrap;">📋 コピー</button>
             </div>
           </div>
-                  <!-- トークン検証セクション -->
-          <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
-            <button class="btn-small" id="btn-verify-token" style="width:100%; justify-content:center; padding:9px; font-size:11px;">🧪 トークン有効性チェック (Verify)</button>
-            <div id="verify-status-box" class="hidden" style="margin-top:10px; padding:10px; background:rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:3px; font-size:11px;">
-              <span id="verify-status-text">--</span>
-            </div>
+        </div>
+
+        <div style="margin-top:18px; padding-top:14px; border-top:1px dashed var(--border-color);">
+          <button class="btn-start" id="btn-verify-token" style="padding:10px; border-color:var(--cyan-neon); color:var(--cyan-neon);">🧪 トークン有効性チェック (Verify Token)</button>
+          <div id="verify-status-box" class="hidden" style="margin-top:10px; padding:12px; background:rgba(0,0,0,0.6); border:1px solid var(--border-color); border-radius:3px; font-size:11px;">
+            <div id="verify-status-text">--</div>
           </div>
         </div>
       </div>
@@ -294,12 +294,12 @@
           <div class="tool-desc">LINEグループおよびOpenChatのメッセージイベント自動受送信。</div>
         </div>
 
-        <div class="tool-card" onclick="openModal('token-modal')" data-keywords="token refresher env storage">
+        <div class="tool-card" onclick="openModal('token-modal')" data-keywords="token refresher env storage verify">
           <div class="tool-header">
             <span class="tool-title">Token Auto Sync</span>
             <span class="tool-badge">SYNCED</span>
           </div>
-          <div class="tool-desc">Eメール・パスワードによるAuthToken発行、または手動保存・ワンクリックコピー。</div>
+          <div class="tool-desc">Eメール・パスワードによるAuthToken発行、有効性検証(Verify)、ワンクリックコピー。</div>
         </div>
 
         <div class="tool-card" data-keywords="group openchat manager audit">
@@ -359,8 +359,8 @@
               <span class="announcement-tag tag-update">[UPDATE]</span>
               <span class="announcement-date">2026.10.28</span>
             </div>
-            <div class="announcement-title">LINEJS v3.4.2 ダッシュボードUI大幅リニューアル</div>
-            <div class="announcement-desc">ポータルの文字サイズ最適化、ネオンカラー（🌈 AUTOモード含む）および動的GIFバッジの反映を完了しました。</div>
+            <div class="announcement-title">LINEJS v3.4.2 ダッシュボード & Token Verify 実装</div>
+            <div class="announcement-desc">ホールド長押しアニメーション付きToken取得、リアルタイム有効性チェック(Token Verification)、虹色AUTOテーマを完備。</div>
           </div>
 
           <div class="announcement-item">
@@ -369,7 +369,7 @@
               <span class="announcement-date">2026.10.25</span>
             </div>
             <div class="announcement-title">Token Auto Sync 機能の正常動作について</div>
-            <div class="announcement-desc">LINE認証トークンの取得・自動保存が正常に行われています。Render環境での動作安定性も確保済みです。</div>
+            <div class="announcement-desc">LINE認証トークンの取得・自動保存および検証が正常に行われています。Render環境での動作安定性も確保済みです。</div>
           </div>
 
           <div class="announcement-item">
@@ -378,7 +378,7 @@
               <span class="announcement-date">2026.10.20</span>
             </div>
             <div class="announcement-title">サポート・バグ報告について</div>
-            <div class="announcement-desc">システムの不具合や新機能のご要望は、クイック案内バーの「お問合せ・サポート」より公式OpenChatへお知らせください。</div>
+            <div class="announcement-desc">システムの不具合や新機能のご要望は、公式OpenChatまたはDMまでご連絡ください。</div>
           </div>
         </div>
       </section>

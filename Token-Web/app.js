@@ -244,7 +244,7 @@ async function refreshStatus() {
   }
 }
 
-// 🔑 長押し（ホールド）ボタン & 認証結果のスマート表示ロジック
+// 🔑 長押し（ホールド）ボタン & 認証結果表示ロジック
 let holdInterval = null;
 const HOLD_DURATION = 1500;
 const btnSync = document.getElementById('btn-sync-token');
@@ -285,13 +285,14 @@ function cancelHold() {
   }
 }
 
-btnSync.addEventListener('mousedown', startHold);
-btnSync.addEventListener('touchstart', startHold, { passive: true });
-
-btnSync.addEventListener('mouseup', cancelHold);
-btnSync.addEventListener('mouseleave', cancelHold);
-btnSync.addEventListener('touchend', cancelHold);
-btnSync.addEventListener('touchcancel', cancelHold);
+if (btnSync) {
+  btnSync.addEventListener('mousedown', startHold);
+  btnSync.addEventListener('touchstart', startHold, { passive: true });
+  btnSync.addEventListener('mouseup', cancelHold);
+  btnSync.addEventListener('mouseleave', cancelHold);
+  btnSync.addEventListener('touchend', cancelHold);
+  btnSync.addEventListener('touchcancel', cancelHold);
+}
 
 async function executeTokenSync() {
   const email = document.getElementById('line-email').value.trim();
@@ -344,15 +345,57 @@ async function executeTokenSync() {
   }
 }
 
-// PINコード ワンクリックコピー
-document.getElementById('btn-copy-pin').addEventListener('click', () => {
+// 🧪 トークン有効性検証 (Token Verification) 機能
+document.getElementById('btn-verify-token')?.addEventListener('click', async () => {
+  const tokenInput = document.getElementById('token-output').value.trim();
+  const statusBox = document.getElementById('verify-status-box');
+  const statusText = document.getElementById('verify-status-text');
+
+  if (!tokenInput) {
+    showToast("CHECK ERROR", "検証するTokenを入力または取得してください", "error");
+    return;
+  }
+
+  const btn = document.getElementById('btn-verify-token');
+  btn.disabled = true;
+  btn.textContent = '⌛ Validating Token...';
+  statusBox.classList.remove('hidden');
+  statusText.innerHTML = '<span style="color:var(--cyan-neon);">⌛ LINEJS サーバーへ検証リクエスト送信中...</span>';
+
+  try {
+    const res = await fetch('/api/verify-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authToken: tokenInput })
+    });
+
+    const data = await res.json();
+    if (data.valid) {
+      statusText.innerHTML = `<span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN</span><br><span style="color:#FFF;">アカウント表示名: ${data.displayName || 'LINE User'}</span>`;
+      showToast("VERIFY SUCCESS", "Tokenは有効です！", "success");
+      addLog(`Token Verification: VALID (${data.displayName || 'OK'})`, "success");
+    } else {
+      statusText.innerHTML = `<span style="color:var(--accent-red); font-weight:700;">✕ INVALID TOKEN</span><br><span style="color:var(--text-sub);">${data.error || '期限切れ、または無効なトークンです'}</span>`;
+      showToast("VERIFY FAILED", "無効なTokenです", "error");
+      addLog(`Token Verification: INVALID`, "error");
+    }
+  } catch (err) {
+    statusText.innerHTML = `<span style="color:var(--accent-red);">通信エラー: ${err.message}</span>`;
+    showToast("SYSTEM ERROR", err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🧪 トークン有効性チェック (Verify Token)';
+  }
+});
+
+// ワンクリックコピー
+document.getElementById('btn-copy-pin')?.addEventListener('click', () => {
   const pin = document.getElementById('pin-code-val').textContent;
   navigator.clipboard.writeText(pin);
   showToast("COPIED", `PINコード [ ${pin} ] をコピーしました`, "success");
 });
 
-// AuthToken ワンクリックコピー
-document.getElementById('btn-copy-token').addEventListener('click', () => {
+document.getElementById('btn-copy-token')?.addEventListener('click', () => {
   const output = document.getElementById('token-output');
   output.select();
   navigator.clipboard.writeText(output.value);
@@ -364,47 +407,4 @@ elements.exit.addEventListener("click", showWelcome);
 elements.refresh.addEventListener("click", () => {
   refreshStatus();
   showToast("REFRESH", "API Sync Triggered", "info");
-});
-
-// 🧪 トークン有効性チェック機能
-document.getElementById('btn-verify-token')?.addEventListener('click', async () => {
-  const token = document.getElementById('token-output').value.trim();
-  const statusBox = document.getElementById('verify-status-box');
-  const statusText = document.getElementById('verify-status-text');
-
-  if (!token) {
-    showToast("CHECK ERROR", "検証するTokenがありません。先にTokenを取得または入力してください。", "error");
-    return;
-  }
-
-  const btn = document.getElementById('btn-verify-token');
-  btn.disabled = true;
-  btn.textContent = '⌛ Token検証中...';
-  statusBox.classList.remove('hidden');
-  statusText.innerHTML = '<span style="color:var(--cyan-neon);">⌛ LINEJS サーバーへ通信中...</span>';
-
-  try {
-    const res = await fetch('/api/verify-token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ authToken: token })
-    });
-
-    const data = await res.json();
-    if (data.valid) {
-      statusText.innerHTML = <span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN</span><br><span style="color:#FFF;">アカウント: </span>;
-      showToast("VERIFY SUCCESS", "Tokenは正常に有効です！", "success");
-      addLog(Token Verification: VALID (), "success");
-    } else {
-      statusText.innerHTML = <span style="color:var(--accent-red); font-weight:700;">✕ INVALID TOKEN</span><br><span style="color:var(--text-sub);"></span>;
-      showToast("VERIFY FAILED", "無効なTokenです", "error");
-      addLog(Token Verification: INVALID, "error");
-    }
-  } catch (err) {
-    statusText.innerHTML = <span style="color:var(--accent-red);">通信エラー: </span>;
-    showToast("SYSTEM ERROR", err.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '🧪 トークン有効性チェック (Verify)';
-  }
 });
