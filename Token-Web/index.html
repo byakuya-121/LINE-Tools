@@ -500,11 +500,11 @@
       padding: 24px 24px 40px;
     }
 
-    /* ホログラム・ネオングロー（中央放射光）背景付き ASCII Art コンテナ */
+    /* AA Header Box */
     .aa-dashboard-container {
       width: 100%;
       text-align: center;
-      margin: 0 0 28px;
+      margin: 0 0 18px;
       overflow-x: auto;
       padding: 24px 12px;
       position: relative;
@@ -541,13 +541,133 @@
       font-weight: 700;
       position: relative;
       z-index: 2;
-      animation: aaScanIn 0.6s ease-out forwards;
     }
 
-    @keyframes aaScanIn {
-      0% { opacity: 0; transform: translateY(-8px); }
-      100% { opacity: 1; transform: translateY(0); }
+    /* サイバータイピング・サブタイトル */
+    .typing-subtitle-wrap {
+      text-align: center;
+      margin-bottom: 16px;
+      min-height: 22px;
     }
+
+    .typing-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan-neon);
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+      display: inline-block;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--main-neon);
+      vertical-align: middle;
+      margin-left: 4px;
+      box-shadow: 0 0 8px var(--main-neon);
+      animation: cursorBlink 0.8s infinite;
+    }
+
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* クイック案内バー (使い方 / お問合せ / 規約) */
+    .quick-nav-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .quick-nav-btn {
+      background: var(--panel-dark);
+      border: 1px solid rgba(0, 255, 135, 0.25);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quick-nav-btn:hover {
+      border-color: var(--main-neon);
+      color: var(--main-neon);
+      box-shadow: 0 0 15px rgba(0, 255, 135, 0.25);
+      transform: translateY(-2px);
+      background: rgba(0, 255, 135, 0.05);
+    }
+
+    /* Modal Popups */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 3, 3, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-top: 3px solid var(--main-neon);
+      border-radius: 4px;
+      max-width: 620px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.95);
+      position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+    }
+
+    .modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--main-neon);
+      letter-spacing: 1px;
+    }
+
+    .modal-body {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-main);
+      line-height: 1.8;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 18px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover { color: var(--accent-red); }
 
     .market-search-box {
       background: var(--panel-dark);
@@ -753,6 +873,59 @@
   <!-- Toast Popup Container -->
   <div id="toast-container" class="toast-container"></div>
 
+  <!-- Modal Windows Container -->
+  <div id="guide-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 📖 SYSTEM GUIDE / 使い方 ]</span>
+        <button class="modal-close" onclick="closeModal('guide-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--main-neon); margin-bottom:12px;">■ BYAKUYA TOOLS 基本操作ガイド</p>
+        <ol style="padding-left:18px; margin-bottom:16px;">
+          <li><strong>1. APIステータス確認:</strong> 上部の「PORTAL API」がONLINEになっていることを確認します。</li>
+          <li><strong>2. ツール検索:</strong> 検索バーにキーワード（例: `linejs`, `webhook`）を入力すると、対象ツールを即座に抽出できます。</li>
+          <li><strong>3. セッション同期:</strong> Token Auto Sync機能により、認証トークンが自動的に保持・更新されます。</li>
+        </ol>
+        <p style="color:var(--text-dim); font-size:11px;">※Renderサーバーは一定時間アクセスがない場合サスペンドされるため、初回同期に数秒かかる場合があります。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="contact-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 💬 CONTACT & SUPPORT / お問合せ ]</span>
+        <button class="modal-close" onclick="closeModal('contact-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--cyan-neon); margin-bottom:12px;">■ 開発者・サポート窓口</p>
+        <div style="background:rgba(0,0,0,0.5); padding:14px; border:1px solid rgba(0,255,135,0.15); margin-bottom:14px;">
+          <div>・<strong>Developer:</strong> BYAKUYA (@ByakuyaTools)</div>
+          <div>・<strong>LINE OpenChat:</strong> Byakuya Tools Official Core</div>
+          <div>・<strong>System Core:</strong> LINEJS 3.4.2 Engine</div>
+        </div>
+        <p style="color:var(--text-sub); font-size:11px;">バグ報告や機能拡張のご要望は、公式OpenChatまたはDMまでご連絡ください。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="rules-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">[ 📜 BLACKMARKET TERMS / 利用規約 ]</span>
+        <button class="modal-close" onclick="closeModal('rules-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--accent-purple); margin-bottom:12px;">■ システム利用上の注意事項</p>
+        <ul style="padding-left:18px; margin-bottom:16px;">
+          <li>本ポータルで管理するTokenおよびセッション情報は厳重に管理してください。</li>
+          <li>スパム行為やLINE利用規約に著しく違反する運用は禁止されています。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <!-- Cyber Scan Transition Overlay -->
   <div id="cyber-transition" class="cyber-transition-overlay hidden">
     <div class="scan-line"></div>
@@ -851,7 +1024,7 @@
     </header>
 
     <main class="dash-content">
-      <!-- ホログラム・ネオングロー背景付き LINE-Tools ASCII Art -->
+      <!-- LINE-Tools ASCII Art Box -->
       <div class="aa-dashboard-container">
         <pre class="cyber-aa">
  █████       █████ ██████   █████ ██████████            ███████████                    ████         
@@ -863,6 +1036,18 @@
  ███████████ █████ █████  ░░█████ ██████████                █████   ░░██████ ░░██████  █████ ██████ 
 ░░░░░░░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░░░░░░                ░░░░░     ░░░░░░   ░░░░░░  ░░░░░ ░░░░░░ 
         </pre>
+      </div>
+
+      <!-- サイバータイピング・サブタイトル -->
+      <div class="typing-subtitle-wrap">
+        <span class="typing-subtitle" id="typing-sub-text"></span><span class="typing-cursor"></span>
+      </div>
+
+      <!-- クイック案内バー (使い方 / お問合せ / 利用規約) -->
+      <div class="quick-nav-bar">
+        <button class="quick-nav-btn" onclick="openModal('guide-modal')">📖 使い方ガイド</button>
+        <button class="quick-nav-btn" onclick="openModal('contact-modal')">💬 お問合せ・サポート</button>
+        <button class="quick-nav-btn" onclick="openModal('rules-modal')">📜 利用規約</button>
       </div>
 
       <div class="market-search-box">
@@ -982,11 +1167,41 @@
       sessionList: document.getElementById("session-list"),
       logs: document.getElementById("terminal-logs"),
       searchInput: document.getElementById("tool-search-input"),
-      toolsGrid: document.getElementById("tools-grid")
+      toolsGrid: document.getElementById("tools-grid"),
+      typingText: document.getElementById("typing-sub-text")
     };
 
     let refreshTimer = null;
     let requestInProgress = false;
+
+    // タイピングアニメーション
+    const subtitleString = "// NEXT-GEN LINEJS & OPENCHAT AUTOMATION SYSTEM [v3.4.2]";
+    let typingIndex = 0;
+
+    function startTypingAnimation() {
+      if (!elements.typingText) return;
+      elements.typingText.textContent = "";
+      typingIndex = 0;
+      const interval = setInterval(() => {
+        if (typingIndex < subtitleString.length) {
+          elements.typingText.textContent += subtitleString.charAt(typingIndex);
+          typingIndex++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 45);
+    }
+
+    // モーダル操作
+    window.openModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("hidden");
+    };
+
+    window.closeModal = function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    };
 
     function showToast(tag, msg, type = "success") {
       if (!elements.toastContainer) return;
@@ -1035,6 +1250,7 @@
       setTimeout(() => {
         elements.dashboard.classList.remove("hidden");
         elements.transition.classList.add("hidden");
+        startTypingAnimation();
         showToast("SYSTEM", "Control Center Loaded", "success");
         refreshStatus();
         if (refreshTimer !== null) clearInterval(refreshTimer);
