@@ -1094,3 +1094,60 @@ header.dash-header {
   .aa-wrapper { padding-right: 18px; }
   .aa-wrapper { padding-right: 50px; } .aa-gif-badge { width: 38px; height: 38px; } .aa-gif-badge.badge-1 { top: -8px; right: -4px; } .aa-gif-badge.badge-2 { top: 34px; right: -40px; }
 }
+
+/* ⚠️ 利用規約・注意事項同意ボックスのスタイリング */
+.terms-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--accent-red);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 3px;
+  padding: 12px;
+  margin: 14px 0 10px;
+}
+
+.terms-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--accent-red);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.terms-content {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  max-height: 85px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding-right: 4px;
+}
+
+.terms-content p {
+  margin-bottom: 4px;
+}
+
+.terms-check-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #FFFFFF;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 42, 85, 0.08);
+  padding: 6px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 42, 85, 0.2);
+}
+
+.terms-check-label input[type="checkbox"] {
+  accent-color: var(--main-neon);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}

@@ -308,6 +308,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById('line-email')?.value.trim() || "";
     const password = document.getElementById('line-password')?.value.trim() || "";
 
+        const agreeCheck = document.getElementById('agree-terms-check');
+    if (!agreeCheck || !agreeCheck.checked) {
+      showToast("AGREEMENT REQUIRED", "利用規約および注意事項への同意チェックが必要です", "error");
+      cancelHold();
+      return;
+    }
+
     if (!email || !password) {
       showToast("AUTH ERROR", "Eメールとパスワードを入力してください", "error");
       cancelHold();

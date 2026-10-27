@@ -86,6 +86,20 @@
         <label style="color:var(--text-sub); font-size:10px; display:block;">パスワード</label>
         <input type="password" id="line-password" class="modal-input" placeholder="••••••••">
 
+                <!-- ⚠️ 利用規約・注意事項同意ボックス -->
+        <div class="terms-box">
+          <div class="terms-title">⚠️ 利用規約および注意事項</div>
+          <div class="terms-content">
+            <p>1. <strong>自己責任の原則:</strong> 本ツールで取得したTokenおよび認証情報の管理責任は全て利用者に帰属します。</p>
+            <p>2. <strong>禁止事項:</strong> スパム行為、過度な自動送信、LINE規約に違反する運用は固く禁止します。</p>
+            <p>3. <strong>免責事項:</strong> 本ツールの利用により発生したいかなるアカウント規制・凍結・損害についても開発者は一切の責任を負いません。</p>
+          </div>
+          <label class="terms-check-label">
+            <input type="checkbox" id="agree-terms-check">
+            <span>上記の利用規約・注意事項に同意して利用する</span>
+          </label>
+        </div>
+
         <div style="position:relative; margin-top:8px;">
           <button class="btn-start btn-hold" id="btn-sync-token" style="padding:13px 10px;">
             <span class="btn-progress-bg" id="btn-progress-bg"></span>
