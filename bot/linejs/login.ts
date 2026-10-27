@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { loginWithPassword } from "jsr:@evex/linejs@3.4.2";
+import { Client, loginWithPassword } from "jsr:@evex/linejs@3.4.2";
 import { FileStorage } from "jsr:@evex/linejs@3.4.2/storage";
 
 const STORAGE_PATH = "./storage.json";
@@ -12,14 +12,13 @@ export interface LoginResult {
 export async function loginWithEmail(email: string, password: string): Promise<LoginResult> {
     try {
         const storage = new FileStorage(STORAGE_PATH);
+        const client: any = new (Client as any)({ storage });
         let detectedPin: string | null = null;
 
-        // globalThis.fetch を明示的に指定して内部の fetch 参照エラーを防止
-        const client: any = await loginWithPassword({
+        // 第1引数に Client インスタンス、第2引数にログインオプションを渡して実行
+        await loginWithPassword(client, {
             email,
             password,
-            storage,
-            fetch: globalThis.fetch.bind(globalThis),
             onPincode: (pin: string) => {
                 console.log(`[LINEJS] PIN Code Generated: ${pin}`);
                 detectedPin = pin;
