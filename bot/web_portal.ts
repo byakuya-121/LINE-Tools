@@ -1,4 +1,4 @@
-import { loginWithEmail } from "./linejs/login.ts";
+import { loginWithEmail, LoginResult } from "./linejs/login.ts";
 
 export function getPortalStatus() {
   return {
@@ -11,18 +11,16 @@ export function getPortalStatus() {
   };
 }
 
-export async function handlePortalLogin(email: string, password: string): Promise<string> {
+export async function handlePortalLogin(email: string, password: string): Promise<LoginResult> {
   if (!email || !password) {
     throw new Error("Eメールとパスワードを入力してください。");
   }
-  // .env への保管は行わず AuthToken のみ取得して返す
   return await loginWithEmail(email, password);
 }
 
 export async function handleApiRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
 
-  // ステータス確認
   if (url.pathname === "/api/status" && req.method === "GET") {
     return new Response(
       JSON.stringify(getPortalStatus()),
@@ -30,22 +28,23 @@ export async function handleApiRequest(req: Request): Promise<Response> {
     );
   }
 
-  // AuthToken 取得 API (.env書き込みなし)
   if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
       const body = await req.json();
       const { email, password } = body;
-      const authToken = await handlePortalLogin(email, password);
+      const result = await handlePortalLogin(email, password);
 
       return new Response(
         JSON.stringify({
           success: true,
-          authToken: authToken,
-          message: "AuthToken acquired successfully"
+          authToken: result.authToken || null,
+          pincode: result.pincode || null,
+          message: result.pincode ? "PINコードを入力してください" : "AuthToken acquired successfully"
         }),
         { headers: { "Content-Type": "application/json" } }
       );
     } catch (error: any) {
+      console.error("[API sync-token Error]", error);
       return new Response(
         JSON.stringify({
           success: false,

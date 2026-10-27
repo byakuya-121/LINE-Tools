@@ -3,66 +3,83 @@ import { FileStorage } from "@evex/linejs/storage";
 
 const STORAGE_PATH = "./storage.json";
 
-interface LineClientInterface {
-    on?: (event: string, listener: (...args: unknown[]) => void) => void;
-    login?: (opts: unknown) => Promise<unknown>;
-    loginWithAuthCredential?: (opts: unknown) => Promise<unknown>;
+export interface LoginResult {
     authToken?: string;
+    pincode?: string;
 }
 
-/**
- * Eメールとパスワードを使用してLINEJSログインを行い、AuthTokenを取得する関数
- */
-export function loginWithEmail(email: string, password: string): Promise<string> {
+export function loginWithEmail(email: string, password: string): Promise<LoginResult> {
     return new Promise((resolve, reject) => {
         try {
             const storage = new FileStorage(STORAGE_PATH);
-            
-            // Clientコンストラクタの引数要求とdeno-lintのno-explicit-anyを回避
             const clientCtor = Client as unknown as new (opts: unknown) => unknown;
-            const rawClient = new clientCtor({ storage });
-            const client = rawClient as LineClientInterface;
+            const client = new clientCtor({ storage }) as any;
+
+            let isResolved = false;
 
             const timeout = setTimeout(() => {
-                reject(new Error("ログイン処理がタイムアウトしました。"));
-            }, 60000);
+                if (!isResolved) {
+                    isResolved = true;
+                    reject(new Error("LINE認証がタイムアウトしました。スマホのログイン許可設定を確認してください。"));
+                }
+            }, 45000);
 
             if (typeof client.on === "function") {
+                // PINコード要求を検知
                 client.on("pincode", (pin: unknown) => {
-                    console.log(`[LINEJS] PIN Code: ${String(pin)}`);
-                });
-
-                client.on("ready", () => {
-                    clearTimeout(timeout);
-                    if (client.authToken) {
-                        resolve(client.authToken);
-                    } else {
-                        reject(new Error("AuthTokenの取得に失敗しました。"));
+                    console.log(`[LINEJS] PIN Code Generated: ${String(pin)}`);
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timeout);
+                        resolve({ pincode: String(pin) });
                     }
                 });
 
+                // ログイン成功
+                client.on("ready", () => {
+                    console.log("[LINEJS] Login Ready!");
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timeout);
+                        if (client.authToken) {
+                            resolve({ authToken: client.authToken });
+                        } else {
+                            reject(new Error("AuthTokenの取得に失敗しました。"));
+                        }
+                    }
+                });
+
+                // エラー発生
                 client.on("error", (err: unknown) => {
-                    clearTimeout(timeout);
-                    reject(err instanceof Error ? err : new Error(String(err)));
+                    console.error("[LINEJS Error]", err);
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timeout);
+                        const msg = err instanceof Error ? err.message : String(err);
+                        reject(new Error(`LINE認証エラー: ${msg}`));
+                    }
                 });
             }
 
-            if (typeof client.login === "function") {
-                client.login({ email, password, storage }).catch((err: unknown) => {
+            // ログイン実行
+            const loginPromise = typeof client.login === "function"
+                ? client.login({ email, password, storage })
+                : typeof client.loginWithAuthCredential === "function"
+                    ? client.loginWithAuthCredential({ email, password })
+                    : Promise.reject(new Error("LINEJSのログインメソッドが見つかりません。"));
+
+            loginPromise.catch((err: unknown) => {
+                if (!isResolved) {
+                    isResolved = true;
                     clearTimeout(timeout);
-                    reject(err instanceof Error ? err : new Error(String(err)));
-                });
-            } else if (typeof client.loginWithAuthCredential === "function") {
-                client.loginWithAuthCredential({ email, password }).catch((err: unknown) => {
-                    clearTimeout(timeout);
-                    reject(err instanceof Error ? err : new Error(String(err)));
-                });
-            } else {
-                clearTimeout(timeout);
-                reject(new Error("LINEJS Client のログイン機能の呼び出しに失敗しました。"));
-            }
+                    const msg = err instanceof Error ? err.message : String(err);
+                    reject(new Error(`ログイン失敗: ${msg}`));
+                }
+            });
+
         } catch (err: unknown) {
-            reject(err instanceof Error ? err : new Error(String(err)));
+            const msg = err instanceof Error ? err.message : String(err);
+            reject(new Error(`初期化エラー: ${msg}`));
         }
     });
 }
@@ -70,28 +87,13 @@ export function loginWithEmail(email: string, password: string): Promise<string>
 function getAuthToken(): string {
     const token = Deno.env.get("LINE_AUTH_TOKEN")?.trim();
     if (!token) {
-        throw new Error("LINE_AUTH_TOKEN が設定されていません。.env の設定を確認してください。");
+        throw new Error("LINE_AUTH_TOKEN が設定されていません。");
     }
     return token;
 }
 
 function main(): void {
-    console.log("====================================");
-    console.log(" LINEJS セッション確認");
-    console.log("====================================");
-
-    try {
-        const authToken = getAuthToken();
-        const storage = new FileStorage(STORAGE_PATH);
-        console.log("認証情報を読み込みました。");
-        console.log(`ストレージ: ${STORAGE_PATH}`);
-        console.log(`トークン設定: ${authToken.length > 0 ? "あり" : "なし"}`);
-        void storage;
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.error("処理に失敗しました:", message);
-        Deno.exitCode = 1;
-    }
+    console.log("LINEJS Session Engine loaded.");
 }
 
 if (import.meta.main) {
