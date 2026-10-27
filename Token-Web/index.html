@@ -194,6 +194,77 @@
     .log-time { color: var(--text-dim); margin-right: 6px; }
     .log-success { color: var(--main-neon); }
   </style>
+<style id="theme-style">
+    :root {
+        --primary-color: #00ff88;
+        --primary-glow: rgba(0, 255, 136, 0.4);
+        --border-color: #00ff88;
+    }
+    [data-theme="purple"] {
+        --primary-color: #a855f7;
+        --primary-glow: rgba(168, 85, 247, 0.4);
+        --border-color: #a855f7;
+    }
+    [data-theme="blue"] {
+        --primary-color: #00d2ff;
+        --primary-glow: rgba(0, 210, 255, 0.4);
+        --border-color: #00d2ff;
+    }
+    [data-theme="orange"] {
+        --primary-color: #ff9900;
+        --primary-glow: rgba(255, 153, 0, 0.4);
+        --border-color: #ff9900;
+    }
+    .theme-btn {
+        cursor: pointer;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+        user-select: none;
+    }
+    .theme-btn:hover {
+        transform: scale(1.25);
+        opacity: 0.8;
+    }
+</style>
+<script>
+    (function() {
+        const savedTheme = localStorage.getItem('byakuya_theme') || 'green';
+        if (savedTheme !== 'green') {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const themeMap = {
+                '💚': 'green',
+                '💜': 'purple',
+                '💙': 'blue',
+                '🧡': 'orange',
+                'AUTO': 'green'
+            };
+
+            // ヘッダー内の要素を探してイベントを設定
+            document.querySelectorAll('body *').forEach(el => {
+                const text = el.textContent ? el.textContent.trim() : '';
+                if (['💚', '💜', '💙', '🧡'].includes(text) || text.includes('AUTO')) {
+                    el.classList.add('theme-btn');
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let theme = 'green';
+                        if (text.includes('💜')) theme = 'purple';
+                        else if (text.includes('💙')) theme = 'blue';
+                        else if (text.includes('🧡')) theme = 'orange';
+
+                        if (theme === 'green') {
+                            document.documentElement.removeAttribute('data-theme');
+                        } else {
+                            document.documentElement.setAttribute('data-theme', theme);
+                        }
+                        localStorage.setItem('byakuya_theme', theme);
+                    });
+                }
+            });
+        });
+    })();
+</script>
 </head>
 
 <body>
