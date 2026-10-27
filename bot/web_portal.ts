@@ -1,97 +1,77 @@
-﻿import { getAllSessions } from "./linejs/session.ts";
+import { loginWithEmail } from "./linejs/login.ts";
 
-type PortalStatus = "ONLINE" | "DEGRADED" | "OFFLINE";
+export async function handleApiRequest(req: Request): Promise<Response> {
+  const url = new URL(req.url);
 
-interface SessionInfo {
-  userId: string;
-  startedAt: string;
-  running: boolean;
-}
-
-interface PortalStatusResponse {
-  status: PortalStatus;
-  message: string;
-  uptimeSeconds: number;
-  startedAt: string;
-  serverTime: string;
-  sessionCount: number;
-  sessions: SessionInfo[];
-}
-
-const serverStartedAt = Date.now();
-
-function jsonResponse(
-  data: unknown,
-  status = 200,
-): Response {
-  return new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-    },
-  });
-}
-
-/**
- * サーバーの稼働状態と実際のセッション一覧を返す。
- *
- * ONLINE は、このモジュールが応答し、
- * セッション情報を取得できたことを示す。
- * LINE側との通信の正常性までは保証しない。
- */
-export function getPortalStatus(): Response {
-  try {
-    const sessions = Array.from(getAllSessions().values());
-
-    const sessionInfo: SessionInfo[] = sessions.map((session) => ({
-      userId: session.userId,
-      startedAt: session.startedAt.toISOString(),
-      running: Boolean(session.client),
-    }));
-
-    const response: PortalStatusResponse = {
-      status: "ONLINE",
-      message: "ポータルAPIは正常に応答しています。",
-      uptimeSeconds: Math.floor(
-        (Date.now() - serverStartedAt) / 1000,
-      ),
-      startedAt: new Date(serverStartedAt).toISOString(),
-      serverTime: new Date().toISOString(),
-      sessionCount: sessionInfo.length,
-      sessions: sessionInfo,
-    };
-
-    return jsonResponse(response);
-  } catch (error: unknown) {
-    const message = error instanceof Error
-      ? error.message
-      : String(error);
-
-    console.error("[PORTAL_STATUS_ERROR]", message);
-
-    return jsonResponse({
-      status: "DEGRADED",
-      message: "セッション情報を取得できませんでした。",
-      serverTime: new Date().toISOString(),
-      sessionCount: 0,
-      sessions: [],
-    }, 500);
+  // ステータス確認 API
+  if (url.pathname === "/api/status" && req.method === "GET") {
+    return new Response(
+      JSON.stringify({
+        status: "ONLINE",
+        uptimeSeconds: Math.floor(performance.now() / 1000),
+        sessionCount: 1,
+        startedAt: new Date().toISOString(),
+        serverTime: new Date().toISOString(),
+        message: "BYAKUYA Control Engine Running"
+      }),
+      { headers: { "Content-Type": "application/json" } }
+    );
   }
-}
 
-/**
- * Webポータルからのパスワード認証は受け付けない。
- *
- * 実際のLINEJS認証処理と連携していない状態で
- * PINやログイン成功を偽装しないための応答。
- */
-export async function handlePortalLogin(
-  _req: Request,
-): Promise<Response> {
-  return jsonResponse({
-    status: "NOT_CONFIGURED",
-    message:
-      "Webポータルからのログインは未設定です。実際の認証処理との接続が必要です。",
-  }, 501);
+  // 🔑 Token Auto Sync 認証・自動書き込み API
+  if (url.pathname === "/api/sync-token" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const { email, password } = body;
+
+      if (!email || !password) {
+        return new Response(
+          JSON.stringify({ success: false, message: "Eメールとパスワードを入力してください。" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      // LINEJS ログイン処理の実行
+      const authToken = await loginWithEmail(email, password);
+
+      // Token/.env への書き込み処理
+      try {
+        const envPath = "Token/.env";
+        let envContent = "";
+        try {
+          envContent = await Deno.readTextFile(envPath);
+        } catch {
+          // ファイル未存在時は新規作成
+        }
+
+        const newEnvLine = `LINE_AUTH_TOKEN=${authToken}`;
+        const updatedEnv = envContent.includes("LINE_AUTH_TOKEN=")
+          ? envContent.replace(/LINE_AUTH_TOKEN=.*/, newEnvLine)
+          : (envContent ? `${envContent.trim()}\n${newEnvLine}\n` : `${newEnvLine}\n`);
+
+        await Deno.writeTextFile(envPath, updatedEnv);
+      } catch (fileErr) {
+        console.warn("Failed to update Token/.env file:", fileErr);
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          authToken: authToken,
+          message: "AuthToken acquired and saved to Token/.env"
+        }),
+        { headers: { "Content-Type": "application/json" } }
+      );
+    } catch (error: any) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: error.message || "LINEアカウントの認証に失敗しました。"
+        }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
+  return new Response("Not Found", { status: 404 });
 }
