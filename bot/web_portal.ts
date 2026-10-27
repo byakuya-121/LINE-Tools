@@ -15,28 +15,8 @@ export async function handlePortalLogin(email: string, password: string): Promis
   if (!email || !password) {
     throw new Error("Eメールとパスワードを入力してください。");
   }
-  const authToken = await loginWithEmail(email, password);
-
-  try {
-    const envPath = "Token/.env";
-    let envContent = "";
-    try {
-      envContent = await Deno.readTextFile(envPath);
-    } catch {
-      // ファイル未存在時は新規作成
-    }
-
-    const newEnvLine = `LINE_AUTH_TOKEN=${authToken}`;
-    const updatedEnv = envContent.includes("LINE_AUTH_TOKEN=")
-      ? envContent.replace(/LINE_AUTH_TOKEN=.*/, newEnvLine)
-      : (envContent ? `${envContent.trim()}\n${newEnvLine}\n` : `${newEnvLine}\n`);
-
-    await Deno.writeTextFile(envPath, updatedEnv);
-  } catch (fileErr) {
-    console.warn("Failed to update Token/.env file:", fileErr);
-  }
-
-  return authToken;
+  // .env への保管は行わず AuthToken のみ取得して返す
+  return await loginWithEmail(email, password);
 }
 
 export async function handleApiRequest(req: Request): Promise<Response> {
@@ -50,7 +30,7 @@ export async function handleApiRequest(req: Request): Promise<Response> {
     );
   }
 
-  // Token Auto Sync 認証
+  // AuthToken 取得 API (.env書き込みなし)
   if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
       const body = await req.json();
@@ -61,7 +41,7 @@ export async function handleApiRequest(req: Request): Promise<Response> {
         JSON.stringify({
           success: true,
           authToken: authToken,
-          message: "AuthToken acquired and saved to Token/.env"
+          message: "AuthToken acquired successfully"
         }),
         { headers: { "Content-Type": "application/json" } }
       );

@@ -1142,7 +1142,7 @@
             <input type="password" id="sync-password" placeholder="••••••••" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#fff; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; border-radius:2px; outline:none;">
           </div>
 
-          <button class="btn-small" onclick="handleTokenSync()" style="padding:10px; font-size:10px; margin-top:4px; text-align:center;">🔑 AUTHTOKEN 取得＆.env同期</button>
+          <button class="btn-small" onclick="handleTokenSync()" style="padding:10px; font-size:10px; margin-top:4px; text-align:center;">🔑 AUTHTOKEN 発行・取得</button>
         </div>
 
         <!-- スマホアプリPIN認証（必要な場合表示） -->
@@ -1158,7 +1158,7 @@
             <input type="text" id="generated-token" readonly style="flex:1; background:rgba(0,255,135,0.05); border:1px solid var(--main-neon); color:var(--main-neon); padding:8px; font-family:'JetBrains Mono',monospace; font-size:10px; border-radius:2px; outline:none;" onclick="this.select()">
             <button class="btn-small" onclick="copyTokenToClipboard()" style="white-space:nowrap; background:var(--main-neon); color:#000;">📋 コピー</button>
           </div>
-          <div style="font-size:8px; color:var(--text-dim); margin-top:6px;">※このTokenは自動的に Token/.env ファイルへも同期されます。</div>
+          <div style="font-size:8px; color:var(--text-dim); margin-top:6px;">※発行されたTokenはコピーボタンを押してご使用ください。</div>
         </div>
       </div>
     </div>
