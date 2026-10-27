@@ -25,7 +25,6 @@
       --text-sub: #7A8C82;
     }
 
-    /* 💜 Cyber Purple テーマ */
     body[data-theme="purple"] {
       --main-neon: #FF2E93;
       --cyan-neon: #00E5FF;
@@ -35,7 +34,6 @@
       --panel-dark: rgba(8, 4, 7, 0.98);
     }
 
-    /* 💙 Neon Cyan テーマ */
     body[data-theme="cyan"] {
       --main-neon: #00E5FF;
       --cyan-neon: #00FF87;
@@ -45,7 +43,6 @@
       --panel-dark: rgba(3, 6, 8, 0.98);
     }
 
-    /* 💛 Amber Orange テーマ */
     body[data-theme="amber"] {
       --main-neon: #FFB300;
       --cyan-neon: #FF5722;
@@ -55,1019 +52,154 @@
       --panel-dark: rgba(8, 6, 3, 0.98);
     }
 
-    /* 🌈 Auto Rainbow テーマ */
     body[data-theme="auto"] {
       --panel-bg: rgba(12, 12, 16, 0.93);
       --panel-dark: rgba(5, 5, 8, 0.98);
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background: var(--bg-base);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-x: hidden;
-      padding: 20px 28px;
-      position: relative;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: 
-        radial-gradient(circle at 50% 20%, rgba(176, 38, 255, 0.04) 0%, rgba(0, 255, 135, 0.02) 40%, transparent 80%),
-        linear-gradient(rgba(0, 255, 135, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 135, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 32px 32px, 32px 32px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(180deg, transparent, transparent 50%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5));
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.7;
-    }
-
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+    body { background: var(--bg-base); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; overflow-x: hidden; padding: 20px 28px; position: relative; transition: background 0.3s ease, color 0.3s ease; }
+    body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(circle at 50% 20%, rgba(176, 38, 255, 0.04) 0%, rgba(0, 255, 135, 0.02) 40%, transparent 80%), linear-gradient(rgba(0, 255, 135, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 135, 0.03) 1px, transparent 1px); background-size: 100% 100%, 32px 32px, 32px 32px; pointer-events: none; z-index: 0; }
+    body::after { content: ""; position: fixed; inset: 0; background: linear-gradient(180deg, transparent, transparent 50%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.5)); background-size: 100% 4px; pointer-events: none; z-index: 1; opacity: 0.7; }
     .mono { font-family: 'JetBrains Mono', monospace; }
     .hidden { display: none !important; }
 
-    /* Top Bar */
-    header.top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      width: 100%;
-      z-index: 10;
-    }
-
-    .brand-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px var(--main-neon);
-      transition: color 0.3s ease;
-    }
-
-    .brand-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-top: 2px;
-    }
-
-    .close-btn {
-      color: var(--text-dim);
-      font-size: 14px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      transition: color 0.2s;
-    }
-
+    header.top-bar { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; z-index: 10; }
+    .brand-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--main-neon); letter-spacing: 2px; text-shadow: 0 0 10px var(--main-neon); }
+    .brand-sub { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text-dim); letter-spacing: 1px; margin-top: 2px; }
+    .close-btn { color: var(--text-dim); font-size: 14px; background: none; border: none; cursor: pointer; padding: 4px; }
     .close-btn:hover { color: var(--accent-red); }
 
-    /* Welcome Container Layout */
-    .portal-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 36px;
-      max-width: 1000px;
-      margin: auto;
-      width: 100%;
-      position: relative;
-      padding: 16px 0;
-      z-index: 5;
-    }
+    .portal-container { display: flex; align-items: center; justify-content: center; gap: 36px; max-width: 1000px; margin: auto; width: 100%; position: relative; padding: 16px 0; z-index: 5; }
+    .vertical-divider { position: absolute; left: calc(42% - 1px); top: -40px; bottom: -40px; width: 1px; background: linear-gradient(180deg, transparent, var(--accent-purple), var(--main-neon), transparent); box-shadow: 0 0 8px var(--main-neon); }
+    .left-card { width: 42%; background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 4px; padding: 28px 24px; position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 360px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.9); }
+    .left-card::before { content: ""; position: absolute; top: 10px; left: 10px; width: 50px; height: 2px; background: var(--accent-purple); box-shadow: 0 0 8px var(--accent-purple); }
+    .logo-container { display: flex; justify-content: center; align-items: center; flex: 1; margin: 16px 0; }
+    .developer-avatar { max-width: 140px; max-height: 140px; width: 100%; height: auto; object-fit: contain; border-radius: 50%; border: 2px solid var(--border-color); box-shadow: 0 0 20px rgba(0, 255, 135, 0.15); }
+    .left-card-title { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; line-height: 1.1; color: #FFFFFF; }
+    .left-card-title span { color: var(--main-neon); display: block; }
+    .left-card-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); margin-top: 8px; }
+    .left-card-status { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent-purple); margin-top: 4px; }
 
-    .vertical-divider {
-      position: absolute;
-      left: calc(42% - 1px);
-      top: -40px;
-      bottom: -40px;
-      width: 1px;
-      background: linear-gradient(180deg, transparent, var(--accent-purple), var(--main-neon), transparent);
-      box-shadow: 0 0 8px var(--main-neon);
-    }
+    .right-area { width: 58%; padding-left: 16px; display: flex; flex-direction: column; gap: 22px; }
+    .welcome-header .welcome-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: var(--accent-purple); margin-bottom: 6px; }
+    .welcome-header h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(22px, 3.5vw, 30px); font-weight: 900; color: #FFFFFF; margin-bottom: 4px; }
+    .welcome-header .byakuya-sub { font-size: 11px; color: var(--text-sub); margin-bottom: 4px; }
+    .welcome-header .env-desc { font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
 
-    .left-card {
-      width: 42%;
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 28px 24px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 360px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-      transition: border-color 0.3s ease;
-    }
-
-    .left-card::before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 50px;
-      height: 2px;
-      background: var(--accent-purple);
-      box-shadow: 0 0 8px var(--accent-purple);
-    }
-
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-      margin: 16px 0;
-    }
-
-    .developer-avatar {
-      max-width: 140px;
-      max-height: 140px;
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      border-radius: 50%;
-      border: 2px solid var(--border-color);
-      box-shadow: 0 0 20px rgba(0, 255, 135, 0.15);
-    }
-
-    .left-card-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      font-weight: 900;
-      line-height: 1.1;
-      color: #FFFFFF;
-      letter-spacing: 1px;
-    }
-
-    .left-card-title span {
-      color: var(--main-neon);
-      display: block;
-    }
-
-    .left-card-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-top: 8px;
-    }
-
-    .left-card-status {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--accent-purple);
-      letter-spacing: 1px;
-      margin-top: 4px;
-    }
-
-    .right-area {
-      width: 58%;
-      padding-left: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
-
-    .welcome-header .welcome-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--accent-purple);
-      letter-spacing: 1.5px;
-      margin-bottom: 6px;
-    }
-
-    .welcome-header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(22px, 3.5vw, 30px);
-      font-weight: 900;
-      color: #FFFFFF;
-      margin-bottom: 4px;
-      letter-spacing: -0.5px;
-    }
-
-    .welcome-header .byakuya-sub {
-      font-size: 11px;
-      color: var(--text-sub);
-      margin-bottom: 4px;
-    }
-
-    .welcome-header .env-desc {
-      font-size: 10px;
-      color: var(--text-dim);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .system-check-box {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-left: 3px solid var(--main-neon);
-      border-radius: 2px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .check-title {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-    }
-
-    .check-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      padding-bottom: 8px;
-    }
-
+    .system-check-box { background: var(--panel-bg); border: 1px solid var(--border-color); border-left: 3px solid var(--main-neon); border-radius: 2px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+    .check-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: var(--text-dim); }
+    .check-row { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); padding-bottom: 8px; }
     .check-row:last-of-type { border-bottom: none; padding-bottom: 0; }
     .check-label { color: var(--text-sub); }
     .check-value { font-weight: 700; color: var(--main-neon); }
 
-    .btn-start {
-      width: 100%;
-      background: rgba(0, 255, 135, 0.05);
-      border: 1px solid var(--main-neon);
-      color: var(--main-neon);
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 800;
-      font-size: 11px;
-      padding: 13px;
-      cursor: pointer;
-      letter-spacing: 2px;
-      border-radius: 2px;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 10px rgba(0, 255, 135, 0.1);
-    }
+    .btn-start { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid var(--main-neon); color: var(--main-neon); font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 11px; padding: 13px; cursor: pointer; letter-spacing: 2px; border-radius: 2px; transition: all 0.25s ease; box-shadow: 0 0 10px rgba(0, 255, 135, 0.1); }
+    .btn-start:hover { background: var(--main-neon); color: #000; box-shadow: 0 0 20px var(--main-neon); }
 
-    .btn-start:hover {
-      background: var(--main-neon);
-      color: #000;
-      box-shadow: 0 0 20px var(--main-neon);
-    }
+    footer.bottom-bar { display: flex; justify-content: space-between; align-items: flex-end; width: 100%; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text-dim); z-index: 10; }
+    .status-indicator { display: flex; align-items: center; gap: 6px; color: #FFFFFF; font-weight: 700; }
+    .dot { width: 6px; height: 6px; background: var(--main-neon); border-radius: 50%; box-shadow: 0 0 6px var(--main-neon); }
 
-    footer.bottom-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      width: 100%;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-      z-index: 10;
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #FFFFFF;
-      font-weight: 700;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      background: var(--main-neon);
-      border-radius: 50%;
-      box-shadow: 0 0 6px var(--main-neon);
-    }
-
-    /* Cyber Scan Transition Overlay */
-    .cyber-transition-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(3, 4, 4, 0.95);
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 14px;
-      backdrop-filter: blur(8px);
-    }
-
-    .scan-line {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--main-neon), var(--cyan-neon), transparent);
-      box-shadow: 0 0 12px var(--main-neon);
-      animation: scanMove 0.7s linear infinite;
-    }
-
+    .cyber-transition-overlay { position: fixed; inset: 0; background: rgba(3, 4, 4, 0.95); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; backdrop-filter: blur(8px); }
+    .scan-line { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--main-neon), var(--cyan-neon), transparent); box-shadow: 0 0 12px var(--main-neon); animation: scanMove 0.7s linear infinite; }
     @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
-
-    .transition-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px var(--main-neon);
-      animation: glitchText 0.3s infinite alternate;
-    }
-
-    @keyframes glitchText {
-      0% { transform: translate(0, 0); }
-      50% { transform: translate(-2px, 1px); }
-      100% { transform: translate(2px, -1px); }
-    }
-
-    .transition-bar {
-      width: 180px;
-      height: 3px;
-      background: rgba(0, 255, 135, 0.15);
-      position: relative;
-      overflow: hidden;
-      border-radius: 2px;
-    }
-
-    .transition-bar-inner {
-      width: 100%;
-      height: 100%;
-      background: var(--main-neon);
-      box-shadow: 0 0 8px var(--main-neon);
-      animation: fillBar 0.6s ease-out forwards;
-    }
-
+    .transition-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--main-neon); letter-spacing: 2px; text-shadow: 0 0 10px var(--main-neon); animation: glitchText 0.3s infinite alternate; }
+    @keyframes glitchText { 0% { transform: translate(0, 0); } 50% { transform: translate(-2px, 1px); } 100% { transform: translate(2px, -1px); } }
+    .transition-bar { width: 180px; height: 3px; background: rgba(0, 255, 135, 0.15); position: relative; overflow: hidden; border-radius: 2px; }
+    .transition-bar-inner { width: 100%; height: 100%; background: var(--main-neon); box-shadow: 0 0 8px var(--main-neon); animation: fillBar 0.6s ease-out forwards; }
     @keyframes fillBar { 0% { transform: translateX(-100%); } 100% { transform: translateX(0%); } }
 
-    /* Toast Popups */
-    .toast-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: none;
-      max-width: 320px;
-      width: calc(100vw - 40px);
-    }
-
-    .toast-card {
-      pointer-events: auto;
-      background: var(--panel-dark);
-      border: 1px solid var(--border-color);
-      border-left: 3px solid var(--main-neon);
-      border-radius: 2px;
-      padding: 12px 14px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
-      animation: toastSlideIn 0.35s ease forwards;
-    }
-
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: 320px; width: calc(100vw - 40px); }
+    .toast-card { pointer-events: auto; background: var(--panel-dark); border: 1px solid var(--border-color); border-left: 3px solid var(--main-neon); border-radius: 2px; padding: 12px 14px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.9); animation: toastSlideIn 0.35s ease forwards; }
     .toast-card.error { border-left-color: var(--accent-red); }
     .toast-card.info { border-left-color: var(--cyan-neon); }
+    @keyframes toastSlideIn { 0% { opacity: 0; transform: translateX(50px); } 100% { opacity: 1; transform: translateX(0); } }
 
-    @keyframes toastSlideIn {
-      0% { opacity: 0; transform: translateX(50px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
+    #dashboard-window { position: fixed; inset: 0; background: var(--bg-base); z-index: 100; overflow-y: auto; padding: 0; }
+    header.dash-header { background: var(--panel-dark); border-bottom: 1px solid var(--border-color); padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); flex-wrap: wrap; gap: 10px; }
+    .dash-brand { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: #FFF; }
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-    /* Dashboard Main UI */
-    #dashboard-window {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-base);
-      z-index: 100;
-      overflow-y: auto;
-      padding: 0;
-    }
+    .theme-switcher { display: flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); padding: 3px 6px; border-radius: 3px; }
+    .theme-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--text-dim); font-weight: 700; margin-right: 2px; }
+    .theme-btn { background: transparent; border: 1px solid transparent; font-size: 11px; padding: 2px 4px; cursor: pointer; border-radius: 2px; transition: all 0.2s; line-height: 1; }
+    .theme-btn:hover, .theme-btn.active { border-color: var(--main-neon); background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
 
-    header.dash-header {
-      background: var(--panel-dark);
-      border-bottom: 1px solid var(--border-color);
-      padding: 10px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(12px);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .dash-brand {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      font-weight: 900;
-      color: #FFF;
-      letter-spacing: 1px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* サイバーテーマ切り替えボタン群 */
-    .theme-switcher {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-color);
-      padding: 3px 6px;
-      border-radius: 3px;
-    }
-
-    .theme-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px;
-      color: var(--text-dim);
-      font-weight: 700;
-      margin-right: 2px;
-    }
-
-    .theme-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      font-size: 11px;
-      padding: 2px 4px;
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.2s;
-      line-height: 1;
-    }
-
-    .theme-btn:hover, .theme-btn.active {
-      border-color: var(--main-neon);
-      background: rgba(255, 255, 255, 0.1);
-      transform: scale(1.1);
-    }
-
-    .api-indicator {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--text-dim);
-    }
+    .api-indicator { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-dim); }
     .status-dot.online { background: var(--main-neon); box-shadow: 0 0 8px var(--main-neon); }
     .status-dot.offline { background: var(--accent-red); box-shadow: 0 0 6px var(--accent-red); }
 
-    .btn-small {
-      background: rgba(0, 255, 135, 0.05);
-      border: 1px solid var(--border-color);
-      color: var(--main-neon);
-      padding: 6px 11px;
-      border-radius: 2px;
-      cursor: pointer;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-    }
+    .btn-small { background: rgba(0, 255, 135, 0.05); border: 1px solid var(--border-color); color: var(--main-neon); padding: 6px 11px; border-radius: 2px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 1px; transition: all 0.2s; }
+    .btn-small:hover { background: var(--main-neon); color: #000; box-shadow: 0 0 10px var(--main-neon); }
 
-    .btn-small:hover {
-      background: var(--main-neon);
-      color: #000;
-      box-shadow: 0 0 10px var(--main-neon);
-    }
+    .dash-content { max-width: 1160px; margin: 0 auto; padding: 20px 20px 32px; }
 
-    .dash-content {
-      max-width: 1160px;
-      margin: 0 auto;
-      padding: 20px 20px 32px;
-    }
+    .aa-dashboard-container { width: 100%; text-align: center; margin: 0 0 16px; overflow-x: auto; padding: 20px 12px; position: relative; border: 1px solid var(--border-color); border-radius: 4px; background: radial-gradient(ellipse at center, rgba(0, 255, 135, 0.18) 0%, rgba(176, 38, 255, 0.09) 45%, rgba(3, 4, 4, 0) 75%); box-shadow: 0 0 30px rgba(0, 255, 135, 0.12); }
+    .aa-wrapper { display: inline-block; position: relative; padding-right: 32px; }
+    .aa-gif-badge { position: absolute; top: -12px; right: -24px; width: 64px; height: 64px; object-fit: cover; border-radius: 6px; border: 1.5px solid var(--main-neon); box-shadow: 0 0 18px var(--main-neon); z-index: 5; background: rgba(0, 0, 0, 0.6); }
+    .cyber-aa { font-family: 'Courier New', 'JetBrains Mono', monospace; font-size: clamp(6px, 0.95vw, 11px); line-height: 1.1; color: var(--main-neon); text-shadow: 0 0 6px var(--main-neon); white-space: pre; display: inline-block; user-select: none; font-weight: 700; }
 
-    /* AA Header Box & Relative Wrapper */
-    .aa-dashboard-container {
-      width: 100%;
-      text-align: center;
-      margin: 0 0 16px;
-      overflow-x: auto;
-      padding: 20px 12px;
-      position: relative;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background: radial-gradient(ellipse at center, rgba(0, 255, 135, 0.18) 0%, rgba(176, 38, 255, 0.09) 45%, rgba(3, 4, 4, 0) 75%);
-      box-shadow: 0 0 30px rgba(0, 255, 135, 0.12), inset 0 0 20px rgba(0, 255, 135, 0.06);
-      animation: hologramGlowPulse 4s infinite alternate;
-      transition: border-color 0.3s ease;
-    }
-
-    @keyframes hologramGlowPulse {
-      0% {
-        box-shadow: 0 0 15px rgba(0, 255, 135, 0.08), inset 0 0 12px rgba(0, 255, 135, 0.04);
-      }
-      100% {
-        box-shadow: 0 0 35px rgba(0, 255, 135, 0.22), inset 0 0 25px rgba(0, 255, 135, 0.1);
-      }
-    }
-
-    .aa-wrapper {
-      display: inline-block;
-      position: relative;
-      padding-right: 32px;
-    }
-
-    .aa-gif-badge {
-      position: absolute;
-      top: -12px;
-      right: -24px;
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1.5px solid var(--main-neon);
-      box-shadow: 0 0 18px var(--main-neon);
-      animation: floatBadge 3s ease-in-out infinite alternate;
-      z-index: 5;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-    }
-
-    @keyframes floatBadge {
-      0% { transform: translateY(0px) rotate(-3deg); }
-      100% { transform: translateY(-8px) rotate(3deg); }
-    }
-
-    .cyber-aa {
-      font-family: 'Courier New', 'JetBrains Mono', monospace;
-      font-size: clamp(6px, 0.95vw, 11px);
-      line-height: 1.1;
-      letter-spacing: 0px;
-      color: var(--main-neon);
-      text-shadow: 0 0 6px var(--main-neon);
-      white-space: pre;
-      display: inline-block;
-      user-select: none;
-      font-weight: 700;
-      position: relative;
-      z-index: 2;
-    }
-
-    /* サイバータイピング・サブタイトル */
-    .typing-subtitle-wrap {
-      text-align: center;
-      margin-bottom: 14px;
-      min-height: 18px;
-    }
-
-    .typing-subtitle {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--cyan-neon);
-      letter-spacing: 1.2px;
-      text-shadow: 0 0 6px var(--cyan-neon);
-      display: inline-block;
-    }
-
-    .typing-cursor {
-      display: inline-block;
-      width: 6px;
-      height: 12px;
-      background: var(--main-neon);
-      vertical-align: middle;
-      margin-left: 3px;
-      box-shadow: 0 0 6px var(--main-neon);
-      animation: cursorBlink 0.8s infinite;
-    }
-
+    .typing-subtitle-wrap { text-align: center; margin-bottom: 14px; min-height: 18px; }
+    .typing-subtitle { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: var(--cyan-neon); letter-spacing: 1.2px; text-shadow: 0 0 6px var(--cyan-neon); display: inline-block; }
+    .typing-cursor { display: inline-block; width: 6px; height: 12px; background: var(--main-neon); vertical-align: middle; margin-left: 3px; animation: cursorBlink 0.8s infinite; }
     @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* クイック案内バー */
-    .quick-nav-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
+    .quick-nav-bar { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .quick-nav-btn { background: var(--panel-dark); border: 1px solid var(--border-color); color: var(--text-main); font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 6px 13px; border-radius: 2px; cursor: pointer; transition: all 0.25s ease; }
+    .quick-nav-btn:hover { border-color: var(--main-neon); color: var(--main-neon); box-shadow: 0 0 12px var(--main-neon); }
 
-    .quick-nav-btn {
-      background: var(--panel-dark);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 6px 13px;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .quick-nav-btn:hover {
-      border-color: var(--main-neon);
-      color: var(--main-neon);
-      box-shadow: 0 0 12px var(--main-neon);
-      transform: translateY(-2px);
-      background: rgba(0, 255, 135, 0.05);
-    }
-
-    /* Modal Popups */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 3, 3, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 2000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-    }
-
-    .modal-box {
-      background: var(--panel-dark);
-      border: 1px solid var(--border-color);
-      border-top: 3px solid var(--main-neon);
-      border-radius: 4px;
-      max-width: 560px;
-      width: 100%;
-      padding: 22px;
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.95);
-      position: relative;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 10px;
-    }
-
-    .modal-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 14px;
-      font-weight: 900;
-      color: var(--main-neon);
-      letter-spacing: 1px;
-    }
-
-    .modal-body {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-main);
-      line-height: 1.7;
-    }
-
-    .modal-close {
-      background: transparent;
-      border: none;
-      color: var(--text-dim);
-      font-size: 16px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
+    .modal-overlay { position: fixed; inset: 0; background: rgba(2, 3, 3, 0.85); backdrop-filter: blur(8px); z-index: 2000; display: flex; justify-content: center; align-items: center; padding: 16px; }
+    .modal-box { background: var(--panel-dark); border: 1px solid var(--border-color); border-top: 3px solid var(--main-neon); border-radius: 4px; max-width: 560px; width: 100%; padding: 22px; box-shadow: 0 0 35px rgba(0, 0, 0, 0.95); position: relative; max-height: 85vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; }
+    .modal-title { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: var(--main-neon); }
+    .modal-body { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-main); line-height: 1.7; }
+    .modal-close { background: transparent; border: none; color: var(--text-dim); font-size: 16px; cursor: pointer; }
     .modal-close:hover { color: var(--accent-red); }
 
-    .market-search-box {
-      background: var(--panel-dark);
-      border: 1px solid var(--border-color);
-      border-left: 3px solid var(--accent-purple);
-      border-radius: 3px;
-      padding: 12px 16px;
-      margin-bottom: 22px;
-      box-shadow: 0 0 16px rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .market-search-box { background: var(--panel-dark); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-purple); border-radius: 3px; padding: 12px 16px; margin-bottom: 22px; display: flex; align-items: center; gap: 12px; }
+    .search-tag { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; color: var(--accent-purple); white-space: nowrap; }
+    .search-input { width: 100%; background: transparent; border: none; outline: none; color: var(--main-neon); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 
-    .search-tag {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent-purple);
-      letter-spacing: 1px;
-      white-space: nowrap;
-    }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; padding: 16px; position: relative; }
+    .stat-card::before { content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--main-neon); }
+    .stat-title { font: 700 9px 'JetBrains Mono', monospace; color: var(--text-dim); margin-bottom: 8px; }
+    .stat-value { font: 900 22px 'Orbitron', sans-serif; color: var(--main-neon); text-shadow: 0 0 8px var(--main-neon); }
 
-    .search-input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--main-neon);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 1px;
-    }
+    .section-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
+    .section-title-label { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #FFF; display: flex; align-items: center; gap: 8px; }
+    .section-title-label::before { content: ""; display: inline-block; width: 4px; height: 12px; background: var(--main-neon); }
+    .section-title-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--cyan-neon); }
 
-    .search-input::placeholder { color: var(--text-dim); }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .tool-card { background: var(--panel-bg); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 3px; padding: 14px; transition: all 0.25s ease; }
+    .tool-card:hover { border-color: var(--main-neon); box-shadow: 0 0 12px var(--main-neon); transform: translateY(-2px); }
+    .tool-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .tool-title { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #FFF; }
+    .tool-badge { font-family: 'JetBrains Mono', monospace; font-size: 8px; color: var(--main-neon); border: 1px solid var(--border-color); padding: 2px 5px; border-radius: 2px; }
+    .tool-desc { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-sub); line-height: 1.5; }
 
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .stat-card {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      padding: 16px;
-      position: relative;
-      box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
-    }
-
-    .stat-card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; width: 3px; height: 100%;
-      background: var(--main-neon);
-    }
-
-    .stat-title {
-      font: 700 9px 'JetBrains Mono', monospace;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font: 900 22px 'Orbitron', sans-serif;
-      color: var(--main-neon);
-      text-shadow: 0 0 8px var(--main-neon);
-    }
-
-    .section-title-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .section-title-label {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      color: #FFF;
-      letter-spacing: 1.5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .section-title-label::before {
-      content: "";
-      display: inline-block;
-      width: 4px;
-      height: 12px;
-      background: var(--main-neon);
-      box-shadow: 0 0 8px var(--main-neon);
-    }
-
-    .section-title-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--cyan-neon);
-    }
-
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .tool-card {
-      background: var(--panel-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 3px;
-      padding: 14px;
-      transition: all 0.25s ease;
-    }
-
-    .tool-card:hover {
-      border-color: var(--main-neon);
-      box-shadow: 0 0 12px var(--main-neon);
-      transform: translateY(-2px);
-    }
-
-    .tool-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .tool-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      color: #FFF;
-    }
-
-    .tool-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 8px;
-      color: var(--main-neon);
-      border: 1px solid var(--border-color);
-      padding: 2px 5px;
-      border-radius: 2px;
-    }
-
-    .tool-desc {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    .panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: rgba(0, 0, 0, 0.4);
-      border-bottom: 1px solid var(--border-color);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #FFF;
-    }
-
+    .panel { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border-color); font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #FFF; }
     .panel-body { padding: 16px; }
 
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-    }
-
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
     .info-label { color: var(--text-dim); font-size: 9px; margin-bottom: 4px; }
     .info-val { color: var(--text-main); overflow-wrap: anywhere; }
 
-    .terminal-logs {
-      background: #020303;
-      border: 1px solid rgba(0, 255, 135, 0.15);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: #A3B5A9;
-      padding: 12px;
-      border-radius: 2px;
-      max-height: 140px;
-      overflow-y: auto;
-      line-height: 1.7;
-    }
-
+    .terminal-logs { background: #020303; border: 1px solid rgba(0, 255, 135, 0.15); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #A3B5A9; padding: 12px; border-radius: 2px; max-height: 140px; overflow-y: auto; line-height: 1.7; }
     .log-line { margin-bottom: 3px; }
     .log-time { color: var(--text-dim); margin-right: 6px; }
     .log-success { color: var(--main-neon); }
-
-    /* お知らせ掲示板スタイル */
-    .announcement-item {
-      padding: 10px 12px;
-      border-radius: 2px;
-      margin-bottom: 10px;
-      background: rgba(255, 255, 255, 0.02);
-      transition: background 0.2s;
-    }
-
-    .announcement-item:last-child { margin-bottom: 0; }
-    .announcement-item:hover { background: rgba(255, 255, 255, 0.05); }
-
-    .announcement-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-
-    .announcement-tag {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 2px;
-    }
-
-    .tag-update { color: var(--main-neon); border: 1px solid var(--main-neon); background: rgba(0, 255, 135, 0.1); }
-    .tag-info { color: var(--cyan-neon); border: 1px solid var(--cyan-neon); background: rgba(0, 229, 255, 0.1); }
-    .tag-notice { color: var(--accent-purple); border: 1px solid var(--accent-purple); background: rgba(176, 38, 255, 0.1); }
-
-    .announcement-date {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      color: var(--text-dim);
-    }
-
-    .announcement-title {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: #FFF;
-      margin-bottom: 4px;
-    }
-
-    .announcement-desc {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    /* Responsive Design Fixes for All Devices */
-    @media (max-width: 1024px) {
-      body { padding: 16px; }
-      .portal-container { gap: 24px; }
-      .left-card { width: 45%; padding: 22px 18px; min-height: 340px; }
-      .right-area { width: 55%; padding-left: 10px; gap: 18px; }
-      header.dash-header { padding: 10px 16px; }
-      .dash-content { padding: 16px 10px; }
-    }
-
-    @media (max-width: 768px) {
-      body { padding: 10px; }
-      .portal-container { flex-direction: column; gap: 16px; }
-      .vertical-divider { display: none; }
-      .left-card { width: 100%; min-height: auto; padding: 16px 14px; }
-      .developer-avatar { max-width: 100px; max-height: 100px; }
-      .right-area { width: 100%; padding-left: 0; gap: 14px; }
-      header.dash-header { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 8px; }
-      .header-right { width: 100%; justify-content: space-between; }
-      .dash-content { padding: 10px 4px; }
-      .stat-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
-      .tools-grid, .info-grid { grid-template-columns: 1fr; gap: 10px; }
-      .market-search-box { flex-direction: column; align-items: flex-start; gap: 6px; }
-      .quick-nav-bar { gap: 6px; }
-      .quick-nav-btn { font-size: 9px; padding: 5px 10px; }
-      .aa-wrapper { padding-right: 18px; }
-      .aa-gif-badge { width: 44px; height: 44px; top: -10px; right: -12px; }
-    }
   </style>
 </head>
 
 <body>
-  <!-- Toast Popup Container -->
   <div id="toast-container" class="toast-container"></div>
 
-  <!-- Modal Windows Container -->
+  <!-- 📖 使い方ガイド -->
   <div id="guide-modal" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
@@ -1078,50 +210,14 @@
         <p style="color:var(--main-neon); margin-bottom:10px;">■ BYAKUYA TOOLS 基本操作ガイド</p>
         <ol style="padding-left:16px; margin-bottom:14px;">
           <li><strong>1. APIステータス確認:</strong> 上部の「PORTAL API」がONLINEになっていることを確認します。</li>
-          <li><strong>2. ツール検索:</strong> 検索バーにキーワード（例: `linejs`, `webhook`）を入力すると、対象ツールを即座に抽出できます。</li>
-          <li><strong>3. セッション同期:</strong> Token Auto Sync機能により、認証トークンが自動的に保持・更新されます。</li>
-          <li><strong>4. カラー変更:</strong> 右上のテーマスイッチャー（🌈 AUTO / 💚 / 💜 / 💙 / 💛）からネオンカラーを変更可能。</li>
+          <li><strong>2. Token取得:</strong> Token Auto Syncカードをクリックし、メール・パスワードまたは手動貼り付けでAuthTokenを発行・管理できます。</li>
+          <li><strong>3. カラー変更:</strong> 右上のテーマスイッチャーからネオンカラーを変更できます。</li>
         </ol>
-        <p style="color:var(--text-dim); font-size:10px;">※Renderサーバーは一定時間アクセスがない場合サスペンドされるため、初回同期に数秒かかる場合があります。</p>
       </div>
     </div>
   </div>
 
-  <div id="contact-modal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span class="modal-title">[ 💬 CONTACT & SUPPORT / お問合せ ]</span>
-        <button class="modal-close" onclick="closeModal('contact-modal')">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="color:var(--cyan-neon); margin-bottom:10px;">■ 開発者・サポート窓口</p>
-        <div style="background:rgba(0,0,0,0.5); padding:12px; border:1px solid var(--border-color); margin-bottom:12px;">
-          <div>・<strong>Developer:</strong> BYAKUYA (@ByakuyaTools)</div>
-          <div>・<strong>LINE OpenChat:</strong> Byakuya Tools Official Core</div>
-          <div>・<strong>System Core:</strong> LINEJS 3.4.2 Engine</div>
-        </div>
-        <p style="color:var(--text-sub); font-size:10px;">バグ報告や機能拡張のご要望は、公式OpenChatまたはDMまでご連絡ください。</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="rules-modal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span class="modal-title">[ 📜 BLACKMARKET TERMS / 利用規約 ]</span>
-        <button class="modal-close" onclick="closeModal('rules-modal')">✕</button>
-      </div>
-      <div class="modal-body">
-        <p style="color:var(--accent-purple); margin-bottom:10px;">■ システム利用上の注意事項</p>
-        <ul style="padding-left:16px; margin-bottom:14px;">
-          <li>本ポータルで管理するTokenおよびセッション情報は厳重に管理してください。</li>
-          <li>スパム行為やLINE利用規約に著しく違反する運用は禁止されています。</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- 🔑 Token Auto Sync 認証＆ワンクリックコピー モーダル -->
+  <!-- 🔑 Token Auto Sync モーダル (手動入力切り替え＆詳細エラー表示機能付き) -->
   <div id="token-sync-modal" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header">
@@ -1129,33 +225,57 @@
         <button class="modal-close" onclick="closeModal('token-sync-modal')">✕</button>
       </div>
       <div class="modal-body">
-        <p style="color:var(--main-neon); margin-bottom:12px;">■ LINEアカウントログイン＆AuthToken自動同期</p>
-        
-        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
-          <div>
-            <label style="font-size:9px; color:var(--text-sub); display:block; margin-bottom:4px;">LINE Eメールアドレス</label>
-            <input type="email" id="sync-email" placeholder="example@line.me" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#fff; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; border-radius:2px; outline:none;">
-          </div>
-
-          <div>
-            <label style="font-size:9px; color:var(--text-sub); display:block; margin-bottom:4px;">パスワード</label>
-            <input type="password" id="sync-password" placeholder="••••••••" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#fff; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; border-radius:2px; outline:none;">
-          </div>
-
-          <button class="btn-small" onclick="handleTokenSync()" style="padding:10px; font-size:10px; margin-top:4px; text-align:center;">🔑 AUTHTOKEN 発行・取得</button>
+        <!-- モード切替タブ -->
+        <div style="display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+          <button id="tab-login" class="btn-small" onclick="switchTokenMode('login')" style="flex:1; text-align:center;">🔑 ログイン認証取得</button>
+          <button id="tab-manual" class="btn-small" onclick="switchTokenMode('manual')" style="flex:1; text-align:center; background:transparent; color:var(--text-sub);">📝 トークン手動確認/コピー</button>
         </div>
 
-        <!-- スマホアプリPIN認証（必要な場合表示） -->
-        <div id="pincode-box" class="hidden" style="background:rgba(255, 179, 0, 0.1); border:1px solid var(--main-neon); padding:12px; margin-bottom:14px; text-align:center; border-radius:2px;">
+        <!-- 認証ログインフォーム -->
+        <div id="mode-login-box">
+          <p style="color:var(--main-neon); margin-bottom:10px;">■ LINEアカウントログイン＆AuthToken取得</p>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+            <div>
+              <label style="font-size:9px; color:var(--text-sub); display:block; margin-bottom:4px;">LINE Eメールアドレス</label>
+              <input type="email" id="sync-email" placeholder="example@line.me" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#fff; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; outline:none;">
+            </div>
+
+            <div>
+              <label style="font-size:9px; color:var(--text-sub); display:block; margin-bottom:4px;">パスワード</label>
+              <input type="password" id="sync-password" placeholder="••••••••" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#fff; padding:8px; font-family:'JetBrains Mono',monospace; font-size:11px; outline:none;">
+            </div>
+
+            <button class="btn-small" id="sync-btn" onclick="handleTokenSync()" style="padding:10px; font-size:10px; margin-top:4px; text-align:center;">🔑 AUTHTOKEN 発行・取得</button>
+          </div>
+        </div>
+
+        <!-- 手動確認/貼り付けフォーム -->
+        <div id="mode-manual-box" class="hidden">
+          <p style="color:var(--cyan-neon); margin-bottom:10px;">■ 保持している AuthToken の貼り付け・複製</p>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:9px; color:var(--text-sub); display:block; margin-bottom:4px;">既存 AuthToken</label>
+            <textarea id="manual-token-input" placeholder="eyJhbGciOi..." style="width:100%; height:60px; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:var(--cyan-neon); padding:8px; font-family:'JetBrains Mono',monospace; font-size:10px; outline:none; resize:none;"></textarea>
+            <button class="btn-small" onclick="copyManualToken()" style="width:100%; padding:8px; margin-top:6px; background:var(--cyan-neon); color:#000;">📋 このトークンをコピー</button>
+          </div>
+        </div>
+
+        <!-- PINコード表示ボックス -->
+        <div id="pincode-box" class="hidden" style="background:rgba(255, 179, 0, 0.1); border:1px solid var(--main-neon); padding:12px; margin-bottom:12px; text-align:center;">
           <div style="font-size:9px; color:var(--text-sub); margin-bottom:4px;">スマホのLINEアプリで以下のPINコードを入力してください</div>
           <div id="pincode-display" style="font-family:'Orbitron',sans-serif; font-size:22px; font-weight:900; color:var(--main-neon); letter-spacing:4px;">------</div>
         </div>
 
-        <!-- トークン表示＆ワンクリックコピーエリア -->
-        <div id="token-result-box" class="hidden" style="margin-top:14px; padding-top:14px; border-top:1px dashed var(--border-color);">
+        <!-- エラーメッセージ表示枠 (詳細表示用) -->
+        <div id="sync-error-box" class="hidden" style="background:rgba(255, 42, 85, 0.1); border:1px solid var(--accent-red); padding:10px; margin-bottom:12px; border-radius:2px;">
+          <div style="font-size:9px; color:var(--accent-red); font-weight:700; margin-bottom:2px;">[ ⚠️ 認証エラー発生 ]</div>
+          <div id="sync-error-msg" style="font-size:10px; color:#FFF; word-break:break-all;"></div>
+        </div>
+
+        <!-- 成功結果 & ワンクリックコピー表示エリア -->
+        <div id="token-result-box" class="hidden" style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-color);">
           <label style="font-size:9px; color:var(--main-neon); display:block; margin-bottom:4px;">✓ 取得完了 AuthToken (ワンクリックコピー対応)</label>
           <div style="display:flex; gap:6px;">
-            <input type="text" id="generated-token" readonly style="flex:1; background:rgba(0,255,135,0.05); border:1px solid var(--main-neon); color:var(--main-neon); padding:8px; font-family:'JetBrains Mono',monospace; font-size:10px; border-radius:2px; outline:none;" onclick="this.select()">
+            <input type="text" id="generated-token" readonly style="flex:1; background:rgba(0,255,135,0.05); border:1px solid var(--main-neon); color:var(--main-neon); padding:8px; font-family:'JetBrains Mono',monospace; font-size:10px; outline:none;" onclick="this.select()">
             <button class="btn-small" onclick="copyTokenToClipboard()" style="white-space:nowrap; background:var(--main-neon); color:#000;">📋 コピー</button>
           </div>
           <div style="font-size:8px; color:var(--text-dim); margin-top:6px;">※発行されたTokenはコピーボタンを押してご使用ください。</div>
@@ -1164,14 +284,13 @@
     </div>
   </div>
 
-  <!-- Cyber Scan Transition Overlay -->
   <div id="cyber-transition" class="cyber-transition-overlay hidden">
     <div class="scan-line"></div>
     <div class="transition-title">SYSTEM INITIALIZING...</div>
     <div class="transition-bar"><div class="transition-bar-inner"></div></div>
   </div>
 
-  <!-- Welcome Portal Screen -->
+  <!-- Welcome Screen -->
   <section id="welcome-window" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh; width: 100%;">
     <header class="top-bar">
       <div>
@@ -1189,10 +308,7 @@
           <img src="assets/Developer.jpg" alt="Byakuya Logo" class="developer-avatar" onerror="this.src='assets/ByakuyaBot_AppIcon.ico'; this.onerror=function(){this.style.display='none';}">
         </div>
         <div class="left-card-info">
-          <div class="left-card-title">
-            BYAKUYA
-            <span>TOOLS</span>
-          </div>
+          <div class="left-card-title">BYAKUYA <span>TOOLS</span></div>
           <div class="left-card-sub">BLACKMARKET CENTER</div>
           <div class="left-card-status">SYSTEM / INITIALIZATIO_</div>
         </div>
@@ -1208,21 +324,9 @@
 
         <div class="system-check-box">
           <div class="check-title">SYSTEM CHECK</div>
-          
-          <div class="check-row">
-            <span class="check-label">LINEJS VERSION</span>
-            <span class="check-value">3.4.2</span>
-          </div>
-
-          <div class="check-row">
-            <span class="check-label">ENGINE</span>
-            <span class="check-value">READY</span>
-          </div>
-
-          <div class="check-row">
-            <span class="check-label">STATUS</span>
-            <span class="check-value">ONLINE</span>
-          </div>
+          <div class="check-row"><span class="check-label">LINEJS VERSION</span><span class="check-value">3.4.2</span></div>
+          <div class="check-row"><span class="check-label">ENGINE</span><span class="check-value">READY</span></div>
+          <div class="check-row"><span class="check-label">STATUS</span><span class="check-value">ONLINE</span></div>
         </div>
 
         <div>
@@ -1233,13 +337,9 @@
 
     <footer class="bottom-bar">
       <div class="footer-left">
-        <div class="status-indicator">
-          <span class="dot"></span>
-          <span>SYSTEM ONLINE</span>
-        </div>
+        <div class="status-indicator"><span class="dot"></span><span>SYSTEM ONLINE</span></div>
         <div>LINEJS / CONTROL SYSTEM / V3.4.2</div>
       </div>
-
       <div class="footer-right">
         <div>BYAKUYA TOOLS</div>
         <div>WELCOME / SYSTEM READY</div>
@@ -1247,19 +347,18 @@
     </footer>
   </section>
 
-  <!-- Blackmarket Main Dashboard Home -->
+  <!-- Dashboard Main Window -->
   <section id="dashboard-window" class="hidden">
     <header class="dash-header">
       <div class="dash-brand">BYAKUYA TOOLS // BLACKMARKET</div>
       <div class="header-right">
-        <!-- カラーテーマ切り替えボタン群 (AUTOモード付き) -->
         <div class="theme-switcher">
           <span class="theme-label">COLOR:</span>
-          <button class="theme-btn" onclick="setTheme('auto')" title="Auto Rainbow Glow">🌈 AUTO</button>
-          <button class="theme-btn active" onclick="setTheme('matrix')" title="Matrix Green">💚</button>
-          <button class="theme-btn" onclick="setTheme('purple')" title="Cyber Purple">💜</button>
-          <button class="theme-btn" onclick="setTheme('cyan')" title="Neon Cyan">💙</button>
-          <button class="theme-btn" onclick="setTheme('amber')" title="Amber Orange">💛</button>
+          <button class="theme-btn" onclick="setTheme('auto')">🌈 AUTO</button>
+          <button class="theme-btn active" onclick="setTheme('matrix')">💚</button>
+          <button class="theme-btn" onclick="setTheme('purple')">💜</button>
+          <button class="theme-btn" onclick="setTheme('cyan')">💙</button>
+          <button class="theme-btn" onclick="setTheme('amber')">💛</button>
         </div>
 
         <div class="api-indicator">
@@ -1272,7 +371,6 @@
     </header>
 
     <main class="dash-content">
-      <!-- LINE-Tools ASCII Art Box -->
       <div class="aa-dashboard-container">
         <div class="aa-wrapper">
           <img src="assets/aa-icon.gif" alt="GIF Badge" class="aa-gif-badge" onerror="this.src='assets/Developer.jpg'; this.onerror=function(){this.style.display='none';}">
@@ -1289,16 +387,12 @@
         </div>
       </div>
 
-      <!-- サイバータイピング・サブタイトル -->
       <div class="typing-subtitle-wrap">
         <span class="typing-subtitle" id="typing-sub-text"></span><span class="typing-cursor"></span>
       </div>
 
-      <!-- クイック案内バー (使い方 / お問合せ / 利用規約) -->
       <div class="quick-nav-bar">
         <button class="quick-nav-btn" onclick="openModal('guide-modal')">📖 使い方ガイド</button>
-        <button class="quick-nav-btn" onclick="openModal('contact-modal')">💬 お問合せ・サポート</button>
-        <button class="quick-nav-btn" onclick="openModal('rules-modal')">📜 利用規約</button>
       </div>
 
       <div class="market-search-box">
@@ -1307,21 +401,11 @@
       </div>
 
       <div class="stat-grid">
-        <article class="stat-card">
-          <div class="stat-title">PORTAL API</div>
-          <div class="stat-value" id="stat-api">--</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-title">SERVER UPTIME</div>
-          <div class="stat-value" id="stat-uptime">--</div>
-        </article>
-        <article class="stat-card">
-          <div class="stat-title">ACTIVE SESSIONS</div>
-          <div class="stat-value" id="stat-sessions">0</div>
-        </article>
+        <article class="stat-card"><div class="stat-title">PORTAL API</div><div class="stat-value" id="stat-api">--</div></article>
+        <article class="stat-card"><div class="stat-title">SERVER UPTIME</div><div class="stat-value" id="stat-uptime">--</div></article>
+        <article class="stat-card"><div class="stat-title">ACTIVE SESSIONS</div><div class="stat-value" id="stat-sessions">0</div></article>
       </div>
 
-      <!-- 🛠️ AVAILABLE TOOLS / ツール一覧 セクションヘッダー -->
       <div class="section-title-bar">
         <div class="section-title-label">[ AVAILABLE TOOLS / ツール一覧 ]</div>
         <div class="section-title-badge">4 MODULES ONLINE</div>
@@ -1329,44 +413,29 @@
 
       <div class="tools-grid" id="tools-grid">
         <div class="tool-card" data-keywords="linejs session auth auth-token">
-          <div class="tool-header">
-            <span class="tool-title">LINEJS Session Engine</span>
-            <span class="tool-badge">ACTIVE</span>
-          </div>
+          <div class="tool-header"><span class="tool-title">LINEJS Session Engine</span><span class="tool-badge">ACTIVE</span></div>
           <div class="tool-desc">LINEアカウントの認証状態およびアクティブセッションの統括管理。</div>
         </div>
 
         <div class="tool-card" data-keywords="auto-reply bot webhook commands">
-          <div class="tool-header">
-            <span class="tool-title">Webhook Handler</span>
-            <span class="tool-badge">LISTENING</span>
-          </div>
+          <div class="tool-header"><span class="tool-title">Webhook Handler</span><span class="tool-badge">LISTENING</span></div>
           <div class="tool-desc">LINEグループおよびOpenChatのメッセージイベント自動受送信。</div>
         </div>
 
         <!-- Token Auto Sync カード -->
         <div class="tool-card" style="cursor: pointer;" onclick="openModal('token-sync-modal')" data-keywords="token refresher env storage">
-          <div class="tool-header">
-            <span class="tool-title">Token Auto Sync</span>
-            <span class="tool-badge">SYNCED</span>
-          </div>
-          <div class="tool-desc">Eメール・パスワードを入力してAuthTokenを自動取得＆ワンクリックコピー。</div>
+          <div class="tool-header"><span class="tool-title">Token Auto Sync</span><span class="tool-badge">SYNCED</span></div>
+          <div class="tool-desc">Eメール・パスワードによるAuthToken発行、または手動保存・ワンクリックコピー。</div>
         </div>
 
         <div class="tool-card" data-keywords="group openchat manager audit">
-          <div class="tool-header">
-            <span class="tool-title">Group & OpenChat Audit</span>
-            <span class="tool-badge">READY</span>
-          </div>
+          <div class="tool-header"><span class="tool-title">Group & OpenChat Audit</span><span class="tool-badge">READY</span></div>
           <div class="tool-desc">グループメンバー監視およびOpenChatの自動モデレーションツール。</div>
         </div>
       </div>
 
       <section class="panel">
-        <div class="panel-header">
-          <span>SERVER INFORMATION</span>
-          <span style="color:var(--main-neon); font-size:9px;">LIVE API</span>
-        </div>
+        <div class="panel-header"><span>SERVER INFORMATION</span><span style="color:var(--main-neon); font-size:9px;">LIVE API</span></div>
         <div class="panel-body">
           <div class="info-grid">
             <div><div class="info-label">SERVER MESSAGE</div><div class="info-val" id="server-message">取得待機中</div></div>
@@ -1378,59 +447,10 @@
       </section>
 
       <section class="panel">
-        <div class="panel-header">
-          <span>LINEJS SESSIONS (<span id="session-count-badge" style="color:var(--main-neon)">0</span>)</span>
-        </div>
-        <div class="panel-body">
-          <div id="session-list" class="mono" style="font-size:11px; color:var(--text-sub);">
-            アクティブなセッションはありません。
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-header">
-          <span>SYSTEM LOGS</span>
-        </div>
+        <div class="panel-header"><span>SYSTEM LOGS</span></div>
         <div class="panel-body">
           <div class="terminal-logs" id="terminal-logs">
             <div class="log-line"><span class="log-time">[BLACKMARKET]</span><span class="log-success">System initialized. Ready for operations.</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 📢 開発者お知らせ掲示板 -->
-      <section class="panel">
-        <div class="panel-header">
-          <span>DEVELOPER ANNOUNCEMENTS / お知らせ掲示板</span>
-          <span style="color:var(--cyan-neon); font-size:9px;">BULLETIN BOARD</span>
-        </div>
-        <div class="panel-body">
-          <div class="announcement-item">
-            <div class="announcement-header">
-              <span class="announcement-tag tag-update">[UPDATE]</span>
-              <span class="announcement-date">2026.10.28</span>
-            </div>
-            <div class="announcement-title">LINEJS v3.4.2 ダッシュボードUI大幅リニューアル</div>
-            <div class="announcement-desc">ポータルの文字サイズ最適化、ネオンカラー（🌈 AUTOモード含む）および動的GIFバッジの反映を完了しました。</div>
-          </div>
-
-          <div class="announcement-item">
-            <div class="announcement-header">
-              <span class="announcement-tag tag-info">[INFO]</span>
-              <span class="announcement-date">2026.10.25</span>
-            </div>
-            <div class="announcement-title">Token Auto Sync 機能の正常動作について</div>
-            <div class="announcement-desc">LINE認証トークンの取得・自動保存が正常に行われています。Render環境での動作安定性も確保済みです。</div>
-          </div>
-
-          <div class="announcement-item">
-            <div class="announcement-header">
-              <span class="announcement-tag tag-notice">[NOTICE]</span>
-              <span class="announcement-date">2026.10.20</span>
-            </div>
-            <div class="announcement-title">サポート・バグ報告について</div>
-            <div class="announcement-desc">システムの不具合や新機能のご要望は、クイック案内バーの「お問合せ・サポート」より公式OpenChatへお知らせください。</div>
           </div>
         </div>
       </section>
@@ -1457,8 +477,6 @@
       serverStarted: document.getElementById("server-started"),
       serverTime: document.getElementById("server-time"),
       lastUpdated: document.getElementById("last-updated"),
-      sessionCountBadge: document.getElementById("session-count-badge"),
-      sessionList: document.getElementById("session-list"),
       logs: document.getElementById("terminal-logs"),
       searchInput: document.getElementById("tool-search-input"),
       toolsGrid: document.getElementById("tools-grid"),
@@ -1467,85 +485,6 @@
 
     let refreshTimer = null;
     let requestInProgress = false;
-
-    // 🌈 AUTO モード用 7色レインボー循環タイマー
-    let autoThemeTimer = null;
-    let autoHue = 0;
-
-    function stopAutoTheme() {
-      if (autoThemeTimer) {
-        clearInterval(autoThemeTimer);
-        autoThemeTimer = null;
-      }
-      document.body.style.removeProperty('--main-neon');
-      document.body.style.removeProperty('--cyan-neon');
-      document.body.style.removeProperty('--border-color');
-      document.body.style.removeProperty('--accent-purple');
-    }
-
-    function startAutoTheme() {
-      stopAutoTheme();
-      autoThemeTimer = setInterval(() => {
-        autoHue = (autoHue + 1) % 360;
-        const mainNeon = `hsl(${autoHue}, 100%, 50%)`;
-        const cyanNeon = `hsl(${(autoHue + 60) % 360}, 100%, 50%)`;
-        const borderCol = `hsla(${autoHue}, 100%, 50%, 0.35)`;
-        const accentPurp = `hsl(${(autoHue + 120) % 360}, 100%, 50%)`;
-
-        document.body.style.setProperty('--main-neon', mainNeon);
-        document.body.style.setProperty('--cyan-neon', cyanNeon);
-        document.body.style.setProperty('--border-color', borderCol);
-        document.body.style.setProperty('--accent-purple', accentPurp);
-      }, 40);
-    }
-
-    // カラーテーマの適用と保持
-    window.setTheme = function(themeName) {
-      const themes = ["auto", "matrix", "purple", "cyan", "amber"];
-
-      if (themeName === "auto") {
-        document.body.setAttribute("data-theme", "auto");
-        startAutoTheme();
-      } else {
-        stopAutoTheme();
-        if (themeName === "matrix") {
-          document.body.removeAttribute("data-theme");
-        } else {
-          document.body.setAttribute("data-theme", themeName);
-        }
-      }
-      localStorage.setItem("byakuya_theme", themeName);
-
-      document.querySelectorAll(".theme-btn").forEach((btn, index) => {
-        if (themes[index] === themeName) {
-          btn.classList.add("active");
-        } else {
-          btn.classList.remove("active");
-        }
-      });
-
-      showToast("THEME", `Switched to ${themeName.toUpperCase()} mode`, "info");
-    };
-
-    const savedTheme = localStorage.getItem("byakuya_theme") || "matrix";
-    window.setTheme(savedTheme);
-
-    const subtitleString = "// NEXT-GEN LINEJS & OPENCHAT AUTOMATION SYSTEM [v3.4.2]";
-    let typingIndex = 0;
-
-    function startTypingAnimation() {
-      if (!elements.typingText) return;
-      elements.typingText.textContent = "";
-      typingIndex = 0;
-      const interval = setInterval(() => {
-        if (typingIndex < subtitleString.length) {
-          elements.typingText.textContent += subtitleString.charAt(typingIndex);
-          typingIndex++;
-        } else {
-          clearInterval(interval);
-        }
-      }, 40);
-    }
 
     window.openModal = function(id) {
       const el = document.getElementById(id);
@@ -1570,7 +509,7 @@
         <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#FFF;">${msg}</div>
       `;
       elements.toastContainer.appendChild(card);
-      setTimeout(() => card.remove(), 3200);
+      setTimeout(() => card.remove(), 3500);
     }
 
     function addLog(msg, type = "info") {
@@ -1584,18 +523,51 @@
       elements.logs.scrollTop = elements.logs.scrollHeight;
     }
 
-    // 🔑 Token Auto Sync ログイン通信ロジック（ダミー生成除去済み）
+    // モード切り替え (ログイン / 手動)
+    window.switchTokenMode = function(mode) {
+      const loginBox = document.getElementById("mode-login-box");
+      const manualBox = document.getElementById("mode-manual-box");
+      const tabLogin = document.getElementById("tab-login");
+      const tabManual = document.getElementById("tab-manual");
+
+      if (mode === "login") {
+        loginBox.classList.remove("hidden");
+        manualBox.classList.add("hidden");
+        tabLogin.style.background = "rgba(0, 255, 135, 0.05)";
+        tabLogin.style.color = "var(--main-neon)";
+        tabManual.style.background = "transparent";
+        tabManual.style.color = "var(--text-sub)";
+      } else {
+        loginBox.classList.add("hidden");
+        manualBox.classList.remove("hidden");
+        tabManual.style.background = "rgba(0, 229, 255, 0.05)";
+        tabManual.style.color = "var(--cyan-neon)";
+        tabLogin.style.background = "transparent";
+        tabLogin.style.color = "var(--text-sub)";
+      }
+    };
+
+    // 🔑 AuthToken 取得通信処理 (詳細エラー捕捉付き)
     window.handleTokenSync = async function() {
       const email = document.getElementById("sync-email").value.trim();
       const password = document.getElementById("sync-password").value.trim();
+      const errBox = document.getElementById("sync-error-box");
+      const errMsg = document.getElementById("sync-error-msg");
+      const syncBtn = document.getElementById("sync-btn");
+
+      errBox.classList.add("hidden");
+      document.getElementById("pincode-box").classList.add("hidden");
+      document.getElementById("token-result-box").classList.add("hidden");
 
       if (!email || !password) {
         showToast("AUTH ERROR", "Eメールとパスワードを入力してください", "error");
         return;
       }
 
-      showToast("AUTH", "認証処理を実行中...", "info");
-      addLog(`Token sync initiated for: ${email}`, "info");
+      syncBtn.disabled = true;
+      syncBtn.textContent = "⏳ 認証処理中...";
+      showToast("AUTH", "サーバーへ認証リクエスト送信中...", "info");
+      addLog(`Sending auth request for ${email}`, "info");
 
       try {
         const res = await fetch("/api/sync-token", {
@@ -1605,9 +577,11 @@
         });
 
         const data = await res.json();
+        console.log("[DEBUG /api/sync-token response]", data);
 
-        if (!res.ok) {
-          throw new Error(data.message || `HTTP ${res.status}: LINE認証に失敗しました`);
+        if (!res.ok || !data.success) {
+          const detailMsg = data.message || `HTTP ${res.status}: LINE認証に失敗しました。`;
+          throw new Error(detailMsg);
         }
 
         if (data.pincode) {
@@ -1616,55 +590,48 @@
           showToast("PIN CODE", `LINEアプリでPINコード [${data.pincode}] を入力してください`, "info");
         }
 
-        if (data.authToken || data.token) {
-          const token = data.authToken || data.token;
-          document.getElementById("generated-token").value = token;
+        if (data.authToken) {
+          document.getElementById("generated-token").value = data.authToken;
           document.getElementById("token-result-box").classList.remove("hidden");
-          showToast("SUCCESS", "AuthTokenの取得と同期に成功しました！", "success");
+          showToast("SUCCESS", "AuthTokenの発行に成功しました！", "success");
           addLog("AuthToken acquired successfully.", "success");
         }
       } catch (e) {
+        console.error("[TokenSync Catch Error]", e);
+        errBox.classList.remove("hidden");
+        errMsg.textContent = e.message;
         showToast("AUTH ERROR", e.message, "error");
-        addLog(`Authentication error: ${e.message}`, "error");
+        addLog(`Authentication failed: ${e.message}`, "error");
+      } finally {
+        syncBtn.disabled = false;
+        syncBtn.textContent = "🔑 AUTHTOKEN 発行・取得";
       }
     };
 
-    // 📋 ワンクリックコピー関数
     window.copyTokenToClipboard = function() {
       const tokenInput = document.getElementById("generated-token");
       if (!tokenInput.value) return;
-
       navigator.clipboard.writeText(tokenInput.value).then(() => {
         showToast("COPIED", "AuthTokenをクリップボードにコピーしました！", "success");
-      }).catch(() => {
-        tokenInput.select();
-        document.execCommand("copy");
-        showToast("COPIED", "AuthTokenをコピーしました！", "success");
       });
     };
 
-    elements.searchInput.addEventListener("input", (e) => {
-      const keyword = e.target.value.toLowerCase().trim();
-      const cards = elements.toolsGrid.querySelectorAll(".tool-card");
-      cards.forEach(card => {
-        const title = card.querySelector(".tool-title").textContent.toLowerCase();
-        const desc = card.querySelector(".tool-desc").textContent.toLowerCase();
-        const keywords = card.getAttribute("data-keywords") || "";
-        if (!keyword || title.includes(keyword) || desc.includes(keyword) || keywords.includes(keyword)) {
-          card.classList.remove("hidden");
-        } else {
-          card.classList.add("hidden");
-        }
+    window.copyManualToken = function() {
+      const input = document.getElementById("manual-token-input").value.trim();
+      if (!input) {
+        showToast("ERROR", "トークンを入力してください", "error");
+        return;
+      }
+      navigator.clipboard.writeText(input).then(() => {
+        showToast("COPIED", "入力したAuthTokenをコピーしました！", "success");
       });
-    });
+    };
 
     function showDashboard() {
       elements.transition.classList.remove("hidden");
       setTimeout(() => {
         elements.dashboard.classList.remove("hidden");
         elements.transition.classList.add("hidden");
-        startTypingAnimation();
-        showToast("SYSTEM", "Control Center Loaded", "success");
         refreshStatus();
         if (refreshTimer !== null) clearInterval(refreshTimer);
         refreshTimer = setInterval(refreshStatus, 5000);
@@ -1673,11 +640,7 @@
 
     function showWelcome() {
       elements.dashboard.classList.add("hidden");
-      showToast("SYSTEM", "Returned to Welcome Portal", "info");
-      if (refreshTimer !== null) {
-        clearInterval(refreshTimer);
-        refreshTimer = null;
-      }
+      if (refreshTimer !== null) { clearInterval(refreshTimer); refreshTimer = null; }
     }
 
     function formatDate(val) {
@@ -1706,36 +669,16 @@
         elements.apiStatus.textContent = "ONLINE";
         elements.statApi.textContent = "ONLINE";
         elements.apiDot.className = "status-dot online";
-
         elements.statUptime.textContent = formatUptime(data.uptimeSeconds);
         elements.statSessions.textContent = String(data.sessionCount);
         elements.serverStarted.textContent = formatDate(data.startedAt);
         elements.serverTime.textContent = formatDate(data.serverTime);
         elements.serverMessage.textContent = data.message || "正常稼働中";
         elements.lastUpdated.textContent = formatDate(new Date());
-        elements.sessionCountBadge.textContent = String(data.sessionCount);
-
-        if (Array.isArray(data.sessions) && data.sessions.length > 0) {
-          elements.sessionList.innerHTML = data.sessions.map(s => 
-            `<div style="padding:8px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <div style="font-weight:700; color:#FFF;">${s.userId || 'UNKNOWN USER'}</div>
-                <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">Started: ${formatDate(s.startedAt)}</div>
-              </div>
-              <span style="font-size:8px; color:var(--main-neon); border:1px solid var(--border-color); padding:2px 5px;">REGISTERED</span>
-            </div>`
-          ).join("");
-        } else {
-          elements.sessionList.textContent = "アクティブなセッションはありません。";
-        }
-
-        addLog("Status synchronized with server.", "success");
       } catch (e) {
         elements.apiStatus.textContent = "OFFLINE";
         elements.statApi.textContent = "OFFLINE";
         elements.apiDot.className = "status-dot offline";
-        addLog(`Connection error: ${e.message}`, "error");
-        showToast("API ERROR", `Failed to sync: ${e.message}`, "error");
       } finally {
         requestInProgress = false;
       }
@@ -1743,10 +686,7 @@
 
     elements.start.addEventListener("click", showDashboard);
     elements.exit.addEventListener("click", showWelcome);
-    elements.refresh.addEventListener("click", () => {
-      refreshStatus();
-      showToast("REFRESH", "API Sync Triggered", "info");
-    });
+    elements.refresh.addEventListener("click", refreshStatus);
   </script>
 </body>
 </html>
