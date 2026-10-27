@@ -16,8 +16,8 @@ export async function loginWithEmail(email: string, password: string): Promise<L
         // 【修正】deviceを指定 ("MAC", "CHROMEOS", "IOSIPAD" などを指定必須)
         const client = new Client({
             storage: storage,
-            device: "MAC" 
-        });
+            device: "IOSIPAD", // 例: "MAC", "CHROMEOS", "IOSIPAD" など
+        } as any);
 
         console.log("ログイン処理を開始します...");
 
