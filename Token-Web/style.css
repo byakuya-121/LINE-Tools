@@ -586,28 +586,45 @@ header.dash-header {
 .aa-wrapper {
   display: inline-block;
   position: relative;
-  padding-right: 32px;
+  padding-right: 78px;
 }
 
 .aa-gif-badge {
   position: absolute;
-  top: -12px;
-  right: -24px;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   object-fit: cover;
   border-radius: 6px;
-  border: 1.5px solid var(--main-neon);
-  box-shadow: 0 0 18px var(--main-neon);
-  animation: floatBadge 3s ease-in-out infinite alternate;
   z-index: 5;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
 }
 
-@keyframes floatBadge {
+.aa-gif-badge.badge-1 {
+  top: -12px;
+  right: -10px;
+  border: 1.5px solid var(--main-neon);
+  box-shadow: 0 0 16px var(--main-neon);
+  animation: floatBadge1 3s ease-in-out infinite alternate;
+}
+
+.aa-gif-badge.badge-2 {
+  top: 48px;
+  right: -58px;
+  border: 1.5px solid var(--cyan-neon);
+  box-shadow: 0 0 16px var(--cyan-neon);
+  animation: floatBadge2 3.6s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatBadge1 {
   0% { transform: translateY(0px) rotate(-3deg); }
   100% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@keyframes floatBadge2 {
+  0% { transform: translateY(0px) rotate(4deg); }
+  100% { transform: translateY(-7px) rotate(-2deg); }
 }
 
 .cyber-aa {
@@ -1075,5 +1092,5 @@ header.dash-header {
   .quick-nav-bar { gap: 6px; }
   .quick-nav-btn { font-size: 9px; padding: 5px 10px; }
   .aa-wrapper { padding-right: 18px; }
-  .aa-gif-badge { width: 44px; height: 44px; top: -10px; right: -12px; }
+  .aa-wrapper { padding-right: 50px; } .aa-gif-badge { width: 38px; height: 38px; } .aa-gif-badge.badge-1 { top: -8px; right: -4px; } .aa-gif-badge.badge-2 { top: 34px; right: -40px; }
 }
