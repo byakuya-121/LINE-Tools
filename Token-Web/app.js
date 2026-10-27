@@ -365,3 +365,46 @@ elements.refresh.addEventListener("click", () => {
   refreshStatus();
   showToast("REFRESH", "API Sync Triggered", "info");
 });
+
+// 🧪 トークン有効性チェック機能
+document.getElementById('btn-verify-token')?.addEventListener('click', async () => {
+  const token = document.getElementById('token-output').value.trim();
+  const statusBox = document.getElementById('verify-status-box');
+  const statusText = document.getElementById('verify-status-text');
+
+  if (!token) {
+    showToast("CHECK ERROR", "検証するTokenがありません。先にTokenを取得または入力してください。", "error");
+    return;
+  }
+
+  const btn = document.getElementById('btn-verify-token');
+  btn.disabled = true;
+  btn.textContent = '⌛ Token検証中...';
+  statusBox.classList.remove('hidden');
+  statusText.innerHTML = '<span style="color:var(--cyan-neon);">⌛ LINEJS サーバーへ通信中...</span>';
+
+  try {
+    const res = await fetch('/api/verify-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authToken: token })
+    });
+
+    const data = await res.json();
+    if (data.valid) {
+      statusText.innerHTML = <span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN</span><br><span style="color:#FFF;">アカウント: </span>;
+      showToast("VERIFY SUCCESS", "Tokenは正常に有効です！", "success");
+      addLog(Token Verification: VALID (), "success");
+    } else {
+      statusText.innerHTML = <span style="color:var(--accent-red); font-weight:700;">✕ INVALID TOKEN</span><br><span style="color:var(--text-sub);"></span>;
+      showToast("VERIFY FAILED", "無効なTokenです", "error");
+      addLog(Token Verification: INVALID, "error");
+    }
+  } catch (err) {
+    statusText.innerHTML = <span style="color:var(--accent-red);">通信エラー: </span>;
+    showToast("SYSTEM ERROR", err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🧪 トークン有効性チェック (Verify)';
+  }
+});
