@@ -1,6 +1,7 @@
-// deno-lint-ignore-file no-explicit-any no-import-prefix
-import { loginWithPassword } from "jsr:@evex/linejs@3.4.2";
-import { FileStorage } from "jsr:@evex/linejs@3.4.2/storage";
+// deno-lint-ignore-file no-explicit-any
+// jsr: プレフィックスを削除し、deno.json のエイリアスを使用
+import { loginWithPassword } from "@evex/linejs";
+import { FileStorage } from "@evex/linejs/storage";
 
 const STORAGE_PATH = "./storage.json";
 
@@ -15,22 +16,27 @@ export async function loginWithEmail(email: string, password: string): Promise<L
 
         console.log("ログイン処理を開始します...");
 
-        // すべての設定を1つのオブジェクトにまとめて渡すのが正解です
-        const client: any = await loginWithPassword({
-            email,
-            password,
-            device: "IOSIPAD",
-            storage: storage,
-            fetch: globalThis.fetch.bind(globalThis),
-            onPincodeRequest: (pin: string) => {
-                console.log(`\n=================================================`);
-                console.log(`📱 【重要】スマホのLINEアプリを開いてください！`);
-                console.log(`本人確認画面が表示されたら、以下のPINコードを入力してください:`);
-                console.log(`👉  [ ${pin} ]  👈`);
-                console.log(`※入力が終わるまで、このプログラムは待機します...`);
-                console.log(`=================================================\n`);
+        // 第1引数: ログイン情報 (email, password, onPincodeRequest)
+        // 第2引数: 初期化オプション (storage, device, fetch)
+        const client: any = await loginWithPassword(
+            {
+                email,
+                password,
+                onPincodeRequest: (pin: string) => {
+                    console.log(`\n=================================================`);
+                    console.log(`📱 【重要】スマホのLINEアプリを開いてください！`);
+                    console.log(`本人確認画面が表示されたら、以下のPINコードを入力してください:`);
+                    console.log(`👉  [ ${pin} ]  👈`);
+                    console.log(`※入力が終わるまで、このプログラムは待機します...`);
+                    console.log(`=================================================\n`);
+                }
+            },
+            {
+                storage,
+                device: "IOSIPAD",
+                fetch: globalThis.fetch.bind(globalThis)
             }
-        } as any);
+        );
 
         console.log("✅ スマホでの認証が確認できました！連携処理を完了します...");
 
@@ -48,7 +54,7 @@ export async function loginWithEmail(email: string, password: string): Promise<L
 }
 
 function main(): void {
-    console.log("LINEJS Session Engine loaded with jsr:@evex/linejs@3.4.2");
+    console.log("LINEJS Session Engine loaded");
 }
 
 if (import.meta.main) {
