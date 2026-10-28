@@ -1,19 +1,24 @@
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
 import { Client } from "jsr:@evex/linejs@3.4.2";
 
+// RenderのPORT環境変数を取得 (未指定時は10000)
 const PORT = Number(Deno.env.get("PORT")) || 10000;
 const startedAt = new Date().toISOString();
 
+// アクティブセッション監視用マップ
 const activeSessions = new Map<string, { userId?: string; startedAt: string; client?: any }>();
 
+// Render用に hostname: "0.0.0.0" を明示指定して起動
 Deno.serve({
   port: PORT,
-  onListen({ hostname, port }) {
-    console.log(`🚀 BYAKUYA Engine Server running on http://localhost:${port}`);
+  hostname: "0.0.0.0",
+  onListen({ port }) {
+    console.log(`🚀 BYAKUYA Engine Server running on port ${port}`);
   }
 }, async (req: Request) => {
   const url = new URL(req.url);
 
+  // 1. API: ステータス確認
   if (url.pathname === "/api/status" && req.method === "GET") {
     const uptimeSeconds = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000);
     const sessionsList = Array.from(activeSessions.values()).map(s => ({
@@ -37,6 +42,7 @@ Deno.serve({
     });
   }
 
+  // 2. API: AuthToken同期 & PIN発行
   if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
       const body = await req.json();
@@ -110,6 +116,7 @@ Deno.serve({
     }
   }
 
+  // 3. API: トークン検証
   if (url.pathname === "/api/verify-token" && req.method === "POST") {
     try {
       const body = await req.json();
@@ -135,8 +142,7 @@ Deno.serve({
         });
       });
 
-      verifyClient.login({ authToken }).catch(() => {
-      });
+      verifyClient.login({ authToken }).catch(() => {});
 
       const timeoutPromise = new Promise<{ valid: boolean; error: string }>((resolve) =>
         setTimeout(() => resolve({ valid: false, error: "検証タイムアウト（無効または応答なし）" }), 7000)
@@ -156,6 +162,7 @@ Deno.serve({
     }
   }
 
+  // 4. 静的ファイル配信 (Token-Web)
   return serveDir(req, {
     fsRoot: "Token-Web",
     urlRoot: "",
