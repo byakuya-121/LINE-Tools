@@ -1165,3 +1165,31 @@ header.dash-header {
   height: 14px;
   cursor: pointer;
 }
+/* 🚀 START BYAKUYA TOOLS ボタン専用ネオンスタイル */
+.start-btn-cyber {
+  width: 100%;
+  padding: 14px 20px;
+  margin-top: 15px;
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid var(--main-neon, #00ff88);
+  color: var(--main-neon, #00ff88);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.start-btn-cyber:hover {
+  background: var(--main-neon, #00ff88);
+  color: #050505;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  transform: translateY(-1px);
+}
+
+.start-btn-cyber:active {
+  transform: translateY(1px);
+}
