@@ -1,6 +1,6 @@
 // ==========================================
 // BYAKUYA DASHBOARD CONTROLLER (app.js)
-// FIX VERSION: welcome-dashboard-switch-20261028
+// FIXED DOM IDs to match index.html
 // ==========================================
 
 // 🚀 1. ウェルカム画面からダッシュボードへ切り替え
@@ -10,21 +10,11 @@ function enterDashboard(btnEl) {
 
   console.info('[BYAKUYA] START button clicked.');
 
-  if (!welcome) {
-    console.error('[BYAKUYA] #welcome-window が見つかりません。');
-    return;
-  }
+  if (!welcome || !dashboard) return;
 
-  if (!dashboard) {
-    console.error('[BYAKUYA] #dashboard-window が見つかりません。');
-    return;
-  }
-
-  // HTMLのonclickとイベントリスナーの二重実行を安全に処理
   if (dashboard.dataset.open === 'true') return;
   dashboard.dataset.open = 'true';
 
-  // dashboard側の .hidden { display:none !important } を解除して表示
   dashboard.classList.remove('hidden');
   dashboard.style.display = 'block';
   dashboard.style.visibility = 'visible';
@@ -33,7 +23,6 @@ function enterDashboard(btnEl) {
   dashboard.style.transition = 'opacity 0.35s ease';
   dashboard.style.zIndex = '100';
 
-  // ウェルカム画面をフェードアウト
   welcome.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
   welcome.style.opacity = '0';
   welcome.style.transform = 'scale(0.97)';
@@ -48,12 +37,10 @@ function enterDashboard(btnEl) {
     console.info('[BYAKUYA] Dashboard displayed successfully.');
   }, 350);
 
-  // セッション/API表示を切り替え後に更新
   if (typeof refreshStatus === 'function') {
     refreshStatus();
   }
 }
-
 window.enterDashboard = enterDashboard;
 
 // 🚀 2. モーダル制御
@@ -81,8 +68,10 @@ function showToast(title, message, type) {
   if (!container) return;
 
   const toast = document.createElement('div');
-  toast.style.cssText = "background:rgba(10,15,25,0.95); border:1px solid var(--main-neon, #00ff88); padding:10px 16px; margin-bottom:8px; border-radius:3px; color:#fff; font-family:'JetBrains Mono',monospace; font-size:11px; box-shadow:0 0 10px rgba(0,255,136,0.2); transition: opacity 0.4s ease;";
-  toast.innerHTML = '<div style="font-weight:bold; color:var(--main-neon, #00ff88); margin-bottom:2px;">[' + title + ']</div><div style="color:#d0d0d0;">' + message + '</div>';
+  const borderColor = type === 'error' ? 'var(--accent-red)' : type === 'info' ? 'var(--cyan-neon)' : 'var(--main-neon)';
+  toast.className = 'toast-card ' + (type || '');
+  toast.style.cssText = "background:var(--panel-dark); border:1px solid var(--border-color); border-left:3px solid " + borderColor + "; padding:12px 14px; margin-bottom:8px; border-radius:2px; color:#fff; font-family:'JetBrains Mono',monospace; font-size:11px; box-shadow:0 0 20px rgba(0,0,0,0.9); transition: opacity 0.4s ease;";
+  toast.innerHTML = '<div style="font-weight:bold; color:' + borderColor + '; margin-bottom:2px;">[' + title + ']</div><div style="color:#d0d0d0;">' + message + '</div>';
 
   container.appendChild(toast);
   setTimeout(() => {
@@ -104,7 +93,7 @@ async function refreshStatus() {
     if (!res.ok) return;
     const data = await res.json();
 
-    const uptimeBadge = document.getElementById('status-uptime');
+    const uptimeBadge = document.getElementById('stat-uptime');
     if (uptimeBadge && data.uptimeSeconds !== undefined) {
       const h = Math.floor(data.uptimeSeconds / 3600);
       const m = Math.floor((data.uptimeSeconds % 3600) / 60);
@@ -112,7 +101,10 @@ async function refreshStatus() {
       uptimeBadge.textContent = h + 'h ' + m + 'm ' + s + 's';
     }
 
-    const sessionCountBadge = document.getElementById('status-sessions');
+    const statApi = document.getElementById('stat-api');
+    if (statApi) statApi.textContent = data.status || 'ONLINE';
+
+    const sessionCountBadge = document.getElementById('stat-sessions');
     if (sessionCountBadge && data.sessionCount !== undefined) {
       sessionCountBadge.textContent = String(data.sessionCount);
     }
@@ -143,9 +135,9 @@ async function refreshStatus() {
   } catch (err) {}
 }
 
-// 🚀 5. イベントリスナー一括登録
+// 🚀 5. イベントリスナー一括登録 (index.html の ID に完全対応)
 document.addEventListener('DOMContentLoaded', () => {
-  console.info('[BYAKUYA] app.js FIX VERSION loaded.');
+  console.info('[BYAKUYA] app.js matched with fixed index.html loaded.');
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
@@ -164,9 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const holdBtn = document.getElementById('btn-hold-sync');
-  const tosCheck = document.getElementById('tos-agree-check');
+  // 🔑 ホールド認証ボタン (ID: btn-sync-token / agree-terms-check)
+  const holdBtn = document.getElementById('btn-sync-token');
+  const tosCheck = document.getElementById('agree-terms-check');
+  const progressBg = document.getElementById('btn-progress-bg');
   let holdTimer = null;
+  let progressInterval = null;
 
   if (holdBtn) {
     const startHold = (e) => {
@@ -176,19 +171,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      holdBtn.classList.add('holding');
+      let progress = 0;
+      if (progressBg) progressBg.style.width = '0%';
+
+      progressInterval = setInterval(() => {
+        progress += 5;
+        if (progressBg) progressBg.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(progressInterval);
+        }
+      }, 50);
+
       holdTimer = setTimeout(async () => {
-        holdBtn.classList.remove('holding');
+        if (progressBg) progressBg.style.width = '0%';
         await executeTokenSync();
-      }, 1500);
+      }, 1000);
     };
 
     const cancelHold = () => {
-      if (holdTimer) {
-        clearTimeout(holdTimer);
-        holdTimer = null;
-      }
-      holdBtn.classList.remove('holding');
+      if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+      if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
+      if (progressBg) progressBg.style.width = '0%';
     };
 
     holdBtn.addEventListener('mousedown', startHold);
@@ -200,34 +203,58 @@ document.addEventListener('DOMContentLoaded', () => {
     holdBtn.addEventListener('touchcancel', cancelHold);
   }
 
+  // Verify ボタン
   const verifyBtn = document.getElementById('btn-verify-token');
   if (verifyBtn) {
     verifyBtn.addEventListener('click', executeTokenVerify);
   }
 
-  document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-copy-target');
-      const targetEl = document.getElementById(targetId);
-      if (targetEl && targetEl.textContent) {
-        navigator.clipboard.writeText(targetEl.textContent.trim()).then(() => {
-          showToast("SUCCESS", "クリップボードにコピーしました", "info");
-        }).catch(() => {
-          showToast("ERROR", "コピーに失敗しました", "error");
-        });
+  // 📋 ワンクリックコピーボタン各種
+  const btnCopyToken = document.getElementById('btn-copy-token');
+  if (btnCopyToken) {
+    btnCopyToken.addEventListener('click', () => {
+      const el = document.getElementById('token-output');
+      if (el && el.value) {
+        navigator.clipboard.writeText(el.value).then(() => showToast("SUCCESS", "AuthTokenをコピーしました", "info"));
+      } else {
+        showToast("WARN", "コピー対象のトークンが存在しません", "error");
       }
     });
-  });
+  }
+
+  const btnCopyJwt = document.getElementById('btn-copy-jwt');
+  if (btnCopyJwt) {
+    btnCopyJwt.addEventListener('click', () => {
+      const el = document.getElementById('jwt-token-output');
+      if (el && el.value) {
+        navigator.clipboard.writeText(el.value).then(() => showToast("SUCCESS", "JWT Tokenをコピーしました", "info"));
+      } else {
+        showToast("WARN", "コピー対象のトークンが存在しません", "error");
+      }
+    });
+  }
+
+  const btnCopyPin = document.getElementById('btn-copy-pin');
+  if (btnCopyPin) {
+    btnCopyPin.addEventListener('click', () => {
+      const el = document.getElementById('pin-code-val');
+      if (el && el.textContent) {
+        navigator.clipboard.writeText(el.textContent.trim()).then(() => showToast("SUCCESS", "PINコードをコピーしました", "info"));
+      }
+    });
+  }
 });
 
+// 🚀 トークン取得 API 実行関数 (index.html の ID に完全合わせ)
 async function executeTokenSync() {
-  const emailInput = document.getElementById('input-email');
-  const passInput = document.getElementById('input-password');
-  const resultBox = document.getElementById('sync-result-box');
-  const pinBox = document.getElementById('pincode-box');
-  const pinDisplay = document.getElementById('pincode-display');
-  const authTokenDisplay = document.getElementById('auth-token-display');
-  const jwtTokenDisplay = document.getElementById('jwt-token-display');
+  const emailInput = document.getElementById('line-email');
+  const passInput = document.getElementById('line-password');
+  const resultBox = document.getElementById('result-box');
+  const pinBox = document.getElementById('pin-display-area');
+  const pinDisplay = document.getElementById('pin-code-val');
+  const tokenArea = document.getElementById('token-display-area');
+  const authTokenDisplay = document.getElementById('token-output');
+  const jwtTokenDisplay = document.getElementById('jwt-token-output');
 
   const email = emailInput ? emailInput.value.trim() : '';
   const password = passInput ? passInput.value.trim() : '';
@@ -255,18 +282,21 @@ async function executeTokenSync() {
 
     if (data.pincode) {
       if (pinDisplay) pinDisplay.textContent = data.pincode;
+      if (resultBox) resultBox.classList.remove('hidden');
       if (pinBox) pinBox.classList.remove('hidden');
+      if (tokenArea) tokenArea.classList.add('hidden');
       showToast("PIN REQUIRED", "LINEアプリでPINコードを入力してください", "info");
       return;
     }
 
     if (data.authToken) {
-      if (authTokenDisplay) authTokenDisplay.textContent = data.authToken;
-      if (jwtTokenDisplay) jwtTokenDisplay.textContent = data.jwtToken || 'N/A';
+      if (authTokenDisplay) authTokenDisplay.value = data.authToken;
+      if (jwtTokenDisplay) jwtTokenDisplay.value = data.jwtToken || 'N/A';
       if (resultBox) resultBox.classList.remove('hidden');
       if (pinBox) pinBox.classList.add('hidden');
+      if (tokenArea) tokenArea.classList.remove('hidden');
       showToast("SUCCESS", "トークン同期に成功しました", "info");
-      refreshStatus();
+      if (typeof refreshStatus === 'function') refreshStatus();
     }
   } catch (err) {
     console.error("Sync error:", err);
@@ -274,11 +304,13 @@ async function executeTokenSync() {
   }
 }
 
+// 🚀 トークン検証 API 実行関数 (index.html の ID に完全合わせ)
 async function executeTokenVerify() {
-  const authTokenDisplay = document.getElementById('auth-token-display');
-  const verifyResult = document.getElementById('verify-result-status');
-  
-  const token = authTokenDisplay ? authTokenDisplay.textContent.trim() : '';
+  const authTokenInput = document.getElementById('token-output');
+  const verifyResultBox = document.getElementById('verify-status-box');
+  const verifyResultText = document.getElementById('verify-status-text');
+
+  const token = authTokenInput ? authTokenInput.value.trim() : '';
   if (!token || token === '---') {
     showToast("VERIFY ERROR", "検証対象のAuthTokenが存在しません", "error");
     return;
@@ -295,15 +327,13 @@ async function executeTokenVerify() {
 
     const data = await res.json();
 
-    if (verifyResult) {
-      verifyResult.classList.remove('hidden');
+    if (verifyResultBox) {
+      verifyResultBox.classList.remove('hidden');
       if (data.valid) {
-        verifyResult.className = 'verify-status valid';
-        verifyResult.textContent = '✓ VALID TOKEN (' + (data.displayName || 'LINE User') + ')';
+        if (verifyResultText) verifyResultText.innerHTML = '<span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN (' + (data.displayName || 'LINE User') + ')</span>';
         showToast("VERIFIED", "トークンは有効です: " + data.displayName, "info");
       } else {
-        verifyResult.className = 'verify-status invalid';
-        verifyResult.textContent = '✕ INVALID TOKEN: ' + (data.error || '無効');
+        if (verifyResultText) verifyResultText.innerHTML = '<span style="color:var(--accent-red); font-weight:700;">✕ INVALID TOKEN: ' + (data.error || '無効') + '</span>';
         showToast("VERIFIED", "トークンが無効または期限切れです", "error");
       }
     }
