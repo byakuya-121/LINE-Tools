@@ -1,5 +1,5 @@
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
-import { Client } from "https://jsr.io/@evex/linejs/3.4.2/mod.ts";
+import { Client } from "jsr:@evex/linejs@3.4.2";
 
 const PORT = Number(Deno.env.get("PORT")) || 10000;
 const startedAt = new Date().toISOString();
