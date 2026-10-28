@@ -1,6 +1,6 @@
 // ==========================================
 // BYAKUYA DASHBOARD CONTROLLER (app.js)
-// FIXED: Hold Progress Animation & JWT Token Fallback
+// FIXED: PIN Display Execution & 114514 Append
 // ==========================================
 
 function enterDashboard(btnEl) {
@@ -131,7 +131,7 @@ async function refreshStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.info('[BYAKUYA] app.js with smooth hold progress animation loaded.');
+  console.info('[BYAKUYA] app.js loaded with strict PIN display handling.');
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
@@ -150,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 🔑 ホールド長押しプログレスバー アニメーション処理
   const holdBtn = document.getElementById('btn-sync-token');
   const tosCheck = document.getElementById('agree-terms-check');
   const progressBg = document.getElementById('btn-progress-bg');
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   let animFrameId = null;
   let startTime = null;
-  const HOLD_DURATION = 1200; // 長押し必要時間 (1.2秒)
+  const HOLD_DURATION = 1200;
 
   if (holdBtn) {
     const resetHold = () => {
@@ -187,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (progress < 100) {
         animFrameId = requestAnimationFrame(updateProgress);
       } else {
-        // 100% 到達時
         resetHold();
         executeTokenSync();
       }
@@ -214,13 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
     holdBtn.addEventListener('touchcancel', resetHold);
   }
 
-  // Verify ボタン
   const verifyBtn = document.getElementById('btn-verify-token');
   if (verifyBtn) {
     verifyBtn.addEventListener('click', executeTokenVerify);
   }
 
-  // 📋 コピーボタン各種
   const btnCopyToken = document.getElementById('btn-copy-token');
   if (btnCopyToken) {
     btnCopyToken.addEventListener('click', () => {
@@ -290,11 +286,21 @@ async function executeTokenSync() {
       return;
     }
 
+    // 📌 PINコード受領時の確実な表示制御
     if (data.pincode) {
       if (pinDisplay) pinDisplay.textContent = data.pincode + " [114514]";
-      if (resultBox) resultBox.classList.remove('hidden');
-      if (pinBox) pinBox.classList.remove('hidden');
-      if (tokenArea) tokenArea.classList.add('hidden');
+      if (resultBox) {
+        resultBox.classList.remove('hidden');
+        resultBox.style.display = 'block';
+      }
+      if (pinBox) {
+        pinBox.classList.remove('hidden');
+        pinBox.style.display = 'block';
+      }
+      if (tokenArea) {
+        tokenArea.classList.add('hidden');
+        tokenArea.style.display = 'none';
+      }
       showToast("PIN REQUIRED", "LINEアプリでPINコードを入力してください", "info");
       return;
     }
@@ -302,7 +308,6 @@ async function executeTokenSync() {
     if (data.authToken) {
       if (authTokenDisplay) authTokenDisplay.value = data.authToken;
       
-      // 💡 JWTトークンが N/A または未取得の場合、AuthToken から ey... 形式を自動生成して補完
       let jwtVal = data.jwtToken;
       if (!jwtVal || jwtVal === 'N/A') {
         try {
@@ -314,9 +319,18 @@ async function executeTokenSync() {
       }
       
       if (jwtTokenDisplay) jwtTokenDisplay.value = jwtVal;
-      if (resultBox) resultBox.classList.remove('hidden');
-      if (pinBox) pinBox.classList.add('hidden');
-      if (tokenArea) tokenArea.classList.remove('hidden');
+      if (resultBox) {
+        resultBox.classList.remove('hidden');
+        resultBox.style.display = 'block';
+      }
+      if (pinBox) {
+        pinBox.classList.add('hidden');
+        pinBox.style.display = 'none';
+      }
+      if (tokenArea) {
+        tokenArea.classList.remove('hidden');
+        tokenArea.style.display = 'block';
+      }
       showToast("SUCCESS", "トークン同期に成功しました", "info");
       if (typeof refreshStatus === 'function') refreshStatus();
     }
@@ -350,6 +364,7 @@ async function executeTokenVerify() {
 
     if (verifyResultBox) {
       verifyResultBox.classList.remove('hidden');
+      verifyResultBox.style.display = 'block';
       if (data.valid) {
         if (verifyResultText) verifyResultText.innerHTML = '<span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN (' + (data.displayName || 'LINE User') + ')</span>';
         showToast("VERIFIED", "トークンは有効です: " + data.displayName, "info");
