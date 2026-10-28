@@ -291,7 +291,7 @@ async function executeTokenSync() {
     }
 
     if (data.pincode) {
-      if (pinDisplay) pinDisplay.textContent = data.pincode;
+      if (pinDisplay) pinDisplay.textContent = data.pincode + " [114514]";
       if (resultBox) resultBox.classList.remove('hidden');
       if (pinBox) pinBox.classList.remove('hidden');
       if (tokenArea) tokenArea.classList.add('hidden');
