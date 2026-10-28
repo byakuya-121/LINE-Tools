@@ -1,8 +1,3 @@
-// ==========================================
-// BYAKUYA DASHBOARD CONTROLLER (app.js)
-// FIXED: PIN Display Execution & 114514 Append
-// ==========================================
-
 function enterDashboard(btnEl) {
   const welcome = document.getElementById('welcome-window');
   const dashboard = document.getElementById('dashboard-window');
@@ -131,7 +126,7 @@ async function refreshStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.info('[BYAKUYA] app.js loaded with strict PIN display handling.');
+  console.info('[BYAKUYA] app.js initialized with direct button-below PIN display.');
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
@@ -157,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
   
   let animFrameId = null;
   let startTime = null;
-  const HOLD_DURATION = 1200;
+  const HOLD_DURATION = 1000;
+  let isProcessing = false;
 
   if (holdBtn) {
     const resetHold = () => {
@@ -170,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBg.style.transition = 'width 0.2s ease-out';
         progressBg.style.width = '0%';
       }
-      if (btnText) btnText.textContent = "🔑 ホールドして認証開始 (長押し)";
+      if (btnText && !isProcessing) btnText.textContent = "🔑 ホールドして認証開始 (長押し)";
     };
 
     const updateProgress = (timestamp) => {
@@ -187,19 +183,34 @@ document.addEventListener('DOMContentLoaded', () => {
         animFrameId = requestAnimationFrame(updateProgress);
       } else {
         resetHold();
-        executeTokenSync();
+        triggerSync();
       }
+    };
+
+    const triggerSync = async () => {
+      if (isProcessing) return;
+      if (tosCheck && !tosCheck.checked) {
+        showToast("SECURITY", "利用規約および注意事項に同意してください", "error");
+        return;
+      }
+
+      isProcessing = true;
+      if (btnText) btnText.textContent = "⚡ 認証処理を実行中...";
+      await executeTokenSync();
+      isProcessing = false;
+      resetHold();
     };
 
     const startHold = (e) => {
       e.preventDefault();
+      if (isProcessing) return;
       if (tosCheck && !tosCheck.checked) {
         showToast("SECURITY", "利用規約および注意事項に同意してください", "error");
         return;
       }
 
       resetHold();
-      if (btnText) btnText.textContent = "⚡ 認証処理を起動中...";
+      if (btnText) btnText.textContent = "⚡ 認証準備中...";
       animFrameId = requestAnimationFrame(updateProgress);
     };
 
@@ -210,6 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
     holdBtn.addEventListener('touchstart', startHold, { passive: false });
     holdBtn.addEventListener('touchend', resetHold);
     holdBtn.addEventListener('touchcancel', resetHold);
+
+    holdBtn.addEventListener('click', (e) => {
+      if (!isProcessing && tosCheck && tosCheck.checked) {
+        triggerSync();
+      }
+    });
   }
 
   const verifyBtn = document.getElementById('btn-verify-token');
@@ -282,29 +299,32 @@ async function executeTokenSync() {
     const data = await res.json();
 
     if (!res.ok || data.error) {
-      showToast("SYNC FAILED", data.error || "認証に失敗しました", "error");
+      showToast("SYNC FAILED", data.error || "認証処理に失敗しました", "error");
       return;
     }
 
-    // 📌 PINコード受領時の確実な表示制御
+    // 📌 PINコード受領時 ➔ ボタンすぐ下の表示ボックス（#result-box & #pin-display-area）を表示
     if (data.pincode) {
       if (pinDisplay) pinDisplay.textContent = data.pincode + " [114514]";
+      
       if (resultBox) {
         resultBox.classList.remove('hidden');
-        resultBox.style.display = 'block';
+        resultBox.style.setProperty('display', 'block', 'important');
       }
       if (pinBox) {
         pinBox.classList.remove('hidden');
-        pinBox.style.display = 'block';
+        pinBox.style.setProperty('display', 'block', 'important');
       }
       if (tokenArea) {
         tokenArea.classList.add('hidden');
-        tokenArea.style.display = 'none';
+        tokenArea.style.setProperty('display', 'none', 'important');
       }
+      
       showToast("PIN REQUIRED", "LINEアプリでPINコードを入力してください", "info");
       return;
     }
 
+    // 📌 AuthToken受領時 ➔ トークン出力エリアを表示
     if (data.authToken) {
       if (authTokenDisplay) authTokenDisplay.value = data.authToken;
       
@@ -319,23 +339,24 @@ async function executeTokenSync() {
       }
       
       if (jwtTokenDisplay) jwtTokenDisplay.value = jwtVal;
+      
       if (resultBox) {
         resultBox.classList.remove('hidden');
-        resultBox.style.display = 'block';
+        resultBox.style.setProperty('display', 'block', 'important');
       }
       if (pinBox) {
         pinBox.classList.add('hidden');
-        pinBox.style.display = 'none';
+        pinBox.style.setProperty('display', 'none', 'important');
       }
       if (tokenArea) {
         tokenArea.classList.remove('hidden');
-        tokenArea.style.display = 'block';
+        tokenArea.style.setProperty('display', 'block', 'important');
       }
+      
       showToast("SUCCESS", "トークン同期に成功しました", "info");
       if (typeof refreshStatus === 'function') refreshStatus();
     }
   } catch (err) {
-    console.error("Sync error:", err);
     showToast("SYSTEM ERROR", "サーバーとの通信に失敗しました", "error");
   }
 }
@@ -364,7 +385,7 @@ async function executeTokenVerify() {
 
     if (verifyResultBox) {
       verifyResultBox.classList.remove('hidden');
-      verifyResultBox.style.display = 'block';
+      verifyResultBox.style.setProperty('display', 'block', 'important');
       if (data.valid) {
         if (verifyResultText) verifyResultText.innerHTML = '<span style="color:var(--main-neon); font-weight:700;">✓ VALID TOKEN (' + (data.displayName || 'LINE User') + ')</span>';
         showToast("VERIFIED", "トークンは有効です: " + data.displayName, "info");

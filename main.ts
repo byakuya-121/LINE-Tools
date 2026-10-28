@@ -47,7 +47,7 @@ async function handler(req: Request): Promise<Response> {
     );
   }
 
-  // API: トークン取得 (PINコードをレスポンスJSONとして画面へ返却)
+  // API: トークン取得 (PINコードを即時レスポンスJSONとして画面へ送信)
   if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
       const body = await req.json();
@@ -62,7 +62,7 @@ async function handler(req: Request): Promise<Response> {
       return await new Promise<Response>((resolve) => {
         let isResolved = false;
 
-        // 📌 PINコードキャプチャ ➔ 即座に Web 画面へ JSON 返却
+        // 📌 PINコード受領イベント ➔ Web画面へ即座に送信
         client.on("pincode", (pin: string) => {
           if (!isResolved) {
             isResolved = true;
@@ -75,7 +75,7 @@ async function handler(req: Request): Promise<Response> {
           }
         });
 
-        // ログイン完了時
+        // ログイン完了イベント
         client.on("ready", async () => {
           if (!isResolved) {
             isResolved = true;
@@ -107,7 +107,7 @@ async function handler(req: Request): Promise<Response> {
           }
         });
 
-        // 20秒タイムアウト保護
+        // 25秒タイムアウト保護
         setTimeout(() => {
           if (!isResolved) {
             isResolved = true;
@@ -118,7 +118,7 @@ async function handler(req: Request): Promise<Response> {
               })
             );
           }
-        }, 20000);
+        }, 25000);
       });
     } catch (err: any) {
       return new Response(JSON.stringify({ error: err.message || "Server Error" }), { status: 500 });
