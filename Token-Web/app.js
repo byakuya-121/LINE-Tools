@@ -1,46 +1,59 @@
 // ==========================================
 // BYAKUYA DASHBOARD CONTROLLER (app.js)
+// FIX VERSION: welcome-dashboard-switch-20261028
 // ==========================================
 
-// 🚀 1. ウェルカム画面解除（マルチレイヤー自動検出）
+// 🚀 1. ウェルカム画面からダッシュボードへ切り替え
 function enterDashboard(btnEl) {
-  let target = null;
+  const welcome = document.getElementById('welcome-window');
+  const dashboard = document.getElementById('dashboard-window');
 
-  // ① IDおよびクラスでオーバーレイ画面を特定
-  const selectors = ['#welcome-screen', '.welcome-screen', '.welcome-overlay', '#gateway-screen', '.gateway-screen'];
-  for (const sel of selectors) {
-    const el = document.querySelector(sel);
-    if (el) {
-      target = el;
-      break;
-    }
+  console.info('[BYAKUYA] START button clicked.');
+
+  if (!welcome) {
+    console.error('[BYAKUYA] #welcome-window が見つかりません。');
+    return;
   }
 
-  // ② 見つからない場合はボタンから親要素を遡り、画面全体（fixed / absolute）を自動検出
-  if (!target && btnEl) {
-    let current = btnEl.parentElement;
-    for (let i = 0; i < 10; i++) {
-      if (!current || current === document.body) break;
-      const pos = window.getComputedStyle(current).position;
-      if (pos === 'fixed' || pos === 'absolute') {
-        target = current;
-        break;
-      }
-      current = current.parentElement;
-    }
+  if (!dashboard) {
+    console.error('[BYAKUYA] #dashboard-window が見つかりません。');
+    return;
   }
 
-  // フェードアウトアニメーションと非表示化
-  if (target) {
-    target.style.transition = "opacity 0.35s ease, transform 0.35s ease";
-    target.style.opacity = "0";
-    target.style.transform = "scale(0.97)";
-    target.style.pointerEvents = "none";
-    setTimeout(() => {
-      target.style.display = "none";
-    }, 350);
+  // HTMLのonclickとイベントリスナーの二重実行を安全に処理
+  if (dashboard.dataset.open === 'true') return;
+  dashboard.dataset.open = 'true';
+
+  // dashboard側の .hidden { display:none !important } を解除して表示
+  dashboard.classList.remove('hidden');
+  dashboard.style.display = 'block';
+  dashboard.style.visibility = 'visible';
+  dashboard.style.pointerEvents = 'auto';
+  dashboard.style.opacity = '0';
+  dashboard.style.transition = 'opacity 0.35s ease';
+  dashboard.style.zIndex = '100';
+
+  // ウェルカム画面をフェードアウト
+  welcome.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+  welcome.style.opacity = '0';
+  welcome.style.transform = 'scale(0.97)';
+  welcome.style.pointerEvents = 'none';
+
+  requestAnimationFrame(() => {
+    dashboard.style.opacity = '1';
+  });
+
+  window.setTimeout(() => {
+    welcome.style.display = 'none';
+    console.info('[BYAKUYA] Dashboard displayed successfully.');
+  }, 350);
+
+  // セッション/API表示を切り替え後に更新
+  if (typeof refreshStatus === 'function') {
+    refreshStatus();
   }
 }
+
 window.enterDashboard = enterDashboard;
 
 // 🚀 2. モーダル制御
@@ -132,6 +145,7 @@ async function refreshStatus() {
 
 // 🚀 5. イベントリスナー一括登録
 document.addEventListener('DOMContentLoaded', () => {
+  console.info('[BYAKUYA] app.js FIX VERSION loaded.');
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
