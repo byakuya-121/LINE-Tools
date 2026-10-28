@@ -9,7 +9,7 @@ const activeSessions = new Map<string, { userId?: string; startedAt: string; cli
 Deno.serve({
   port: PORT,
   onListen({ hostname, port }) {
-    console.log(`🚀 BYAKUYA Engine Server running on http://${hostname}:${port}`);
+    console.log(`🚀 BYAKUYA Engine Server running on http://localhost:${port}`);
   }
 }, async (req: Request) => {
   const url = new URL(req.url);
