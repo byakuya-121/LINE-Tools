@@ -475,6 +475,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("SESSION", "セッションリストを更新しました", "info");
   });
 
+    document.getElementById('btn-start-tools')?.addEventListener('click', enterDashboard);
+
   // 🚀 ボタンイベントの登録（安全ガード付き）
   if (elements.start) elements.start.addEventListener("click", showDashboard);
   if (elements.exit) elements.exit.addEventListener("click", showWelcome);
@@ -485,3 +487,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// 🚀 ウェルカム画面解除・ダッシュボード開始関数
+function enterDashboard() {
+  const welcomeScreen = document.getElementById('welcome-screen') || document.querySelector('.welcome-screen') || document.getElementById('welcome-overlay');
+  if (welcomeScreen) {
+    welcomeScreen.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+    welcomeScreen.style.opacity = "0";
+    welcomeScreen.style.transform = "scale(0.96)";
+    setTimeout(() => {
+      welcomeScreen.classList.add('hidden');
+      welcomeScreen.style.display = 'none';
+    }, 400);
+  }
+}
+window.enterDashboard = enterDashboard;
