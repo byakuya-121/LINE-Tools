@@ -126,7 +126,7 @@ async function refreshStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.info('[BYAKUYA] app.js initialized with direct button-below PIN display.');
+  console.info('[BYAKUYA] app.js initialized with alert PIN notification.');
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
@@ -303,9 +303,11 @@ async function executeTokenSync() {
       return;
     }
 
-    // 📌 PINコード受領時 ➔ ボタンすぐ下の表示ボックス（#result-box & #pin-display-area）を表示
+    // 📌 PINコード受領時 ➔ alert ポップアップ表示 & UI要素へ反映
     if (data.pincode) {
-      if (pinDisplay) pinDisplay.textContent = data.pincode + " [114514]";
+      const pinFullText = data.pincode + " [114514]";
+      
+      if (pinDisplay) pinDisplay.textContent = pinFullText;
       
       if (resultBox) {
         resultBox.classList.remove('hidden');
@@ -321,10 +323,12 @@ async function executeTokenSync() {
       }
       
       showToast("PIN REQUIRED", "LINEアプリでPINコードを入力してください", "info");
+
+      // 🔔 ブラウザの alert ポップアップで即座に提示
+      alert("【 LINE PIN CODE 】\n\nPINコード: " + pinFullText + "\n\nスマホのLINEアプリを開き、上記のコードを入力してください。");
       return;
     }
 
-    // 📌 AuthToken受領時 ➔ トークン出力エリアを表示
     if (data.authToken) {
       if (authTokenDisplay) authTokenDisplay.value = data.authToken;
       
