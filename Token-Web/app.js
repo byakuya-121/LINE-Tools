@@ -2,22 +2,48 @@
 // BYAKUYA DASHBOARD CONTROLLER (app.js)
 // ==========================================
 
-// 🚀 1. ウェルカム画面非表示処理（グローバル関数）
-function enterDashboard() {
-  const welcome = document.getElementById('welcome-screen') || document.querySelector('.welcome-screen') || document.querySelector('.welcome-overlay');
-  if (welcome) {
-    welcome.style.transition = "opacity 0.4s ease, transform 0.4s ease";
-    welcome.style.opacity = "0";
-    welcome.style.transform = "scale(0.96)";
+// 🚀 1. ウェルカム画面解除（マルチレイヤー自動検出）
+function enterDashboard(btnEl) {
+  let target = null;
+
+  // ① IDおよびクラスでオーバーレイ画面を特定
+  const selectors = ['#welcome-screen', '.welcome-screen', '.welcome-overlay', '#gateway-screen', '.gateway-screen'];
+  for (const sel of selectors) {
+    const el = document.querySelector(sel);
+    if (el) {
+      target = el;
+      break;
+    }
+  }
+
+  // ② 見つからない場合はボタンから親要素を遡り、画面全体（fixed / absolute）を自動検出
+  if (!target && btnEl) {
+    let current = btnEl.parentElement;
+    for (let i = 0; i < 10; i++) {
+      if (!current || current === document.body) break;
+      const pos = window.getComputedStyle(current).position;
+      if (pos === 'fixed' || pos === 'absolute') {
+        target = current;
+        break;
+      }
+      current = current.parentElement;
+    }
+  }
+
+  // フェードアウトアニメーションと非表示化
+  if (target) {
+    target.style.transition = "opacity 0.35s ease, transform 0.35s ease";
+    target.style.opacity = "0";
+    target.style.transform = "scale(0.97)";
+    target.style.pointerEvents = "none";
     setTimeout(() => {
-      welcome.style.display = "none";
-      welcome.classList.add("hidden");
-    }, 400);
+      target.style.display = "none";
+    }, 350);
   }
 }
 window.enterDashboard = enterDashboard;
 
-// 🚀 2. モーダル操作関数
+// 🚀 2. モーダル制御
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
@@ -33,18 +59,16 @@ function closeModal(modalId) {
     modal.style.display = 'none';
   }
 }
-
 window.openModal = openModal;
 window.closeModal = closeModal;
 
-// 🚀 3. トースト通知関数
+// 🚀 3. トースト通知
 function showToast(title, message, type) {
   const container = document.getElementById('toast-container');
   if (!container) return;
 
   const toast = document.createElement('div');
   toast.style.cssText = "background:rgba(10,15,25,0.95); border:1px solid var(--main-neon, #00ff88); padding:10px 16px; margin-bottom:8px; border-radius:3px; color:#fff; font-family:'JetBrains Mono',monospace; font-size:11px; box-shadow:0 0 10px rgba(0,255,136,0.2); transition: opacity 0.4s ease;";
-  
   toast.innerHTML = '<div style="font-weight:bold; color:var(--main-neon, #00ff88); margin-bottom:2px;">[' + title + ']</div><div style="color:#d0d0d0;">' + message + '</div>';
 
   container.appendChild(toast);
@@ -55,17 +79,12 @@ function showToast(title, message, type) {
 }
 window.showToast = showToast;
 
-// 🚀 4. 日時フォーマット関数
 function formatDate(isoStr) {
   if (!isoStr) return 'N/A';
-  try {
-    return new Date(isoStr).toLocaleString('ja-JP');
-  } catch (e) {
-    return isoStr;
-  }
+  try { return new Date(isoStr).toLocaleString('ja-JP'); } catch (e) { return isoStr; }
 }
 
-// 🚀 5. APIステータス更新関数
+// 🚀 4. APIステータス更新
 async function refreshStatus() {
   try {
     const res = await fetch('/api/status');
@@ -108,19 +127,19 @@ async function refreshStatus() {
         modalList.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px;">現在アクティブな認証セッションはありません。</div>';
       }
     }
-  } catch (err) {
-    console.warn("Status refresh failed:", err);
-  }
+  } catch (err) {}
 }
 
-// 🚀 6. DOM読み込み後のメイン初期化
+// 🚀 5. イベントリスナー一括登録
 document.addEventListener('DOMContentLoaded', () => {
   refreshStatus();
   setInterval(refreshStatus, 5000);
 
   const btnStart = document.getElementById('btn-start-tools');
   if (btnStart) {
-    btnStart.addEventListener('click', enterDashboard);
+    btnStart.addEventListener('click', function(e) {
+      enterDashboard(this);
+    });
   }
 
   const btnReloadSessions = document.getElementById('btn-reload-sessions');
