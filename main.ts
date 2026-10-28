@@ -1,130 +1,164 @@
-import { Client } from "@evex/linejs";
 import { serveDir } from "https://deno.land/std@0.224.0/http/file_server.ts";
+import { Client } from "https://jsr.io/@evex/linejs/3.4.2/mod.ts";
 
-const serverStartTime = new Date();
+const PORT = Number(Deno.env.get("PORT")) || 10000;
+const startedAt = new Date().toISOString();
 
-Deno.serve(async (req: Request) => {
+const activeSessions = new Map<string, { userId?: string; startedAt: string; client?: any }>();
+
+Deno.serve({
+  port: PORT,
+  onListen({ hostname, port }) {
+    console.log(`🚀 BYAKUYA Engine Server running on http://${hostname}:${port}`);
+  }
+}, async (req: Request) => {
   const url = new URL(req.url);
 
-  // 1. 📊 ステータス取得 API
-  if (req.method === "GET" && url.pathname === "/api/status") {
-    const uptimeSeconds = Math.floor((Date.now() - serverStartTime.getTime()) / 1000);
-    return new Response(
-      JSON.stringify({
-        status: "ONLINE",
-        uptimeSeconds: uptimeSeconds,
-        sessionCount: 1,
-        startedAt: serverStartTime.toISOString(),
-        serverTime: new Date().toISOString(),
-        message: "LINEJS 3.4.2 Control Engine Active",
-        sessions: [
-          { userId: "BYAKUYA_CORE_SESSION", startedAt: serverStartTime.toISOString() }
-        ]
-      }),
-      { headers: { "Content-Type": "application/json; charset=utf-8" } }
-    );
+  if (url.pathname === "/api/status" && req.method === "GET") {
+    const uptimeSeconds = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000);
+    const sessionsList = Array.from(activeSessions.values()).map(s => ({
+      userId: s.userId || "REGISTERED_ACCOUNT",
+      startedAt: s.startedAt
+    }));
+
+    return new Response(JSON.stringify({
+      status: "ONLINE",
+      uptimeSeconds,
+      sessionCount: activeSessions.size,
+      startedAt,
+      serverTime: new Date().toISOString(),
+      message: "正常稼働中",
+      sessions: sessionsList
+    }), {
+      headers: { 
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "*" 
+      }
+    });
   }
 
-  // 2. 🔑 Token Auto Sync 発行 API
-  if (req.method === "POST" && url.pathname === "/api/sync-token") {
+  if (url.pathname === "/api/sync-token" && req.method === "POST") {
     try {
-      const { email, password } = await req.json();
+      const body = await req.json();
+      const { email, password } = body;
+
       if (!email || !password) {
-        return new Response(
-          JSON.stringify({ error: "Eメールとパスワードを入力してください" }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
-        );
+        return new Response(JSON.stringify({ error: "Eメールとパスワードを入力してください" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
       }
 
-      const client = new Client({ device: "IOSIPAD" });
-      let pincodeVal = "";
+      const client = new Client();
 
-      client.on("pincode", (pincode: string) => {
-        pincodeVal = pincode;
-      });
-
-      // ログイン試行（PIN発行またはToken取得）
-      const loginPromise = client.login({ email, password });
-
-      const result = await Promise.race([
-        loginPromise.then(() => ({ type: "token", token: client.authToken })),
-        new Promise((resolve) => setTimeout(() => resolve({ type: "pincode" }), 3500))
-      ]) as { type: string; token?: string };
-
-      if (result.type === "token" || client.authToken) {
-        return new Response(
-          JSON.stringify({ authToken: client.authToken, jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(client.authToken || "").replace(/=/g, "") }),
-          { headers: { "Content-Type": "application/json" } }
-        );
-      } else if (pincodeVal) {
-        return new Response(
-          JSON.stringify({ pincode: pincodeVal }),
-          { headers: { "Content-Type": "application/json" } }
-        );
-      } else {
-        return new Response(
-          JSON.stringify({ error: "認証応答の待機中にタイムアウトしました。再試行してください。" }),
-          { status: 500, headers: { "Content-Type": "application/json" } }
-        );
-      }
-    } catch (err: any) {
-      return new Response(
-        JSON.stringify({ error: err.message || "認証エラーが発生しました" }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
-    }
-  }
-
-  // 3. 🧪 Token 有効性検証 (Verify Token) API
-  if (req.method === "POST" && url.pathname === "/api/verify-token") {
-    try {
-      const { authToken } = await req.json();
-      if (!authToken) {
-        return new Response(
-          JSON.stringify({ valid: false, error: "検証するAuthTokenがありません" }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
-        );
-      }
-
-      const client = new Client({ device: "IOSIPAD" });
-
-      const verifyResult = await new Promise<{ valid: boolean; displayName?: string; error?: string }>((resolve) => {
-        const timeoutTimer = setTimeout(() => {
-          resolve({ valid: false, error: "検証タイムアウト: トークンが無効または応答がありません" });
-        }, 7000);
+      const loginPromise = new Promise<{ authToken?: string; pincode?: string }>((resolve, reject) => {
+        client.on("pincode", (pin: string) => {
+          resolve({ pincode: pin });
+        });
 
         client.on("ready", () => {
-          clearTimeout(timeoutTimer);
-          resolve({
-            valid: true,
-            displayName: client.user?.displayName || "LINE Account"
-          });
+          const token = client.authToken;
+          if (token) {
+            const sessionKey = `user_${Date.now()}`;
+            activeSessions.set(sessionKey, {
+              userId: client.user?.displayName || "LINE User",
+              startedAt: new Date().toISOString(),
+              client
+            });
+            resolve({ authToken: token });
+          }
         });
 
-        client.login({ authToken }).catch((err: any) => {
-          clearTimeout(timeoutTimer);
-          resolve({
-            valid: false,
-            error: err.message || "トークンの有効期限切れ、またはフォーマットエラーです"
-          });
+        client.on("error", (err: any) => {
+          reject(err);
         });
       });
 
-      return new Response(
-        JSON.stringify(verifyResult),
-        { headers: { "Content-Type": "application/json; charset=utf-8" } }
+      client.login({ email, password }).catch((err: any) => {
+        console.error("LINEJS Login Error:", err);
+      });
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("認証リクエストがタイムアウトしました")), 15000)
       );
+
+      const result = await Promise.race([loginPromise, timeoutPromise]) as any;
+
+      if (result.pincode) {
+        return new Response(JSON.stringify({ pincode: result.pincode }), {
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      if (result.authToken) {
+        const jwtToken = "ey" + btoa(result.authToken).replace(/=/g, "");
+        return new Response(JSON.stringify({ authToken: result.authToken, jwtToken }), {
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      return new Response(JSON.stringify({ error: "認証処理に失敗しました" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+
     } catch (err: any) {
-      return new Response(
-        JSON.stringify({ valid: false, error: err.message || "検証中にサーバーエラーが発生しました" }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: err.message || "認証処理中にエラーが発生しました" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
     }
   }
 
-  // 4. 🌐 フロントエンド静的ファイル (Token-Web) の配信
+  if (url.pathname === "/api/verify-token" && req.method === "POST") {
+    try {
+      const body = await req.json();
+      const { authToken } = body;
+
+      if (!authToken) {
+        return new Response(JSON.stringify({ valid: false, error: "AuthTokenが送信されていません" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+
+      const verifyClient = new Client();
+
+      const verifyPromise = new Promise<{ valid: boolean; displayName?: string; error?: string }>((resolve) => {
+        verifyClient.on("ready", () => {
+          const name = verifyClient.user?.displayName || "LINE User";
+          resolve({ valid: true, displayName: name });
+        });
+
+        verifyClient.on("error", (err: any) => {
+          resolve({ valid: false, error: err.message || "無効なトークンです" });
+        });
+      });
+
+      verifyClient.login({ authToken }).catch(() => {
+      });
+
+      const timeoutPromise = new Promise<{ valid: boolean; error: string }>((resolve) =>
+        setTimeout(() => resolve({ valid: false, error: "検証タイムアウト（無効または応答なし）" }), 7000)
+      );
+
+      const result = await Promise.race([verifyPromise, timeoutPromise]);
+
+      return new Response(JSON.stringify(result), {
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+
+    } catch (err: any) {
+      return new Response(JSON.stringify({ valid: false, error: err.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" }
+      });
+    }
+  }
+
   return serveDir(req, {
     fsRoot: "Token-Web",
+    urlRoot: "",
     showDirListing: false,
     quiet: true,
   });
