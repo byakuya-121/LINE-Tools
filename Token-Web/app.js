@@ -221,7 +221,29 @@ document.addEventListener("DOMContentLoaded", () => {
       if (elements.serverTime) elements.serverTime.textContent = formatDate(data.serverTime);
       if (elements.serverMessage) elements.serverMessage.textContent = data.message || "正常稼働中";
       if (elements.lastUpdated) elements.lastUpdated.textContent = formatDate(new Date());
-      if (elements.sessionCountBadge) elements.sessionCountBadge.textContent = String(data.sessionCount);
+            if (elements.sessionCountBadge) elements.sessionCountBadge.textContent = String(data.sessionCount);
+      
+      const modalCount = document.getElementById('modal-session-count');
+      if (modalCount) modalCount.textContent = String(data.sessionCount);
+
+      const modalList = document.getElementById('modal-session-list');
+      if (modalList) {
+        if (Array.isArray(data.sessions) && data.sessions.length > 0) {
+          modalList.innerHTML = data.sessions.map((s, idx) => 
+            <div style="padding:10px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); margin-bottom:6px; border-radius:2px;">
+              <div>
+                <div style="font-weight:700; color:var(--main-neon);"># + (idx + 1) +  - USER:  + (s.userId || 'REGISTERED_ACCOUNT') + </div>
+                <div style="font-size:9.5px; color:var(--text-sub); margin-top:3px;">LOGIN TIME:  + formatDate(s.startedAt) + </div>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:9px; color:var(--main-neon); border:1px solid var(--main-neon); padding:2px 6px; border-radius:2px;">ONLINE</span>
+              </div>
+            </div>
+          ).join("");
+        } else {
+          modalList.innerHTML = '<div style="color:var(--text-sub); text-align:center; padding:20px;">現在アクティブな認証セッションはありません。</div>';
+        }
+      }
 
       if (elements.sessionList) {
         if (Array.isArray(data.sessions) && data.sessions.length > 0) {
@@ -446,6 +468,11 @@ document.addEventListener("DOMContentLoaded", () => {
       navigator.clipboard.writeText(output.value);
       showToast("COPIED", "JWT Token (ey...) をコピーしました", "success");
     }
+  });
+
+    document.getElementById('btn-reload-sessions')?.addEventListener('click', () => {
+    refreshStatus();
+    showToast("SESSION", "セッションリストを更新しました", "info");
   });
 
   // 🚀 ボタンイベントの登録（安全ガード付き）
